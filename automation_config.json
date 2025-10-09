@@ -1,0 +1,70 @@
+{
+  "input": {
+    "excel_file": null,
+    "input_directory": "sourcefiles",
+    "file_pattern": "*.xls*",
+    "required_sheets": ["Resources", "NSG", "Build_ENV", "APGW", "ACR NRS", "Resource Options"],
+    "backup_original": true,
+    "process_multiple_files": true
+  },
+  "processing": {
+    "extract_macros": true,
+    "extract_formulas": true,
+    "extract_comments": true,
+    "validate_data": true,
+    "skip_empty_vms": true
+  },
+  "output": {
+    "json_file": "comprehensive_excel_data.json",
+    "terraform_dir": "output_package",
+    "backup_previous": true,
+    "cleanup_temp_files": true,
+    "create_deployment_package": true,
+    "include_validation_scripts": true,
+    "include_documentation": true,
+    "dynamic_folder_naming": true,
+    "folder_naming_pattern": "{subscription}_{timestamp}",
+    "fallback_folder_naming": "{excel_filename}_{timestamp}"
+  },
+  "terraform": {
+    "provider_version": "~> 4.14",
+    "default_location": "WEST US 3",
+    "default_vm_size": "Standard_B2s_v2",
+    "default_os": "Windows Server 2022",
+    "enable_diagnostics": true,
+    "add_deployment_scripts": true,
+    "terraform_version": ">= 1.5",
+    "use_enhanced_generator_v2": true,
+    "module_source": "app.terraform.io/wab-cloudengineering-org/base-vm/iac",
+    "follow_module_patterns": true,
+    "complex_variable_structures": true,
+    "advanced_validation": true
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "automation.log",
+    "max_size_mb": 10,
+    "backup_count": 5,
+    "include_timestamps": true
+  },
+  "notifications": {
+    "email_on_success": false,
+    "email_on_failure": true,
+    "email_recipients": ["admin@company.com"],
+    "slack_webhook": null,
+    "include_summary": true
+  },
+  "validation": {
+    "check_excel_format": true,
+    "validate_terraform_syntax": true,
+    "check_resource_limits": true,
+    "max_vms": 100,
+    "max_security_rules": 50
+  },
+  "deployment": {
+    "create_deployment_script": true,
+    "deployment_script_name": "deploy.sh",
+    "include_terraform_commands": true,
+    "add_validation_steps": true
+  }
+}

@@ -1,0 +1,263 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Comprehensive Terraform output schema based on module.md patterns",
+  "generated_from": "module.md analysis",
+  "patterns": {
+    "file_organization": {
+      "module_files": {
+        "pattern": "m-{resource_type}.tf",
+        "description": "Main module call files",
+        "example": "m-basevm.tf"
+      },
+      "resource_files": {
+        "pattern": "r-{resource_type}.tf", 
+        "description": "Individual resource definition files",
+        "examples": [
+          "r-asg.tf", "r-dcra.tf", "r-dsk.tf", "r-kvlt.tf", 
+          "r-nsr.tf", "r-pe.tf", "r-rg.tf", "r-rnd.tf", 
+          "r-snet.tf", "r-umid.tf"
+        ]
+      },
+      "configuration_files": [
+        "variables.tf", "terraform.tfvars", "outputs.tf", 
+        "versions.tf", "data.tf", "locals.tf"
+      ]
+    },
+    "variable_patterns": {
+      "complex_objects": {
+        "vm_list": {
+          "type": "map(object({...}))",
+          "description": "Virtual machine configurations with nested objects",
+          "key_features": ["optional()", "nullable", "validation blocks"]
+        },
+        "application_security_groups": {
+          "type": "map(object({...}))",
+          "description": "ASG configurations with map-based structure"
+        },
+        "subnets": {
+          "type": "map(object({...}))",
+          "description": "Subnet configurations with complex networking options"
+        },
+        "network_security_rules": {
+          "type": "object({rules: list(object({...}))})",
+          "description": "NSG rules with list-based structure"
+        },
+        "private_endpoints": {
+          "type": "map(object({...}))",
+          "description": "Private endpoint configurations"
+        },
+        "key_vault": {
+          "type": "object({...})",
+          "description": "Key vault configuration with optional properties"
+        }
+      },
+      "validation_patterns": {
+        "location_validation": {
+          "allowed_values": ["WEST US", "WEST US 2", "WEST US 3", "EAST US"],
+          "error_message": "Custom error message with allowed values list"
+        },
+        "environment_validation": {
+          "allowed_values": ["DEV", "QA", "UAT", "PROD", "DR"],
+          "description": "Environment-specific validation"
+        },
+        "app_tier_validation": {
+          "allowed_values": ["Platinum", "Gold", "Iron", "Silver", "Bronze"],
+          "description": "Application tier validation"
+        },
+        "patch_optin_validation": {
+          "allowed_values": ["YES", "NO", "NA"],
+          "description": "Patch opt-in validation"
+        }
+      }
+    },
+    "resource_patterns": {
+      "for_each_usage": {
+        "description": "Extensive use of for_each for scalable resources",
+        "examples": [
+          "azurerm_application_security_group.asg",
+          "azurerm_network_security_rule.nsr",
+          "azurerm_private_endpoint.pe",
+          "azurerm_subnet.snet"
+        ]
+      },
+      "locals_usage": {
+        "description": "Complex data transformation using locals",
+        "examples": [
+          "data_disks transformation",
+          "common_tags merging",
+          "resource_specific_tags processing"
+        ]
+      },
+      "tagging_strategy": {
+        "prefix": "wab:",
+        "structure": {
+          "common_tags": "Shared across all resources",
+          "resource_specific_tags": "Resource-specific tags",
+          "merge_pattern": "merge(local.common_tags, local.resource_specific_tags)"
+        }
+      },
+      "module_integration": {
+        "base_vm_module": {
+          "source": "app.terraform.io/wab-cloudengineering-org/base-vm/iac",
+          "version": "__DYNAMIC_MODULE_VERSION__",
+          "description": "External module for VM management"
+        }
+      }
+    },
+    "output_patterns": {
+      "build_validation": {
+        "type": "complex_object",
+        "structure": {
+          "01-Subscription": "Subscription details",
+          "02-Resource_groups": "Resource group information with nested VMs",
+          "03-Network": "Network configuration details"
+        }
+      },
+      "resources": {
+        "type": "object",
+        "description": "Resource IDs for reference"
+      }
+    }
+  },
+  "data_structures": {
+    "vm_configuration": {
+      "name": "string",
+      "size": "string", 
+      "zone": "optional(number)",
+      "image_os": "string",
+      "image_urn": "optional(string)",
+      "source_image_id": "optional(string)",
+      "marketplace_image": "optional(bool)",
+      "ip_allocation": "string",
+      "ip_address": "optional(string)",
+      "identity_type": "optional(string)",
+      "os_disk_name": "optional(string)",
+      "os_disk_size": "number",
+      "os_disk_type": "optional(string)",
+      "os_disk_tier": "optional(string)",
+      "data_disk_sizes": "optional(list(number))",
+      "data_disk_type": "optional(string)",
+      "data_disks": "optional(map(object({...})))",
+      "snet_key": "string",
+      "asg_key": "string",
+      "tags": "object({role, patch-optin, snow-item})"
+    },
+    "subnet_configuration": {
+      "resource_group_name": "string",
+      "virtual_network_name": "string", 
+      "network_security_group_name": "optional(string)",
+      "network_security_group_id": "optional(string)",
+      "route_table_name": "optional(string)",
+      "route_table_id": "optional(string)",
+      "name": "string",
+      "prefixes": "list(string)",
+      "service_endpoints": "list(string)"
+    },
+    "nsg_rule_configuration": {
+      "name": "optional(string)",
+      "priority": "number",
+      "direction": "string",
+      "access": "string", 
+      "protocol": "string",
+      "description": "optional(string)",
+      "source_port_range": "optional(string)",
+      "source_port_ranges": "optional(list(string))",
+      "destination_port_range": "optional(string)",
+      "destination_port_ranges": "optional(list(string))",
+      "source_address_prefix": "optional(string)",
+      "source_address_prefixes": "optional(list(string))",
+      "destination_address_prefix": "optional(string)",
+      "destination_address_prefixes": "optional(list(string))",
+      "source_asg_keys": "optional(list(string))",
+      "destination_asg_keys": "optional(list(string))",
+      "source_name": "optional(string)",
+      "destination_name": "optional(string)",
+      "snow-item": "optional(string)"
+    },
+    "common_tags": {
+      "terraform": "optional(bool)",
+      "shared-service-name": "string",
+      "app-name": "string",
+      "environment": "string",
+      "app-tier": "string", 
+      "snow-item": "string",
+      "it-cost-center": "string",
+      "it-domain": "string",
+      "notes": "optional(string)",
+      "segment": "optional(string)",
+      "lineofbusiness": "optional(string)",
+      "department": "optional(string)",
+      "cost-center": "optional(string)"
+    },
+    "key_vault_configuration": {
+      "name": "optional(string)",
+      "sku_name": "optional(string)",
+      "soft_delete_retention_days": "optional(number)",
+      "public_network_access": "optional(string)",
+      "snet_key": "string",
+      "key_name": "optional(string)"
+    }
+  },
+  "generation_guidelines": {
+    "file_naming": {
+      "module_calls": "Use m-{resource_type}.tf pattern",
+      "resources": "Use r-{resource_type}.tf pattern", 
+      "configurations": "Use standard names (variables.tf, outputs.tf, etc.)"
+    },
+    "variable_declaration": {
+      "use_complex_objects": "For structured data like vm_list, subnets",
+      "add_validation": "Include validation blocks with custom error messages",
+      "use_optional": "Mark optional fields with optional() function",
+      "set_nullable": "Use nullable = false for required fields"
+    },
+    "resource_generation": {
+      "use_for_each": "For scalable resources that can be repeated",
+      "implement_locals": "For data transformation and complex logic",
+      "apply_tagging": "Use consistent tagging strategy with wab: prefix",
+      "add_dependencies": "Use depends_on for resource dependencies"
+    },
+    "output_structure": {
+      "build_validation": "Use numbered prefixes for organized output",
+      "resource_references": "Include resource IDs for external references",
+      "comprehensive_coverage": "Include all major infrastructure components"
+    }
+  },
+  "excel_mapping": {
+    "vm_instances": {
+      "source_sheet": "Resources",
+      "target_variable": "vm_list",
+      "mapping_rules": {
+        "Hostname": "name",
+        "Recommended SKU": "size",
+        "OS Image*": "image_os",
+        "Application Owner": "tags.role",
+        "Environment": "environment",
+        "Service Now Ticket": "tags.snow-item"
+      }
+    },
+    "network_security_rules": {
+      "source_sheet": "NSG",
+      "target_variable": "network_security_rules.rules",
+      "mapping_rules": {
+        "Name": "name",
+        "Direction": "direction", 
+        "Access": "access",
+        "Protocol": "protocol",
+        "Source Port": "source_port_range",
+        "Destination Port": "destination_port_range",
+        "Source Address": "source_address_prefix",
+        "Destination Address": "destination_address_prefix",
+        "Description": "description"
+      }
+    },
+    "build_environment": {
+      "source_sheet": "Build_ENV",
+      "target_variables": ["location", "resource_group_name", "subscription"],
+      "mapping_rules": {
+        "Location": "location",
+        "Resource Group": "resource_group_name",
+        "Subscription": "subscription"
+      }
+    }
+  }
+}

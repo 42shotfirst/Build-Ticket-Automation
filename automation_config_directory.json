@@ -1,0 +1,41 @@
+{
+  "input": {
+    "excel_file": "LLDtest.xlsm",
+    "input_directory": "./test_excel_files",
+    "file_pattern": "*.xls*",
+    "required_sheets": ["Resources", "NSG", "Build_ENV"],
+    "backup_original": true,
+    "process_multiple_files": true
+  },
+  "processing": {
+    "extract_macros": true,
+    "extract_formulas": true,
+    "extract_comments": true,
+    "validate_data": true
+  },
+  "output": {
+    "json_file": "comprehensive_excel_data.json",
+    "terraform_dir": "terraform_output",
+    "backup_previous": true,
+    "cleanup_temp_files": true
+  },
+  "terraform": {
+    "provider_version": "~> 3.0",
+    "default_location": "East US",
+    "default_vm_size": "Standard_D2s_v3",
+    "default_os": "Ubuntu 22.04 LTS",
+    "enable_diagnostics": true
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "automation.log",
+    "max_size_mb": 10,
+    "backup_count": 5
+  },
+  "notifications": {
+    "email_on_success": false,
+    "email_on_failure": true,
+    "email_recipients": [],
+    "slack_webhook": null
+  }
+}

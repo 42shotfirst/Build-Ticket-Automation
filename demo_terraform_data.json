@@ -1,0 +1,443 @@
+{
+  "project_info": {
+    "cmdb_app_name": "wab:app-name",
+    "service_now_ticket": "wab:snow-item"
+  },
+  "vm_instances": [
+    {
+      "Server Owner": "Application Owner",
+      "Morgan": "Morgan",
+      "CMDB": "CMDB"
+    },
+    {
+      "Server Owner": "Business Owner",
+      "Morgan": "Morgan",
+      "CMDB": "CMDB"
+    },
+    {
+      "Server Owner": "TRB Approval Date",
+      "Morgan": "2025-09-18 00:00:00",
+      "CMDB": "EA"
+    },
+    {
+      "Server Owner": "TRB Approval Link",
+      "Morgan": "google",
+      "CMDB": "EA"
+    },
+    {
+      "Server Owner": "Diagram",
+      "Morgan": "diagram",
+      "CMDB": "EA"
+    },
+    {
+      "Server Owner": "Built in",
+      "Morgan": "n",
+      "CMDB": "Cloud Engineering",
+      "Column_7": "Azure Client Managed",
+      "Column_8": "Azure CMS Managed",
+      "Column_9": "OnPrem",
+      "Column_10": "AWS Client Managed"
+    },
+    {
+      "Server Owner": "DR Setup",
+      "Morgan": "y",
+      "CMDB": "EA",
+      "Column_7": "YES",
+      "Column_8": "NO"
+    },
+    {
+      "Server Owner": "Recovery Type",
+      "Morgan": "1",
+      "CMDB": "EA",
+      "Column_7": "ASR",
+      "Column_8": "GRS Backup/Restore",
+      "Column_9": "Warm/Standby",
+      "Column_10": "Cold Rebuild"
+    },
+    {
+      "Server Owner": "Will it house Personally Identifiable Information (PII)",
+      "Morgan": "n",
+      "CMDB": "EA",
+      "Column_7": "YES",
+      "Column_8": "NO"
+    },
+    {
+      "Server Owner": "Is Remote desktop or SSH access required",
+      "Morgan": "n",
+      "CMDB": "User",
+      "Column_7": "YES",
+      "Column_8": "NO"
+    },
+    {
+      "Server Owner": "Comments",
+      "CMDB": "User"
+    },
+    {
+      "Server Owner": "Application Name",
+      "Column_1": "wab:app-name",
+      "Morgan": "bob",
+      "CMDB": "User/CMDB",
+      "Column_7": "CMDB APP NAME"
+    },
+    {
+      "Server Owner": "Service Now Ticket",
+      "Column_1": "wab:snow-item",
+      "Morgan": "1",
+      "CMDB": "SNOW team after request is complete?"
+    },
+    {
+      "Server Owner": "Environment",
+      "Column_1": "wab:environment",
+      "Morgan": "UAT",
+      "CMDB": "User/EA",
+      "Column_7": "DEV",
+      "Column_8": "UAT",
+      "Column_9": "QA",
+      "Column_10": "PROD",
+      "Column_11": "DR"
+    },
+    {
+      "Server Owner": "App Tier",
+      "Column_1": "wab:app-tier",
+      "Morgan": "Platinum",
+      "CMDB": "CMDB",
+      "Column_7": "Platinum",
+      "Column_8": "Gold",
+      "Column_9": "Silver",
+      "Column_10": "Bronze",
+      "Column_11": "Iron"
+    },
+    {
+      "Server Owner": "Shared Service Name",
+      "Column_1": "wab:shared-service-name",
+      "Morgan": "bob",
+      "CMDB": "CMDB?"
+    },
+    {
+      "Server Owner": "IT Cost Center ID",
+      "Column_1": "wab:it-cost-center",
+      "Morgan": "1",
+      "CMDB": "CMDB",
+      "Column_7": "MUST BE A NUMBER"
+    },
+    {
+      "Server Owner": "IT Domain",
+      "Column_1": "wab:it-domain",
+      "Morgan": "1",
+      "CMDB": "CMDB"
+    },
+    {
+      "Server Owner": "Notes",
+      "Column_1": "wab:notes",
+      "Morgan": "1"
+    },
+    {
+      "Server Owner": "Segment",
+      "Column_1": "wab:segment",
+      "Morgan": "Commercial",
+      "CMDB": "CMDB",
+      "Column_7": "Commercial",
+      "Column_8": "Consumer Related",
+      "Column_9": "Corporate"
+    },
+    {
+      "Server Owner": "Line of Business",
+      "Column_1": "wab:lineofbusiness",
+      "Morgan": "Corporate Support",
+      "CMDB": "CMDB",
+      "Column_7": "Corporate Support"
+    },
+    {
+      "Server Owner": "Department",
+      "Column_1": "wab:department",
+      "Morgan": "1",
+      "CMDB": "CMDB"
+    },
+    {
+      "Server Owner": "Cost Center ID",
+      "Column_1": "wab:cost-center",
+      "Morgan": "1",
+      "CMDB": "CMDB",
+      "Column_7": "MUST BE A NUMBER"
+    }
+  ],
+  "networking": {},
+  "security_groups": [
+    {
+      "name": "one",
+      "direction": "Inbound",
+      "access": "Allow",
+      "protocol": "Tcp",
+      "source_port_range": "1",
+      "destination_port_ranges": "5",
+      "source_asg": "9",
+      "destination_asg": "13",
+      "source_address_prefixes": "17",
+      "destination_address_prefixes": "21",
+      "description": "25"
+    },
+    {
+      "name": "two",
+      "direction": "Inbound",
+      "access": "Allow",
+      "protocol": "Tcp",
+      "source_port_range": "2",
+      "destination_port_ranges": "6",
+      "source_asg": "10",
+      "destination_asg": "14",
+      "source_address_prefixes": "18",
+      "destination_address_prefixes": "22",
+      "description": "26"
+    },
+    {
+      "one": "two",
+      "Inbound": "Inbound",
+      "Allow": "Allow",
+      "Tcp": "Tcp",
+      "1": "2",
+      "5": "6",
+      "9": "10",
+      "13": "14",
+      "17": "18",
+      "21": "22",
+      "25": "26"
+    },
+    {
+      "three": "four",
+      "Outbound": "Outbound",
+      "Allow": "Allow",
+      "Tcp": "Tcp",
+      "3": "4",
+      "7": "8",
+      "11": "12",
+      "15": "16",
+      "19": "20",
+      "23": "24",
+      "27": "28"
+    },
+    {
+      "Outbound": "Inbound",
+      "Allow": "Deny",
+      "Tcp": "Udp"
+    },
+    {
+      "Tcp": "Icmp"
+    },
+    {
+      "Tcp": "Esp"
+    },
+    {
+      "Tcp": "Ah"
+    },
+    {
+      "Tcp": "*"
+    },
+    {
+      "Udp": "Icmp"
+    },
+    {
+      "Udp": "Esp"
+    },
+    {
+      "Udp": "Ah"
+    },
+    {
+      "Udp": "*"
+    }
+  ],
+  "application_gateway": {
+    "backend_address_pool": "Value",
+    "name": "pr-",
+    "fqdns": "[]",
+    "backend_http_settings": "Value",
+    "cookie_based_affinity": "Disabled",
+    "pick_host_name_from_backend_address": "False",
+    "port": "False",
+    "probe_name": "defaultprobe-Http",
+    "protocol": "Http",
+    "request_timeout": "30",
+    "trusted_root_certificate_names": "[]",
+    "frontend_ip_configuration": "Value",
+    "private_ip_address_allocation": "Static",
+    "snet_key": "snet-apgw",
+    "frontend_port": "Value",
+    "http_listener": "Value",
+    "frontend_ip_configuration_name": "appGwPrivateFrontendIpIPv4",
+    "frontend_port_name": "fp-80",
+    "require_sni": "False",
+    "probe": "Value",
+    "host": "localhost",
+    "interval": "30",
+    "minimum_servers": "False",
+    "path": "/",
+    "pick_host_name_from_backend_http_settings": "False",
+    "timeout": "30",
+    "unhealthy_threshold": "3",
+    "match status_code": "[\"200-399\"]",
+    "request_routing_rule": "Value",
+    "backend_address_pool_name": "pool-",
+    "backend_http_settings_name": "bp-",
+    "http_listener_name": "fl-default",
+    "priority": "19000",
+    "rule_type": "Basic",
+    "rewrite_rule_set": "Value",
+    "url_path_map": "Value",
+    "default_backend_address_pool_name": "pool-",
+    "default_backend_http_settings_name": "bp-",
+    "default_rewrite_rule_set_name": "app-env-rewrite",
+    "path_rule": "Value",
+    "paths": "[\"/oauth2*\"]",
+    "rewrite_rule_set_name": "app-env-rewrite"
+  },
+  "container_registry": {
+    "action": "ip_range",
+    "1": "2",
+    "3": "4",
+    "5": "6",
+    "7": "8",
+    "9": "10",
+    "11": "12"
+  },
+  "resource_options": [
+    {
+      "Overview": "Resource_Group",
+      "Prefix": "rg-appname-env"
+    },
+    {
+      "Overview": "Application_Security_Group",
+      "Prefix": "snet-appname-env"
+    },
+    {
+      "Overview": "Subnet",
+      "Prefix": "Subnet"
+    },
+    {
+      "Overview": "Network_Security_Group",
+      "Prefix": "Network_Security_Group"
+    },
+    {
+      "Overview": "User_Assigned_Identity",
+      "Prefix": "User_Assigned_Identity"
+    },
+    {
+      "Overview": "Private_Endpoint",
+      "Prefix": "Private_Endpoint"
+    },
+    {
+      "Overview": "Key_Vault",
+      "Prefix": "Key_Vault"
+    },
+    {
+      "Overview": "Key_Vault_Key",
+      "Prefix": "Key_Vault_Key"
+    },
+    {
+      "Overview": "Disk_Encryption_Set",
+      "Prefix": "Disk_Encryption_Set"
+    },
+    {
+      "Overview": "Virtual_Machine",
+      "Prefix": "Virtual_Machine"
+    },
+    {
+      "Overview": "Data_Disk",
+      "Prefix": "Data_Disk"
+    },
+    {
+      "Overview": "Storage_Account",
+      "Prefix": "Storage_Account"
+    },
+    {
+      "Overview": "Storage_Share",
+      "Prefix": "Storage_Share"
+    },
+    {
+      "Overview": "AKS",
+      "Prefix": "AKS"
+    },
+    {
+      "Overview": "AKS_Default_Node",
+      "Prefix": "AKS_Default_Node"
+    },
+    {
+      "Overview": "AKS_Cluster_Node",
+      "Prefix": "AKS_Cluster_Node"
+    },
+    {
+      "Overview": "Azure_Container_Registry",
+      "Prefix": "Azure_Container_Registry"
+    },
+    {
+      "Overview": "Application_Gateway",
+      "Prefix": "Application_Gateway"
+    },
+    {
+      "Overview": "App_Service_Plan",
+      "Prefix": "App_Service_Plan"
+    },
+    {
+      "Overview": "App_Service_Environment",
+      "Prefix": "App_Service_Environment"
+    },
+    {
+      "Overview": "Windows_Web_App",
+      "Prefix": "Windows_Web_App"
+    },
+    {
+      "Overview": "Azure_Cache_for_Redis",
+      "Prefix": "Azure_Cache_for_Redis"
+    },
+    {
+      "Overview": "Application_Insights",
+      "Prefix": "Application_Insights"
+    },
+    {
+      "Overview": "Data_Collection_Rule",
+      "Prefix": "Data_Collection_Rule"
+    },
+    {
+      "Overview": "Log_Analytics_Workspace",
+      "Prefix": "Log_Analytics_Workspace"
+    },
+    {
+      "Overview": "Azure_Monitor_Workspace",
+      "Prefix": "Azure_Monitor_Workspace"
+    },
+    {
+      "Overview": "Azure_Managed_Grafana",
+      "Prefix": "Azure_Managed_Grafana"
+    },
+    {
+      "Overview": "Public_IP_Address",
+      "Prefix": "Public_IP_Address"
+    },
+    {
+      "Overview": "Load_Balancer",
+      "Prefix": "Load_Balancer"
+    },
+    {
+      "Overview": "MS_SQL_Server",
+      "Prefix": "MS_SQL_Server"
+    },
+    {
+      "Overview": "MS_SQL_Database",
+      "Prefix": "MS_SQL_Database"
+    },
+    {
+      "Overview": "MS_SQL_Managed_Instance",
+      "Prefix": "MS_SQL_Managed_Instance"
+    },
+    {
+      "Overview": "Application_Gateway",
+      "Prefix": "Application_Gateway"
+    },
+    {
+      "Overview": "RDP_SSH_Access",
+      "Prefix": "RDP_SSH_Access"
+    },
+    {
+      "Overview": "Post_Deployment",
+      "Prefix": "Post_Deployment"
+    }
+  ]
+}

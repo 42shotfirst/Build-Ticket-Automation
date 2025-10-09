@@ -1,0 +1,797 @@
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - ================================================================================
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - ================================================================================
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - Started at: 2025-09-24 12:19:16.343589
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-24 12:19:16,344 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-24 12:19:16,344 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-24 12:19:16,344 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-24 12:19:16,348 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250924_121916
+2025-09-24 12:19:16,348 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-24 12:19:16,348 - automation_pipeline - INFO - Step 3: Extracting Excel data to JSON...
+2025-09-24 12:19:18,120 - automation_pipeline - INFO - JSON file created: comprehensive_excel_data.json (4,849,826 bytes)
+2025-09-24 12:19:18,120 - automation_pipeline - INFO - ✓ Excel data extracted to: comprehensive_excel_data.json
+2025-09-24 12:19:18,120 - automation_pipeline - INFO - Step 4: Generating Terraform files...
+2025-09-24 12:19:18,142 - automation_pipeline - INFO - Generated 6 Terraform files
+2025-09-24 12:19:18,142 - automation_pipeline - INFO - Resources: 23 VMs, 13 security rules
+2025-09-24 12:19:18,143 - automation_pipeline - INFO - ✓ Terraform files generated in: test_automation_output
+2025-09-24 12:19:18,143 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ================================================================================
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ================================================================================
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - Files generated: 7
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - Steps completed: 7
+2025-09-24 12:19:18,166 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-24 12:19:18,166 - automation_pipeline - INFO - Results saved to: automation_results_20250924_121918.json
+2025-09-24 12:19:18,166 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-25 18:10:47,840 - automation_pipeline - INFO - ================================================================================
+2025-09-25 18:10:47,841 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-25 18:10:47,841 - automation_pipeline - INFO - ================================================================================
+2025-09-25 18:10:47,841 - automation_pipeline - INFO - Started at: 2025-09-25 18:10:47.840644
+2025-09-25 18:10:47,841 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-25 18:10:47,841 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-25 18:10:47,842 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-09-25 18:10:47,842 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-25 18:10:47,842 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-25 18:10:47,843 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-09-25 18:10:47,843 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-25 18:10:47,843 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-25 18:10:47,843 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-25 18:10:47,871 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250925_181047
+2025-09-25 18:10:47,871 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-25 18:10:47,871 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-25 18:10:47,871 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-25 18:10:49,545 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-25 18:10:49,545 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-25 18:10:49,545 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-25 18:10:49,570 - automation_pipeline - INFO - Generated 13 Terraform files
+2025-09-25 18:10:49,570 - automation_pipeline - INFO - Resources: 23 VMs, 13 security rules
+2025-09-25 18:10:49,572 - automation_pipeline - INFO - ✓ Terraform files generated in: terraform_output/LLDtest_terraform
+2025-09-25 18:10:49,572 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - ================================================================================
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - ================================================================================
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - Files processed: 1
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - Files generated: 14
+2025-09-25 18:10:49,593 - automation_pipeline - INFO - Steps completed: 7
+2025-09-25 18:10:49,594 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-25 18:10:49,594 - automation_pipeline - INFO - Results saved to: automation_results_20250925_181049.json
+2025-09-25 18:10:49,594 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-25 18:11:03,506 - automation_pipeline - INFO - ================================================================================
+2025-09-25 18:11:03,506 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-25 18:11:03,506 - automation_pipeline - INFO - ================================================================================
+2025-09-25 18:11:03,506 - automation_pipeline - INFO - Started at: 2025-09-25 18:11:03.506339
+2025-09-25 18:11:03,506 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-25 18:11:03,506 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-25 18:11:03,506 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-09-25 18:11:03,506 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-25 18:11:03,506 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-25 18:11:03,507 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-09-25 18:11:03,507 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-25 18:11:03,507 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-25 18:11:03,507 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-25 18:11:03,509 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250925_181103
+2025-09-25 18:11:03,509 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-25 18:11:03,509 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-25 18:11:03,509 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-25 18:11:05,091 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-25 18:11:05,091 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-25 18:11:05,091 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-25 18:11:05,114 - automation_pipeline - INFO - Generated 13 Terraform files
+2025-09-25 18:11:05,114 - automation_pipeline - INFO - Resources: 23 VMs, 13 security rules
+2025-09-25 18:11:05,115 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-25 18:11:05,115 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-25 18:11:05,134 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - ================================================================================
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - ================================================================================
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - Files processed: 1
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - Files generated: 14
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - Steps completed: 7
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - Results saved to: automation_results_20250925_181105.json
+2025-09-25 18:11:05,135 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-26 09:04:29,163 - automation_pipeline - INFO - ================================================================================
+2025-09-26 09:04:29,163 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-26 09:04:29,163 - automation_pipeline - INFO - ================================================================================
+2025-09-26 09:04:29,163 - automation_pipeline - INFO - Started at: 2025-09-26 09:04:29.163194
+2025-09-26 09:04:29,164 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-26 09:04:29,164 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-26 09:04:29,164 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 09:04:29,164 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-26 09:04:29,164 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 09:04:29,165 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-26 09:04:29,165 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 09:04:29,165 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-26 09:04:29,165 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 09:04:29,165 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-26 09:04:29,165 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-26 09:04:29,170 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250926_090429
+2025-09-26 09:04:29,170 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-26 09:04:29,170 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-26 09:04:29,170 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-26 09:04:34,189 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-26 09:04:34,190 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-26 09:04:34,190 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-26 09:04:34,249 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-09-26 09:04:34,249 - automation_pipeline - INFO - Resources: 23 VMs, 13 security rules
+2025-09-26 09:04:34,252 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-26 09:04:34,252 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-26 09:04:34,304 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-26 09:04:34,305 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-26 09:04:34,305 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-26 09:04:34,305 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-26 09:04:34,305 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-26 09:04:34,305 - automation_pipeline - INFO - ================================================================================
+2025-09-26 09:04:34,305 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-26 09:04:34,305 - automation_pipeline - INFO - ================================================================================
+2025-09-26 09:04:34,306 - automation_pipeline - INFO - Files processed: 1
+2025-09-26 09:04:34,306 - automation_pipeline - INFO - Files generated: 11
+2025-09-26 09:04:34,306 - automation_pipeline - INFO - Steps completed: 7
+2025-09-26 09:04:34,306 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-26 09:04:34,307 - automation_pipeline - INFO - Results saved to: automation_results_20250926_090434.json
+2025-09-26 09:04:34,307 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-26 09:09:54,231 - automation_pipeline - INFO - ================================================================================
+2025-09-26 09:09:54,232 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-26 09:09:54,232 - automation_pipeline - INFO - ================================================================================
+2025-09-26 09:09:54,232 - automation_pipeline - INFO - Started at: 2025-09-26 09:09:54.231176
+2025-09-26 09:09:54,232 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-26 09:09:54,232 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-26 09:09:54,232 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 09:09:54,232 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-26 09:09:54,232 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 09:09:54,233 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-26 09:09:54,233 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 09:09:54,233 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-26 09:09:54,233 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 09:09:54,233 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-26 09:09:54,234 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-26 09:09:54,252 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250926_090954
+2025-09-26 09:09:54,252 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-26 09:09:54,252 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-26 09:09:54,252 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-26 09:09:59,425 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-26 09:09:59,425 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-26 09:09:59,425 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-26 09:09:59,481 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-09-26 09:09:59,481 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-09-26 09:09:59,484 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-26 09:09:59,485 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-26 09:09:59,536 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-26 09:09:59,536 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-26 09:09:59,537 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-26 09:09:59,537 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-26 09:09:59,537 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-26 09:09:59,537 - automation_pipeline - INFO - ================================================================================
+2025-09-26 09:09:59,537 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-26 09:09:59,537 - automation_pipeline - INFO - ================================================================================
+2025-09-26 09:09:59,537 - automation_pipeline - INFO - Files processed: 1
+2025-09-26 09:09:59,538 - automation_pipeline - INFO - Files generated: 11
+2025-09-26 09:09:59,538 - automation_pipeline - INFO - Steps completed: 7
+2025-09-26 09:09:59,538 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-26 09:09:59,538 - automation_pipeline - INFO - Results saved to: automation_results_20250926_090959.json
+2025-09-26 09:09:59,538 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-26 11:12:43,090 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:12:43,091 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-26 11:12:43,091 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:12:43,091 - automation_pipeline - INFO - Started at: 2025-09-26 11:12:43.090752
+2025-09-26 11:12:43,092 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-26 11:12:43,092 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-26 11:12:43,092 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 11:12:43,092 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-26 11:12:43,092 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 11:12:43,093 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-26 11:12:43,093 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 11:12:43,093 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-26 11:12:43,093 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 11:12:43,093 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-26 11:12:43,094 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-26 11:12:43,112 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250926_111243
+2025-09-26 11:12:43,112 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-26 11:12:43,112 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-26 11:12:43,113 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-26 11:12:47,764 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-26 11:12:47,765 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-26 11:12:47,765 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-26 11:12:47,817 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-09-26 11:12:47,817 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-09-26 11:12:47,820 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-26 11:12:47,820 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-26 11:12:47,869 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-26 11:12:47,869 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-26 11:12:47,869 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-26 11:12:47,869 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-26 11:12:47,870 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-26 11:12:47,870 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:12:47,870 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-26 11:12:47,870 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:12:47,870 - automation_pipeline - INFO - Files processed: 1
+2025-09-26 11:12:47,870 - automation_pipeline - INFO - Files generated: 11
+2025-09-26 11:12:47,870 - automation_pipeline - INFO - Steps completed: 7
+2025-09-26 11:12:47,870 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-26 11:12:47,871 - automation_pipeline - INFO - Results saved to: automation_results_20250926_111247.json
+2025-09-26 11:12:47,872 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-26 11:19:57,160 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:19:57,161 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-26 11:19:57,161 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:19:57,161 - automation_pipeline - INFO - Started at: 2025-09-26 11:19:57.160749
+2025-09-26 11:19:57,162 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-26 11:19:57,162 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-26 11:19:57,162 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 11:19:57,163 - automation_pipeline - INFO - Found 2 Excel file(s) in sourcefiles directory
+2025-09-26 11:19:57,163 - automation_pipeline - INFO -   - ~$LLDtest.xlsm
+2025-09-26 11:19:57,164 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 11:19:57,165 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-26 11:19:57,166 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 11:19:57,166 - automation_pipeline - INFO - Found 2 Excel file(s) in sourcefiles directory
+2025-09-26 11:19:57,166 - automation_pipeline - INFO -   - ~$LLDtest.xlsm
+2025-09-26 11:19:57,166 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 11:19:57,167 - automation_pipeline - INFO - Processing 2 Excel file(s)
+2025-09-26 11:19:57,167 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-26 11:19:57,190 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250926_111957
+2025-09-26 11:19:57,191 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-26 11:19:57,191 - automation_pipeline - INFO - Processing file 1/2: ~$LLDtest.xlsm
+2025-09-26 11:19:57,191 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-26 11:19:57,540 - automation_pipeline - ERROR - Failed to process sourcefiles/~$LLDtest.xlsm: ['Failed to create JSON file']
+2025-09-26 11:19:57,540 - automation_pipeline - INFO - Processing file 2/2: LLDtest.xlsm
+2025-09-26 11:19:57,540 - automation_pipeline - INFO - Step 3.2: Extracting Excel data to JSON...
+2025-09-26 11:20:03,039 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-26 11:20:03,039 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-26 11:20:03,039 - automation_pipeline - INFO - Step 4.2: Generating Terraform files...
+2025-09-26 11:20:03,093 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-09-26 11:20:03,094 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-09-26 11:20:03,096 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-26 11:20:03,097 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-26 11:20:03,146 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-26 11:20:03,146 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-26 11:20:03,147 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-26 11:20:03,147 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-26 11:20:03,147 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-26 11:20:03,147 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:20:03,147 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-26 11:20:03,147 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:20:03,147 - automation_pipeline - INFO - Files processed: 1
+2025-09-26 11:20:03,147 - automation_pipeline - INFO - Files generated: 11
+2025-09-26 11:20:03,147 - automation_pipeline - INFO - Steps completed: 7
+2025-09-26 11:20:03,148 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-26 11:20:03,148 - automation_pipeline - INFO - Results saved to: automation_results_20250926_112003.json
+2025-09-26 11:20:03,148 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-26 11:36:54,111 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:36:54,112 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-26 11:36:54,113 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:36:54,113 - automation_pipeline - INFO - Started at: 2025-09-26 11:36:54.111845
+2025-09-26 11:36:54,113 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-26 11:36:54,113 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-26 11:36:54,113 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 11:36:54,114 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-26 11:36:54,114 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 11:36:54,114 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-26 11:36:54,114 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-26 11:36:54,114 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-26 11:36:54,115 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-26 11:36:54,115 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-26 11:36:54,115 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-26 11:36:54,130 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250926_113654
+2025-09-26 11:36:54,130 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-26 11:36:54,130 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-26 11:36:54,130 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-26 11:36:59,570 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-26 11:36:59,570 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-26 11:36:59,570 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-26 11:36:59,623 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-09-26 11:36:59,623 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-09-26 11:36:59,628 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-26 11:36:59,628 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-26 11:36:59,677 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-26 11:36:59,678 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-26 11:36:59,678 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-26 11:36:59,679 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-26 11:36:59,679 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-26 11:36:59,679 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:36:59,679 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-26 11:36:59,679 - automation_pipeline - INFO - ================================================================================
+2025-09-26 11:36:59,679 - automation_pipeline - INFO - Files processed: 1
+2025-09-26 11:36:59,680 - automation_pipeline - INFO - Files generated: 11
+2025-09-26 11:36:59,680 - automation_pipeline - INFO - Steps completed: 7
+2025-09-26 11:36:59,680 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-26 11:36:59,681 - automation_pipeline - INFO - Results saved to: automation_results_20250926_113659.json
+2025-09-26 11:36:59,681 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-29 09:16:29,942 - automation_pipeline - INFO - ================================================================================
+2025-09-29 09:16:29,942 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-29 09:16:29,942 - automation_pipeline - INFO - ================================================================================
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - Started at: 2025-09-29 09:16:29.942518
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-29 09:16:29,943 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-29 09:16:29,943 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-29 09:16:29,943 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-29 09:16:29,967 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250929_091629
+2025-09-29 09:16:29,967 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-29 09:16:29,968 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-29 09:16:29,968 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-29 09:16:32,908 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-29 09:16:32,908 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-29 09:16:32,908 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-29 09:16:32,942 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-09-29 09:16:32,942 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-09-29 09:16:32,945 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-29 09:16:32,945 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - ================================================================================
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - ================================================================================
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - Files processed: 1
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - Files generated: 11
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - Steps completed: 7
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-29 09:16:32,973 - automation_pipeline - INFO - Results saved to: automation_results_20250929_091632.json
+2025-09-29 09:16:32,974 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-29 09:17:22,535 - automation_pipeline - INFO - ================================================================================
+2025-09-29 09:17:22,535 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-29 09:17:22,535 - automation_pipeline - INFO - ================================================================================
+2025-09-29 09:17:22,535 - automation_pipeline - INFO - Started at: 2025-09-29 09:17:22.535070
+2025-09-29 09:17:22,535 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-29 09:17:22,535 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-29 09:17:22,535 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-29 09:17:22,535 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-29 09:17:22,535 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-29 09:17:22,536 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-29 09:17:22,536 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-29 09:17:22,536 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-29 09:17:22,536 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-29 09:17:22,536 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-29 09:17:22,536 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-29 09:17:22,554 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250929_091722
+2025-09-29 09:17:22,554 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-29 09:17:22,554 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-29 09:17:22,554 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-29 09:17:25,419 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-29 09:17:25,419 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-29 09:17:25,419 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-29 09:17:25,462 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-09-29 09:17:25,462 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-09-29 09:17:25,464 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-29 09:17:25,464 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-29 09:17:25,504 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-29 09:17:25,504 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-29 09:17:25,504 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-29 09:17:25,504 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-29 09:17:25,504 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-29 09:17:25,504 - automation_pipeline - INFO - ================================================================================
+2025-09-29 09:17:25,505 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-29 09:17:25,505 - automation_pipeline - INFO - ================================================================================
+2025-09-29 09:17:25,505 - automation_pipeline - INFO - Files processed: 1
+2025-09-29 09:17:25,505 - automation_pipeline - INFO - Files generated: 11
+2025-09-29 09:17:25,505 - automation_pipeline - INFO - Steps completed: 7
+2025-09-29 09:17:25,505 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-29 09:17:25,505 - automation_pipeline - INFO - Results saved to: automation_results_20250929_091725.json
+2025-09-29 09:17:25,506 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-30 17:54:55,441 - automation_pipeline - INFO - ================================================================================
+2025-09-30 17:54:55,441 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-30 17:54:55,441 - automation_pipeline - INFO - ================================================================================
+2025-09-30 17:54:55,441 - automation_pipeline - INFO - Started at: 2025-09-30 17:54:55.441403
+2025-09-30 17:54:55,441 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-30 17:54:55,441 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-30 17:54:55,441 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-30 17:54:55,442 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-30 17:54:55,442 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-30 17:54:55,442 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-30 17:54:55,442 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-09-30 17:54:55,442 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-09-30 17:54:55,442 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-30 17:54:55,442 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-30 17:54:55,442 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-30 17:54:55,458 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250930_175455
+2025-09-30 17:54:55,458 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-30 17:54:55,458 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-30 17:54:55,458 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-30 17:54:57,735 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-30 17:54:57,735 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-30 17:54:57,735 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-30 17:54:57,761 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-09-30 17:54:57,761 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-09-30 17:54:57,762 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-30 17:54:57,762 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-30 17:54:57,784 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-30 17:54:57,784 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-30 17:54:57,784 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-30 17:54:57,784 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-30 17:54:57,784 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-30 17:54:57,784 - automation_pipeline - INFO - ================================================================================
+2025-09-30 17:54:57,785 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-30 17:54:57,785 - automation_pipeline - INFO - ================================================================================
+2025-09-30 17:54:57,785 - automation_pipeline - INFO - Files processed: 1
+2025-09-30 17:54:57,785 - automation_pipeline - INFO - Files generated: 11
+2025-09-30 17:54:57,785 - automation_pipeline - INFO - Steps completed: 7
+2025-09-30 17:54:57,785 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-30 17:54:57,785 - automation_pipeline - INFO - Results saved to: automation_results_20250930_175457.json
+2025-09-30 17:54:57,785 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-09-30 17:56:47,663 - automation_pipeline - INFO - ================================================================================
+2025-09-30 17:56:47,663 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-30 17:56:47,663 - automation_pipeline - INFO - ================================================================================
+2025-09-30 17:56:47,663 - automation_pipeline - INFO - Started at: 2025-09-30 17:56:47.663120
+2025-09-30 17:56:47,663 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-30 17:56:47,663 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-30 17:56:47,663 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-09-30 17:56:47,663 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-30 17:56:47,664 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-30 17:56:47,664 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-09-30 17:56:47,664 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-09-30 17:56:47,664 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-09-30 17:56:47,664 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-30 17:56:47,675 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250930_175647
+2025-09-30 17:56:47,675 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-30 17:56:47,675 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-09-30 17:56:47,675 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-09-30 17:56:49,521 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-09-30 17:56:49,521 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-09-30 17:56:49,521 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-09-30 17:56:49,543 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-09-30 17:56:49,543 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-09-30 17:56:49,544 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-09-30 17:56:49,544 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - ================================================================================
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - ================================================================================
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - Files processed: 1
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - Files generated: 11
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - Steps completed: 7
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - Results saved to: automation_results_20250930_175649.json
+2025-09-30 17:56:49,565 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-10-02 14:30:25,393 - automation_pipeline - INFO - ================================================================================
+2025-10-02 14:30:25,393 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-10-02 14:30:25,393 - automation_pipeline - INFO - ================================================================================
+2025-10-02 14:30:25,394 - automation_pipeline - INFO - Started at: 2025-10-02 14:30:25.393091
+2025-10-02 14:30:25,394 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-10-02 14:30:25,394 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-10-02 14:30:25,394 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-10-02 14:30:25,396 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-10-02 14:30:25,396 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 14:30:25,399 - automation_pipeline - INFO - ✓ Input validation completed
+2025-10-02 14:30:25,399 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-10-02 14:30:25,400 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-10-02 14:30:25,400 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 14:30:25,400 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-10-02 14:30:25,400 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-10-02 14:30:25,429 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251002_143025
+2025-10-02 14:30:25,429 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-10-02 14:30:25,429 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-10-02 14:30:25,429 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-10-02 14:30:36,226 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-10-02 14:30:36,227 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-10-02 14:30:36,228 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-10-02 14:30:36,345 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-10-02 14:30:36,345 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-10-02 14:30:36,352 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-10-02 14:30:36,352 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-10-02 14:30:36,467 - automation_pipeline - INFO - ✓ Output validation completed
+2025-10-02 14:30:36,467 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-10-02 14:30:36,468 - automation_pipeline - INFO - ✓ Summary report generated
+2025-10-02 14:30:36,468 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-10-02 14:30:36,469 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-10-02 14:30:36,470 - automation_pipeline - INFO - ================================================================================
+2025-10-02 14:30:36,470 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-10-02 14:30:36,470 - automation_pipeline - INFO - ================================================================================
+2025-10-02 14:30:36,470 - automation_pipeline - INFO - Files processed: 1
+2025-10-02 14:30:36,470 - automation_pipeline - INFO - Files generated: 11
+2025-10-02 14:30:36,470 - automation_pipeline - INFO - Steps completed: 7
+2025-10-02 14:30:36,470 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-10-02 14:30:36,472 - automation_pipeline - INFO - Results saved to: automation_results_20251002_143036.json
+2025-10-02 14:30:36,473 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-10-02 14:31:06,351 - automation_pipeline - INFO - ================================================================================
+2025-10-02 14:31:06,352 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-10-02 14:31:06,352 - automation_pipeline - INFO - ================================================================================
+2025-10-02 14:31:06,353 - automation_pipeline - INFO - Started at: 2025-10-02 14:31:06.351739
+2025-10-02 14:31:06,354 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-10-02 14:31:06,355 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-10-02 14:31:06,355 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-10-02 14:31:06,356 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-10-02 14:31:06,356 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 14:31:06,357 - automation_pipeline - INFO - ✓ Input validation completed
+2025-10-02 14:31:06,357 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-10-02 14:31:06,358 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-10-02 14:31:06,358 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 14:31:06,358 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-10-02 14:31:06,358 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-10-02 14:31:06,384 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251002_143106
+2025-10-02 14:31:06,385 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-10-02 14:31:06,385 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-10-02 14:31:06,385 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-10-02 14:31:16,295 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-10-02 14:31:16,296 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-10-02 14:31:16,296 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-10-02 14:31:16,423 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-10-02 14:31:16,423 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-10-02 14:31:16,431 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-10-02 14:31:16,432 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-10-02 14:31:16,536 - automation_pipeline - INFO - ✓ Output validation completed
+2025-10-02 14:31:16,537 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-10-02 14:31:16,538 - automation_pipeline - INFO - ✓ Summary report generated
+2025-10-02 14:31:16,538 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-10-02 14:31:16,538 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-10-02 14:31:16,539 - automation_pipeline - INFO - ================================================================================
+2025-10-02 14:31:16,539 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-10-02 14:31:16,539 - automation_pipeline - INFO - ================================================================================
+2025-10-02 14:31:16,539 - automation_pipeline - INFO - Files processed: 1
+2025-10-02 14:31:16,539 - automation_pipeline - INFO - Files generated: 11
+2025-10-02 14:31:16,540 - automation_pipeline - INFO - Steps completed: 7
+2025-10-02 14:31:16,540 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-10-02 14:31:16,541 - automation_pipeline - INFO - Results saved to: automation_results_20251002_143116.json
+2025-10-02 14:31:16,541 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-10-02 15:02:10,245 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:02:10,246 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-10-02 15:02:10,246 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:02:10,246 - automation_pipeline - INFO - Started at: 2025-10-02 15:02:10.245312
+2025-10-02 15:02:10,246 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-10-02 15:02:10,246 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-10-02 15:02:10,246 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-10-02 15:02:10,247 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-10-02 15:02:10,247 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:02:10,247 - automation_pipeline - INFO - ✓ Input validation completed
+2025-10-02 15:02:10,248 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-10-02 15:02:10,248 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-10-02 15:02:10,248 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:02:10,248 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-10-02 15:02:10,248 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-10-02 15:02:10,266 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251002_150210
+2025-10-02 15:02:10,267 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-10-02 15:02:10,267 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-10-02 15:02:10,267 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-10-02 15:02:20,940 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-10-02 15:02:20,940 - automation_pipeline - INFO - ✓ Excel data extracted to: LLDtest_comprehensive_data.json
+2025-10-02 15:02:20,941 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-10-02 15:02:21,056 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-10-02 15:02:21,056 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-10-02 15:02:21,065 - automation_pipeline - INFO - ✓ Terraform files generated in: output_package/LLDtest_terraform
+2025-10-02 15:02:21,066 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-10-02 15:02:21,175 - automation_pipeline - INFO - ✓ Output validation completed
+2025-10-02 15:02:21,175 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-10-02 15:02:21,177 - automation_pipeline - INFO - ✓ Summary report generated
+2025-10-02 15:02:21,177 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-10-02 15:02:21,178 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-10-02 15:02:21,179 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:02:21,179 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-10-02 15:02:21,179 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:02:21,179 - automation_pipeline - INFO - Files processed: 1
+2025-10-02 15:02:21,180 - automation_pipeline - INFO - Files generated: 11
+2025-10-02 15:02:21,180 - automation_pipeline - INFO - Steps completed: 7
+2025-10-02 15:02:21,180 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-10-02 15:02:21,182 - automation_pipeline - INFO - Results saved to: automation_results_20251002_150221.json
+2025-10-02 15:02:21,182 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+2025-10-02 15:34:43,098 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:34:43,099 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:34:43,099 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:34:43,100 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:34:52,971 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:34:52,972 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:34:52,973 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:34:52,974 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:35:03,928 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-10-02 15:35:08,694 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-10-02 15:35:08,694 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-10-02 15:35:25,046 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:35:25,047 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-10-02 15:35:25,047 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:35:25,047 - automation_pipeline - INFO - Started at: 2025-10-02 15:35:25.046060
+2025-10-02 15:35:25,047 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-10-02 15:35:25,047 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-10-02 15:35:25,049 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:35:25,049 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:35:25,052 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-10-02 15:35:25,052 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:35:25,052 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:35:25,053 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-10-02 15:35:25,053 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-10-02 15:35:25,078 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251002_153525
+2025-10-02 15:35:25,079 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-10-02 15:35:25,079 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-10-02 15:35:25,079 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-10-02 15:35:35,230 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-10-02 15:35:35,237 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: LLDtest_comprehensive_data.json
+2025-10-02 15:35:35,238 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-10-02 15:35:35,352 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-10-02 15:35:35,353 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-10-02 15:35:35,361 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: output_package/LLDtest_terraform
+2025-10-02 15:35:35,361 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-10-02 15:35:35,465 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-10-02 15:35:35,465 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-10-02 15:35:35,466 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-10-02 15:35:35,466 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-10-02 15:35:35,467 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-10-02 15:35:35,467 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:35:35,467 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-10-02 15:35:35,467 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:35:35,467 - automation_pipeline - INFO - Files processed: 1
+2025-10-02 15:35:35,468 - automation_pipeline - INFO - Files generated: 11
+2025-10-02 15:35:35,468 - automation_pipeline - INFO - Steps completed: 7
+2025-10-02 15:35:35,468 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-10-02 15:35:35,469 - automation_pipeline - INFO - Results saved to: automation_results_20251002_153535.json
+2025-10-02 15:35:35,469 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-10-02 15:35:49,549 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:35:49,550 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-10-02 15:35:49,550 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:35:49,550 - automation_pipeline - INFO - Started at: 2025-10-02 15:35:49.549424
+2025-10-02 15:35:49,550 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-10-02 15:35:49,550 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-10-02 15:35:49,550 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:35:49,550 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:35:49,551 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-10-02 15:35:49,551 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:35:49,551 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:35:49,551 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-10-02 15:35:49,551 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-10-02 15:35:49,571 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251002_153549
+2025-10-02 15:35:49,571 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-10-02 15:35:49,571 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-10-02 15:35:49,572 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-10-02 15:36:01,462 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-10-02 15:36:01,463 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: LLDtest_comprehensive_data.json
+2025-10-02 15:36:01,463 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-10-02 15:36:01,584 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-10-02 15:36:01,584 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-10-02 15:36:01,592 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: output_package/LLDtest_terraform
+2025-10-02 15:36:01,593 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-10-02 15:36:01,698 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-10-02 15:36:01,698 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-10-02 15:36:01,699 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-10-02 15:36:01,699 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-10-02 15:36:01,700 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-10-02 15:36:01,700 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:36:01,700 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-10-02 15:36:01,700 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:36:01,701 - automation_pipeline - INFO - Files processed: 1
+2025-10-02 15:36:01,701 - automation_pipeline - INFO - Files generated: 11
+2025-10-02 15:36:01,701 - automation_pipeline - INFO - Steps completed: 7
+2025-10-02 15:36:01,701 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-10-02 15:36:01,702 - automation_pipeline - INFO - Results saved to: automation_results_20251002_153601.json
+2025-10-02 15:36:01,702 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-10-02 15:37:30,789 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:37:30,790 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-10-02 15:37:30,790 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:37:30,791 - automation_pipeline - INFO - Started at: 2025-10-02 15:37:30.789612
+2025-10-02 15:37:30,791 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-10-02 15:37:30,791 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-10-02 15:37:30,792 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:37:30,793 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:37:30,794 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-10-02 15:37:30,794 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:37:30,795 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:37:30,795 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-10-02 15:37:30,795 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-10-02 15:37:30,819 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251002_153730
+2025-10-02 15:37:30,821 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-10-02 15:37:30,821 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-10-02 15:37:30,821 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-10-02 15:37:41,119 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-10-02 15:37:41,120 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: LLDtest_comprehensive_data.json
+2025-10-02 15:37:41,121 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-10-02 15:37:41,232 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-10-02 15:37:41,232 - automation_pipeline - INFO - Resources: 2 VMs, 13 security rules
+2025-10-02 15:37:41,241 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: output_package/LLDtest_terraform
+2025-10-02 15:37:41,241 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-10-02 15:37:41,359 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-10-02 15:37:41,359 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-10-02 15:37:41,360 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-10-02 15:37:41,360 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-10-02 15:37:41,360 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-10-02 15:37:41,361 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:37:41,362 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-10-02 15:37:41,362 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:37:41,362 - automation_pipeline - INFO - Files processed: 1
+2025-10-02 15:37:41,362 - automation_pipeline - INFO - Files generated: 11
+2025-10-02 15:37:41,363 - automation_pipeline - INFO - Steps completed: 7
+2025-10-02 15:37:41,363 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-10-02 15:37:41,365 - automation_pipeline - INFO - Results saved to: automation_results_20251002_153741.json
+2025-10-02 15:37:41,365 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-10-02 15:56:40,566 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:56:40,567 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-10-02 15:56:40,567 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:56:40,567 - automation_pipeline - INFO - Started at: 2025-10-02 15:56:40.566593
+2025-10-02 15:56:40,567 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-10-02 15:56:40,567 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-10-02 15:56:40,568 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:56:40,568 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:56:40,568 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-10-02 15:56:40,569 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-02 15:56:40,569 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-02 15:56:40,569 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-10-02 15:56:40,569 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-10-02 15:56:40,589 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251002_155640
+2025-10-02 15:56:40,590 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-10-02 15:56:40,590 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-10-02 15:56:40,590 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-10-02 15:56:50,314 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-10-02 15:56:50,314 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: LLDtest_comprehensive_data.json
+2025-10-02 15:56:50,314 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-10-02 15:56:50,437 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-10-02 15:56:50,437 - automation_pipeline - INFO - Resources: 23 VMs, 13 security rules
+2025-10-02 15:56:50,443 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: output_package/LLDtest_terraform
+2025-10-02 15:56:50,443 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-10-02 15:56:50,526 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-10-02 15:56:50,527 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-10-02 15:56:50,527 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-10-02 15:56:50,528 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-10-02 15:56:50,529 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-10-02 15:56:50,529 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:56:50,530 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-10-02 15:56:50,530 - automation_pipeline - INFO - ================================================================================
+2025-10-02 15:56:50,530 - automation_pipeline - INFO - Files processed: 1
+2025-10-02 15:56:50,530 - automation_pipeline - INFO - Files generated: 11
+2025-10-02 15:56:50,530 - automation_pipeline - INFO - Steps completed: 7
+2025-10-02 15:56:50,531 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-10-02 15:56:50,532 - automation_pipeline - INFO - Results saved to: automation_results_20251002_155650.json
+2025-10-02 15:56:50,532 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-10-07 10:32:36,894 - automation_pipeline - INFO - ================================================================================
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - ================================================================================
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - Started at: 2025-10-07 10:32:36.894909
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-07 10:32:36,895 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-10-07 10:32:36,895 - automation_pipeline - INFO -   - LLDtest.xlsm
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-10-07 10:32:36,895 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-10-07 10:32:36,913 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251007_103236
+2025-10-07 10:32:36,913 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-10-07 10:32:36,913 - automation_pipeline - INFO - Processing file 1/1: LLDtest.xlsm
+2025-10-07 10:32:36,913 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-10-07 10:32:38,809 - automation_pipeline - INFO - JSON file created: LLDtest_comprehensive_data.json (4,849,850 bytes)
+2025-10-07 10:32:38,809 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: LLDtest_comprehensive_data.json
+2025-10-07 10:32:38,809 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-10-07 10:32:38,836 - automation_pipeline - INFO - Generated 10 Terraform files
+2025-10-07 10:32:38,836 - automation_pipeline - INFO - Resources: 23 VMs, 13 security rules
+2025-10-07 10:32:38,837 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: output_package/LLDtest_terraform
+2025-10-07 10:32:38,837 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-10-07 10:32:38,858 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-10-07 10:32:38,858 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-10-07 10:32:38,858 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-10-07 10:32:38,858 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - ================================================================================
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - ================================================================================
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - Files processed: 1
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - Files generated: 11
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - Steps completed: 7
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - Results saved to: automation_results_20251007_103238.json
+2025-10-07 10:32:38,859 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-10-07 23:01:53,287 - automation_pipeline - INFO - Found subscription in Build_ENV: subscription-dev-001
+2025-10-07 23:01:53,287 - automation_pipeline - INFO - Using subscription-based naming: subscription-dev-001_20251007_230153
+2025-10-07 23:01:53,287 - automation_pipeline - INFO - Creating dynamic output directory: output_package/subscription-dev-001_20251007_230153
+2025-10-07 23:01:53,287 - automation_pipeline - INFO - Based on subscription: subscription-dev-001
+2025-10-07 23:01:53,287 - automation_pipeline - INFO - Timestamp: 20251007_230153
+2025-10-07 23:01:53,287 - automation_pipeline - INFO - Found subscription in Build_ENV: subscription-dev-001

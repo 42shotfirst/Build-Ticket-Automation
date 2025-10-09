@@ -1,0 +1,106 @@
+{
+  "controlm_config": {
+    "job_name": "Excel_To_Terraform_Automation",
+    "description": "Automated Excel to Terraform conversion pipeline",
+    "schedule": "daily",
+    "time": "02:00",
+    "timezone": "UTC",
+    "retry_count": 3,
+    "retry_delay_minutes": 15,
+    "max_run_time_minutes": 60,
+    "notification": {
+      "on_success": true,
+      "on_failure": true,
+      "email_recipients": ["admin@company.com", "devops@company.com"]
+    }
+  },
+  "automation_config": {
+    "input": {
+      "excel_file": "LLDtest.xlsm",
+      "required_sheets": ["Resources", "NSG", "Build_ENV", "APGW", "ACR NRS", "Resource Options"],
+      "backup_original": true,
+      "validate_file_format": true
+    },
+    "processing": {
+      "extract_macros": true,
+      "extract_formulas": true,
+      "extract_comments": true,
+      "validate_data": true,
+      "skip_empty_vms": true,
+      "max_processing_time_minutes": 30
+    },
+    "output": {
+      "json_file": "comprehensive_excel_data.json",
+      "terraform_dir": "terraform_output",
+      "backup_previous": true,
+      "cleanup_temp_files": true,
+      "create_deployment_scripts": true,
+      "archive_outputs": true,
+      "archive_dir": "archives"
+    },
+    "terraform": {
+      "provider_version": "~> 3.0",
+      "default_location": "East US",
+      "default_vm_size": "Standard_D2s_v3",
+      "default_os": "Ubuntu 22.04 LTS",
+      "enable_diagnostics": true,
+      "add_deployment_scripts": true,
+      "terraform_version": ">= 1.0",
+      "validate_generated_code": true
+    },
+    "logging": {
+      "level": "INFO",
+      "file": "automation.log",
+      "max_size_mb": 50,
+      "backup_count": 10,
+      "include_timestamps": true,
+      "log_to_controlm": true
+    },
+    "notifications": {
+      "email_on_success": true,
+      "email_on_failure": true,
+      "email_recipients": ["admin@company.com", "devops@company.com"],
+      "slack_webhook": null,
+      "include_summary": true,
+      "include_file_list": true
+    },
+    "validation": {
+      "check_excel_format": true,
+      "validate_terraform_syntax": true,
+      "check_resource_limits": true,
+      "max_vms": 100,
+      "max_security_rules": 50,
+      "validate_azure_naming": true
+    },
+    "deployment": {
+      "create_deployment_script": true,
+      "deployment_script_name": "deploy.sh",
+      "include_terraform_commands": true,
+      "add_validation_steps": true,
+      "create_rollback_script": true
+    },
+    "monitoring": {
+      "enable_performance_monitoring": true,
+      "track_memory_usage": true,
+      "track_processing_time": true,
+      "generate_performance_report": true
+    }
+  },
+  "environment_specific": {
+    "dev": {
+      "terraform_dir": "terraform_dev",
+      "default_location": "East US",
+      "default_environment": "dev"
+    },
+    "staging": {
+      "terraform_dir": "terraform_staging",
+      "default_location": "East US",
+      "default_environment": "staging"
+    },
+    "prod": {
+      "terraform_dir": "terraform_prod",
+      "default_location": "East US",
+      "default_environment": "prod"
+    }
+  }
+}

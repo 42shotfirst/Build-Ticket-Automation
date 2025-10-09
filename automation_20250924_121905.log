@@ -1,0 +1,135 @@
+[0;34m2025-09-24 12:19:05 - INFO: ==========================================[0m
+[0;34m2025-09-24 12:19:05 - INFO: Excel to Terraform Automation Pipeline[0m
+[0;34m2025-09-24 12:19:05 - INFO: ==========================================[0m
+[0;34m2025-09-24 12:19:05 - INFO: Script Directory: /Users/morganreed/StudioProjects/Build Ticket Automation[0m
+[0;34m2025-09-24 12:19:05 - INFO: Config File: automation_config.json[0m
+[0;34m2025-09-24 12:19:05 - INFO: Excel File: LLDtest.xlsm[0m
+[0;34m2025-09-24 12:19:05 - INFO: Output Directory: test_automation_output[0m
+[0;34m2025-09-24 12:19:05 - INFO: Log File: automation_20250924_121905.log[0m
+[0;34m2025-09-24 12:19:05 - INFO: Python Command: python3[0m
+[0;34m2025-09-24 12:19:05 - INFO: ==========================================[0m
+[0;34m2025-09-24 12:19:05 - INFO: Python Version: 3.12.8[0m
+[0;34m2025-09-24 12:19:05 - INFO: Checking required Python packages...[0m
+[0;31m2025-09-24 12:19:05 - ERROR: Required Python packages not found. Installing...[0m
+[0;32m2025-09-24 12:19:15 - SUCCESS: Required packages installed successfully[0m
+[0;34m2025-09-24 12:19:15 - INFO: Output directory created: test_automation_output[0m
+[0;34m2025-09-24 12:19:15 - INFO: Starting automation pipeline...[0m
+[0;34m2025-09-24 12:19:15 - INFO: Executing: python3 automation_pipeline.py --config automation_config.json --excel-file LLDtest.xlsm --output-dir test_automation_output[0m
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - ================================================================================
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - ================================================================================
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - Started at: 2025-09-24 12:19:16.343589
+2025-09-24 12:19:16,343 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-09-24 12:19:16,344 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-09-24 12:19:16,344 - automation_pipeline - INFO - ✓ Input validation completed
+2025-09-24 12:19:16,344 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-09-24 12:19:16,348 - automation_pipeline - INFO - Previous outputs backed up to: backup_20250924_121916
+2025-09-24 12:19:16,348 - automation_pipeline - INFO - ✓ Previous outputs backed up
+2025-09-24 12:19:16,348 - automation_pipeline - INFO - Step 3: Extracting Excel data to JSON...
+2025-09-24 12:19:18,120 - automation_pipeline - INFO - JSON file created: comprehensive_excel_data.json (4,849,826 bytes)
+2025-09-24 12:19:18,120 - automation_pipeline - INFO - ✓ Excel data extracted to: comprehensive_excel_data.json
+2025-09-24 12:19:18,120 - automation_pipeline - INFO - Step 4: Generating Terraform files...
+2025-09-24 12:19:18,142 - automation_pipeline - INFO - Generated 6 Terraform files
+2025-09-24 12:19:18,142 - automation_pipeline - INFO - Resources: 23 VMs, 13 security rules
+2025-09-24 12:19:18,143 - automation_pipeline - INFO - ✓ Terraform files generated in: test_automation_output
+2025-09-24 12:19:18,143 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ✓ Output validation completed
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ✓ Summary report generated
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ✓ Temporary files cleaned up
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ================================================================================
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - ================================================================================
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - Files generated: 7
+2025-09-24 12:19:18,165 - automation_pipeline - INFO - Steps completed: 7
+2025-09-24 12:19:18,166 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-09-24 12:19:18,166 - automation_pipeline - INFO - Results saved to: automation_results_20250924_121918.json
+2025-09-24 12:19:18,166 - automation_pipeline - INFO - ✓ Automation completed successfully - notification sent
+================================================================================
+EXCEL TO JSON CONVERTER
+================================================================================
+Converting: LLDtest.xlsm
+
+Step 1: Extracting comprehensive Excel data...
+Starting comprehensive extraction from: LLDtest.xlsm
+Extracting sheet data...
+Found 7 sheets: ['Build_ENV', 'Resources', 'NSG', 'APGW', 'ACR NRS', 'Resource Options', 'Issue and blockers ']
+  Processing sheet: 'Build_ENV'
+    ✓ Extracted 6x10 data
+  Processing sheet: 'Resources'
+    ✓ Extracted 450x45 data
+  Processing sheet: 'NSG'
+    ✓ Extracted 23x12 data
+  Processing sheet: 'APGW'
+    ✓ Extracted 99x2 data
+  Processing sheet: 'ACR NRS'
+    ✓ Extracted 7x2 data
+  Processing sheet: 'Resource Options'
+    ✓ Extracted 49x3 data
+  Processing sheet: 'Issue and blockers '
+    ✓ Extracted 1x1 data
+Extracting macros...
+  Found VBA project files: ['xl/vbaProject.bin']
+Extracting formulas...
+  Found 16 formulas in sheet 'Resources'
+Extracting workbook properties...
+  Extracted workbook properties
+Extracting named ranges...
+  No named ranges found
+Extracting comments...
+  Error extracting comments: 'list' object has no attribute 'items'
+✓ Comprehensive extraction completed successfully
+
+Step 2: Extracting VBA macros...
+Extracting VBA macros from: LLDtest.xlsm
+  Found VBA project file
+  Detected VBA keywords: {'Sub ': 1, 'Dim ': 1, 'For ': 1}
+  Detected module types: ['Module', 'Sheet', 'Workbook', 'Form']
+  Found VBA-related files: ['xl/vbaProject.bin']
+
+Step 3: Combining all extracted data...
+
+Step 4: Exporting to JSON file: comprehensive_excel_data.json
+
+================================================================================
+CONVERSION COMPLETED SUCCESSFULLY!
+================================================================================
+Source file: LLDtest.xlsm
+Output file: comprehensive_excel_data.json
+Output size: 4,849,826 bytes
+
+Data extracted:
+  • Sheets processed: 7
+  • Tables extracted: 30
+  • Key-value pairs: 296
+  • Formulas found: 16
+  • VBA macros: Yes
+  • Named ranges: 1
+  • Comments: 0
+  • VBA project size: 24,576 bytes
+
+The JSON file contains ALL data from your Excel file including:
+  • Raw cell data from all sheets
+  • Structured tables and key-value pairs
+  • VBA macro information and detected code patterns
+  • Formulas and calculated values
+  • Workbook properties and metadata
+  • Named ranges and data validation rules
+  • Comments and formatting information
+================================================================================
+
+✓ Automation completed successfully in 1.82 seconds
+Generated 7 files
+[0;32m2025-09-24 12:19:18 - SUCCESS: Automation pipeline completed successfully[0m
+[0;32m2025-09-24 12:19:18 - SUCCESS: Generated        5 Terraform files in test_automation_output[0m
+[0;34m2025-09-24 12:19:18 - INFO: Generated files:[0m
+[0;34m2025-09-24 12:19:18 - INFO:   - outputs.tf[0m
+[0;34m2025-09-24 12:19:18 - INFO:   - main.tf[0m
+[0;34m2025-09-24 12:19:18 - INFO:   - terraform.tfvars[0m
+[0;34m2025-09-24 12:19:18 - INFO:   - README.md[0m
+[0;34m2025-09-24 12:19:18 - INFO:   - variables.tf[0m
+[0;34m2025-09-24 12:19:18 - INFO:   - provider.tf[0m
+[0;34m2025-09-24 12:19:18 - INFO: Creating deployment script...[0m
+[0;32m2025-09-24 12:19:18 - SUCCESS: Deployment script created: test_automation_output/deploy.sh[0m
+[0;34m2025-09-24 12:19:18 - INFO: Cleaning up...[0m

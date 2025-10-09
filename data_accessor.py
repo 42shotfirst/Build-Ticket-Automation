@@ -183,28 +183,50 @@ class ExcelDataAccessor:
         
         return results
     
-    def _extract_actual_values_from_tables(self, sheet_name: str) -> Dict[str, str]:
-        """Extract actual values from tables instead of variable references."""
+    def _extract_actual_values_from_tables(self, sheet_name: str, value_column_index: int = 1) -> Dict[str, str]:
+        """Extract actual values from tables instead of variable references.
+        
+        Args:
+            sheet_name: Name of the sheet to extract from
+            value_column_index: Which column contains the actual value (0-indexed after field name)
+                               1 = second column (default for Resources)
+                               2 = third column (for Build_ENV)
+        """
         actual_values = {}
         sheet_data = self.sheets.get(sheet_name, {})
         tables = sheet_data.get('tables', [])
         
+        # List of values to skip (headers, placeholders, etc.)
+        skip_values = {
+            'Value', 'Existing', 'Validation', 'Terraform Variable', 'SNOW form', 
+            'User', 'EA', 'CMDB', 'Cloud Engineering', 'Azure Client Managed', 
+            'Azure CMS Managed', 'OnPrem', 'AWS Client Managed', 'YES', 'NO', 
+            'ASR', 'GRS Backup/Restore', 'Warm/Standby', 'Cold Rebuild', 
+            'User/CMDB', 'CMDB APP NAME', 'SNOW team after request is complete?', 
+            'User/EA', 'DEV', 'UAT', 'QA', 'PROD', 'DR', 'Platinum', 'Gold', 
+            'Silver', 'Bronze', 'Iron', 'CMDB?', 'MUST BE A NUMBER', 
+            'Commercial', 'Consumer Related', 'Corporate', 'Corporate Support',
+            'Overview'
+        }
+        
         for table in tables:
             data = table.get('data', [])
             for row in data:
-                # Look for the pattern where the first column is a field name and second column is the value
+                # Look for the pattern where the first column is a field name
                 row_items = list(row.items())
-                if len(row_items) >= 2:
-                    field_name = str(row_items[0][1])  # First value (field name)
-                    field_value = str(row_items[1][1])  # Second value (actual value)
+                
+                # Need at least value_column_index + 1 columns
+                if len(row_items) >= value_column_index + 1:
+                    field_name = str(row_items[0][1])  # First column is field name
+                    field_value = str(row_items[value_column_index][1])  # Value at specified index (0-based)
                     
-                    # Skip if it's a header row or invalid data
+                    # Skip if it's a header row, empty, or invalid data
                     if (field_name and field_value and 
-                        field_name != 'Terraform Variable' and 
-                        field_value != 'Terraform Variable' and
+                        str(field_value).strip() and
+                        field_name not in skip_values and 
+                        field_value not in skip_values and
                         not field_value.startswith('wab:') and
-                        not field_value.startswith('vm_list') and
-                        field_value not in ['Value', 'Existing', 'Validation', 'SNOW form', 'User', 'EA', 'CMDB', 'Cloud Engineering', 'Azure Client Managed', 'Azure CMS Managed', 'OnPrem', 'AWS Client Managed', 'YES', 'NO', 'ASR', 'GRS Backup/Restore', 'Warm/Standby', 'Cold Rebuild', 'User/CMDB', 'CMDB APP NAME', 'SNOW team after request is complete?', 'User/EA', 'DEV', 'UAT', 'QA', 'PROD', 'DR', 'Platinum', 'Gold', 'Silver', 'Bronze', 'Iron', 'CMDB?', 'MUST BE A NUMBER', 'Commercial', 'Consumer Related', 'Corporate', 'Corporate Support']):
+                        not field_value.startswith('vm_list')):
                         
                         actual_values[field_name] = field_value
         
@@ -284,7 +306,10 @@ class ExcelDataAccessor:
         key_value_pairs = resources_sheet.get('key_value_pairs', {})
         
         # Extract actual values from tables instead of key-value pairs
-        actual_values = self._extract_actual_values_from_tables('Resources')
+        # For Resources sheet, values are in column 2 (index 1)
+        actual_values = self._extract_actual_values_from_tables('Resources', value_column_index=1)
+        
+        print(f"  Extracted {len(actual_values)} actual values from Resources tables")
         
         # Map actual values to project info
         project_mapping = {
@@ -299,6 +324,7 @@ class ExcelDataAccessor:
             'application name': 'cmdb_app_name',
             'environment': 'environment',
             'choose node size': 'vm_size',
+            'os image': 'os_image',
             'os': 'os_image',
             'role': 'role',
             'patch optin': 'patch_optin'
@@ -309,6 +335,7 @@ class ExcelDataAccessor:
             for search_key, terraform_key in project_mapping.items():
                 if search_key in key_lower:
                     terraform_data['project_info'][terraform_key] = value
+                    print(f"    Mapped {key} -> {terraform_key}: {value}")
                     break
         
         # COMPREHENSIVE VM EXTRACTION - Extract ALL VM data from Resources sheet
@@ -319,18 +346,33 @@ class ExcelDataAccessor:
         resources_tables = terraform_data['all_tables'].get('Resources', [])
         vm_instances = []
         
-        # Look for VM-related tables
+        # Look for VM-related tables with improved detection
         for i, table in enumerate(resources_tables):
             headers = table.get('headers', [])
             data = table.get('data', [])
             
-            # Check if this table contains VM data
-            vm_keywords = ['hostname', 'vm', 'server', 'machine', 'instance', 'node', 'compute']
+            # Expanded VM keywords for better detection
+            vm_keywords = ['hostname', 'vm', 'server', 'machine', 'instance', 'node', 'compute', 'sku', 'recommended sku']
+            
+            # Check if this table contains VM data by looking at headers
             is_vm_table = any(any(keyword in str(header).lower() for keyword in vm_keywords) for header in headers)
             
-            if is_vm_table:
-                print(f"  Found VM table {i+1}: {len(data)} entries")
-                print(f"    Headers: {headers[:5]}...")  # Show first 5 headers
+            # Also check if table has sufficient columns that look like VM config
+            has_vm_like_columns = len(headers) >= 5 and len(data) > 0
+            
+            # Check data content for VM-like patterns
+            has_vm_data = False
+            if data:
+                first_row = data[0]
+                # Look for common VM fields in the data
+                for key in first_row.keys():
+                    if any(kw in str(key).lower() for kw in ['owner', 'recommended', 'os', 'disk', 'image']):
+                        has_vm_data = True
+                        break
+            
+            if (is_vm_table or has_vm_data) and has_vm_like_columns:
+                print(f"  Found potential VM table {i+1}: {len(data)} entries")
+                print(f"    Headers ({len(headers)}): {headers[:8] if len(headers) > 8 else headers}")
                 
                 # Process each VM entry
                 for j, row in enumerate(data):
@@ -339,10 +381,10 @@ class ExcelDataAccessor:
                         if value and str(value).strip():  # Only include non-empty values
                             vm_instance[key] = value
                     
-                    if vm_instance:  # Only add if we have data
+                    if vm_instance and len(vm_instance) >= 3:  # Only add if we have meaningful data
                         vm_instances.append(vm_instance)
-                        if j < 3:  # Show first 3 VMs
-                            print(f"    VM {j+1}: {list(vm_instance.keys())[:5]}...")
+                        if j < 2:  # Show first 2 VMs
+                            print(f"    VM {j+1} fields: {list(vm_instance.keys())[:6]}...")
         
         if vm_instances:
             terraform_data['vm_instances'] = vm_instances
@@ -350,7 +392,7 @@ class ExcelDataAccessor:
         else:
             # Fallback: Create VM instances from configuration
             print("  No explicit VM tables found, creating from configuration...")
-            terraform_data['vm_instances'] = self._create_vm_instances_from_config(key_value_pairs)
+            terraform_data['vm_instances'] = self._create_vm_instances_from_config(actual_values)
             print(f"  Created {len(terraform_data['vm_instances'])} VMs from configuration")
         
         print()
@@ -466,11 +508,20 @@ class ExcelDataAccessor:
         print(f"  Found {len(build_env_tables)} Build Environment tables")
         print(f"  Found {len(build_env_kv_pairs)} Build Environment key-value pairs")
         
+        # Extract actual values from Build_ENV tables (values are in column 3, index 2)
+        build_env_actual_values = self._extract_actual_values_from_tables('Build_ENV', value_column_index=2)
+        print(f"  Extracted {len(build_env_actual_values)} actual values from Build_ENV tables")
+        
+        # Show extracted values
+        for key, value in build_env_actual_values.items():
+            print(f"    {key}: {value}")
+        
         terraform_data['build_environment'] = {
-            'key_value_pairs': build_env_kv_pairs,
+            'key_value_pairs': build_env_actual_values,  # Use extracted actual values
+            'raw_key_value_pairs': build_env_kv_pairs,  # Keep original for reference
             'tables': build_env_tables
         }
-        print(f"  Total build environment items: {len(build_env_kv_pairs) + sum(len(t.get('data', [])) for t in build_env_tables)}")
+        print(f"  Total build environment items: {len(build_env_actual_values)}")
         print()
         
         # COMPREHENSIVE NAMING PATTERNS EXTRACTION
@@ -533,13 +584,17 @@ class ExcelDataAccessor:
         
         return terraform_data
     
-    def _create_vm_instances_from_config(self, key_value_pairs: Dict[str, str]) -> List[Dict[str, Any]]:
-        """Create VM instances from configuration data when no VM table is found."""
+    def _create_vm_instances_from_config(self, actual_values: Dict[str, str]) -> List[Dict[str, Any]]:
+        """Create VM instances from configuration data when no VM table is found.
+        
+        Args:
+            actual_values: Dictionary of actual values extracted from tables
+        """
         vm_instances = []
         
         # Extract VM count from configuration - look for common patterns
         vm_count = 2  # Default to 2 VMs for redundancy
-        for key, value in key_value_pairs.items():
+        for key, value in actual_values.items():
             key_lower = key.lower()
             if any(term in key_lower for term in ['vm', 'server', 'instance']) and any(term in key_lower for term in ['count', 'number', 'total']):
                 try:
@@ -547,9 +602,6 @@ class ExcelDataAccessor:
                     break
                 except (ValueError, TypeError):
                     pass
-        
-        # Get actual values from tables instead of key-value pairs
-        actual_values = self._extract_actual_values_from_tables('Resources')
         
         # Try to get actual values from the Excel file
         app_name = actual_values.get('Abbreviated App Name', 'myapp')

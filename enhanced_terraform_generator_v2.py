@@ -611,7 +611,10 @@ variable "resource_specific_tags" {{
         project_name = project_info.get('project_name', 'default-project')
         app_name = project_info.get('application_name', 'default-app')
         environment = project_info.get('environment', 'DEV')
-        location = build_env.get('key_value_pairs', {}).get('Location', 'WEST US 3')
+        
+        # Get location from build_environment (now properly extracted)
+        location = build_env.get('key_value_pairs', {}).get('Location', 
+                   build_env.get('key_value_pairs', {}).get('location', 'WEST US 3'))
         
         # Generate VM list
         vm_list = self._generate_vm_list_for_tfvars()
@@ -675,18 +678,32 @@ common_tags = {{
         return tfvars
     
     def _generate_vm_list_for_tfvars(self) -> str:
-        """Generate VM list for tfvars file."""
+        """Generate VM list for tfvars file with actual values from Excel."""
         
         vm_instances = self.terraform_data.get('vm_instances', [])
+        project_info = self.terraform_data.get('project_info', {})
         
         if not vm_instances:
             return "{}"
         
         vm_entries = []
-        for i, vm in enumerate(vm_instances[:5]):  # Limit to first 5 VMs for example
+        for i, vm in enumerate(vm_instances):  # Process all VMs
             vm_name = self._extract_vm_name(vm, i)
             vm_size = self._extract_vm_size(vm)
             os_type = self._extract_os_type(vm)
+            os_disk_size = self._extract_vm_disk_size(vm)
+            os_disk_type = self._extract_vm_disk_type(vm)
+            
+            # Extract additional fields from VM data
+            role = vm.get('Role', project_info.get('role', 'Application'))
+            patch_optin = vm.get('Patch Optin', project_info.get('patch_optin', 'NO'))
+            snow_item = vm.get('Service Now Ticket', project_info.get('service_now_ticket', 'RITM000000'))
+            
+            # Determine image URN based on OS type
+            if os_type == "windows":
+                image_urn = "MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest"
+            else:
+                image_urn = "Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest"
             
             vm_entry = f'''  vm{i+1} = {{
     name              = "{vm_name}"
@@ -694,20 +711,20 @@ common_tags = {{
     zone              = null
     image_os          = "{os_type}"
     marketplace_image = false
-    image_urn     = "MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest"
-    ip_allocation = "Dynamic"
-    identity_type = "SystemAssigned, UserAssigned"
-    os_disk_size  = 128
-    os_disk_type  = "Standard_LRS"
-    os_disk_tier  = null
-    data_disk_sizes = [50, 50]
-    data_disk_type  = "Standard_LRS"
-    snet_key      = "snet1"
-    asg_key       = "asg_nic"
+    image_urn         = "{image_urn}"
+    ip_allocation     = "Dynamic"
+    identity_type     = "SystemAssigned, UserAssigned"
+    os_disk_size      = {os_disk_size}
+    os_disk_type      = "{os_disk_type}"
+    os_disk_tier      = null
+    data_disk_sizes   = [50, 50]
+    data_disk_type    = "Standard_LRS"
+    snet_key          = "snet1"
+    asg_key           = "asg_nic"
     tags = {{
-      "role"        = "Test",
-      "patch-optin" = "NO",
-      "snow-item"   = "RITM000000"
+      "role"        = "{role}",
+      "patch-optin" = "{patch_optin}",
+      "snow-item"   = "{snow_item}"
     }}
   }}'''
             vm_entries.append(vm_entry)
@@ -1266,34 +1283,91 @@ Thumbs.db
         name_fields = ['Hostname', 'hostname', 'VM Name', 'vm_name', 'Server Name', 'server_name', 'Name', 'name']
         
         for field in name_fields:
-            if field in vm and vm[field]:
-                return str(vm[field]).strip()
+            if field in vm and vm[field] and str(vm[field]).strip():
+                # Clean and return the name
+                name = str(vm[field]).strip()
+                # Remove any non-alphanumeric characters except hyphens and underscores
+                import re
+                name = re.sub(r'[^\w\-]', '-', name)
+                return name
         
-        return f"vm-{index+1:03d}"
+        # If no name found, use project info to create one
+        project_info = self.terraform_data.get('project_info', {})
+        app_name = project_info.get('application_name', 'vm')
+        return f"{app_name}-{index+1:02d}"
     
     def _extract_vm_size(self, vm: Dict[str, Any]) -> str:
         """Extract VM size from various possible fields."""
-        size_fields = ['Recommended SKU', 'SKU', 'Size', 'size', 'VM Size', 'vm_size', 'Instance Type', 'instance_type']
+        size_fields = ['Recommended SKU', 'SKU', 'Size', 'size', 'VM Size', 'vm_size', 'Instance Type', 'instance_type', 'Choose Node Size']
         
         for field in size_fields:
-            if field in vm and vm[field]:
-                return str(vm[field]).strip()
+            if field in vm and vm[field] and str(vm[field]).strip():
+                size = str(vm[field]).strip()
+                # Validate it looks like an Azure SKU
+                if 'Standard_' in size or 'Basic_' in size:
+                    return size
+        
+        # Try project_info as fallback
+        project_info = self.terraform_data.get('project_info', {})
+        vm_size = project_info.get('vm_size')
+        if vm_size and str(vm_size).strip():
+            return str(vm_size).strip()
         
         return "Standard_B2s_v2"
     
     def _extract_os_type(self, vm: Dict[str, Any]) -> str:
         """Extract OS type from various possible fields."""
-        os_fields = ['OS Image*', 'OS Image', 'os_image', 'Image', 'image', 'OS', 'os']
+        os_fields = ['OS Image*', 'OS Image', 'os_image', 'Image', 'image', 'OS', 'os', 'Operating System']
         
         for field in os_fields:
-            if field in vm and vm[field]:
+            if field in vm and vm[field] and str(vm[field]).strip():
                 os_value = str(vm[field]).strip().lower()
-                if 'windows' in os_value:
+                if 'windows' in os_value or 'win' in os_value:
                     return "windows"
-                elif 'linux' in os_value or 'ubuntu' in os_value:
+                elif 'linux' in os_value or 'ubuntu' in os_value or 'rhel' in os_value or 'centos' in os_value:
                     return "linux"
         
+        # Try project_info as fallback
+        project_info = self.terraform_data.get('project_info', {})
+        os_image = project_info.get('os_image')
+        if os_image and str(os_image).strip():
+            os_value = str(os_image).strip().lower()
+            if 'windows' in os_value or 'win' in os_value:
+                return "windows"
+            elif 'linux' in os_value or 'ubuntu' in os_value:
+                return "linux"
+        
         return "windows"  # Default to windows
+    
+    def _extract_vm_disk_size(self, vm: Dict[str, Any]) -> int:
+        """Extract OS disk size from VM data."""
+        disk_fields = ['OS disk size', 'os_disk_size', 'Disk Size', 'disk_size']
+        
+        for field in disk_fields:
+            if field in vm and vm[field]:
+                try:
+                    size = str(vm[field]).strip()
+                    # Extract numeric value
+                    import re
+                    match = re.search(r'(\d+)', size)
+                    if match:
+                        return int(match.group(1))
+                except (ValueError, TypeError):
+                    pass
+        
+        return 128  # Default
+    
+    def _extract_vm_disk_type(self, vm: Dict[str, Any]) -> str:
+        """Extract OS disk type from VM data."""
+        type_fields = ['OS disk type', 'os_disk_type', 'Disk Type', 'disk_type']
+        
+        for field in type_fields:
+            if field in vm and vm[field] and str(vm[field]).strip():
+                disk_type = str(vm[field]).strip()
+                if '_LRS' in disk_type or '_ZRS' in disk_type:
+                    return disk_type
+        
+        return "Standard_LRS"  # Default
     
     def generate_summary(self) -> Dict[str, Any]:
         """Generate a summary of what will be created."""

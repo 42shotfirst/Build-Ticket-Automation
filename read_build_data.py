@@ -296,10 +296,15 @@ def read_build_data() -> Optional[Dict[str, Any]]:
     """
     import config
     
-    print(f"Reading comprehensive data from '{config.EXCEL_FILE_PATH}'...")
+    excel_file = config.get_excel_file_path()
+    if not excel_file:
+        print(f"ERROR: No Excel file found in '{config.EXCEL_INPUT_DIRECTORY}'")
+        return None
+    
+    print(f"Reading comprehensive data from '{excel_file}'...")
     
     # Read all sheets comprehensively
-    all_sheets_data = read_all_sheets_comprehensive(config.EXCEL_FILE_PATH)
+    all_sheets_data = read_all_sheets_comprehensive(excel_file)
     
     if not all_sheets_data:
         print("Failed to read any data from Excel file.")
@@ -396,8 +401,13 @@ if __name__ == '__main__':
     
     import config
     
+    excel_file = config.get_excel_file_path()
+    if not excel_file:
+        print(f"ERROR: No Excel file found in '{config.EXCEL_INPUT_DIRECTORY}'")
+        sys.exit(1)
+    
     # Read all data comprehensively
-    all_data = read_all_sheets_comprehensive(config.EXCEL_FILE_PATH)
+    all_data = read_all_sheets_comprehensive(excel_file)
     
     if all_data:
         print(f"\nSUCCESS: Successfully read data from {len(all_data)} sheets")

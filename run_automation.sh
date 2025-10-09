@@ -1,221 +1,142 @@
 #!/bin/bash
 # Excel to Terraform Automation Runner
-# Designed for Control-M and other external schedulers
-# Usage: ./run_automation.sh [config_file] [excel_file] [output_dir]
+# designed for Control-M and other external schedulers
+# usage: ./run_automation.sh [config_file] [excel_file] [output_dir]
 
-set -e  # Exit on any error
+set -e
 
-# Configuration
+# config
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="${1:-automation_config.json}"
-EXCEL_FILE="${2:-LLDtest.xlsm}"
-OUTPUT_DIR="${3:-terraform_output}"
+EXCEL_FILE="${2:-}"
+OUTPUT_DIR="${3:-}"
 LOG_FILE="automation_$(date +%Y%m%d_%H%M%S).log"
 PYTHON_CMD="python3"
 
-# Colors for output
+# colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Function to log with timestamp
+# logging functions
 log() {
     echo -e "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
 }
 
-# Function to log errors
 log_error() {
     echo -e "${RED}$(date '+%Y-%m-%d %H:%M:%S') - ERROR: $1${NC}" | tee -a "$LOG_FILE"
 }
 
-# Function to log success
 log_success() {
     echo -e "${GREEN}$(date '+%Y-%m-%d %H:%M:%S') - SUCCESS: $1${NC}" | tee -a "$LOG_FILE"
 }
 
-# Function to log warnings
 log_warning() {
     echo -e "${YELLOW}$(date '+%Y-%m-%d %H:%M:%S') - WARNING: $1${NC}" | tee -a "$LOG_FILE"
 }
 
-# Function to log info
 log_info() {
     echo -e "${BLUE}$(date '+%Y-%m-%d %H:%M:%S') - INFO: $1${NC}" | tee -a "$LOG_FILE"
 }
 
-# Main execution function
+# main execution
 main() {
     log_info "=========================================="
-    log_info "Excel to Terraform Automation Pipeline"
+    log_info "Excel to Terraform Automation (Control-M)"
     log_info "=========================================="
-    log_info "Script Directory: $SCRIPT_DIR"
-    log_info "Config File: $CONFIG_FILE"
-    log_info "Excel File: $EXCEL_FILE"
-    log_info "Output Directory: $OUTPUT_DIR"
-    log_info "Log File: $LOG_FILE"
-    log_info "Python Command: $PYTHON_CMD"
+    log_info "Script Dir: $SCRIPT_DIR"
+    log_info "Config: $CONFIG_FILE"
+    log_info "Log: $LOG_FILE"
+    log_info "Python: $PYTHON_CMD"
     log_info "=========================================="
     
-    # Change to script directory
     cd "$SCRIPT_DIR"
     
-    # Check if Python is available
+    # check python
     if ! command -v "$PYTHON_CMD" &> /dev/null; then
-        log_error "Python3 not found. Please install Python 3.7 or higher."
+        log_error "Python3 not found"
         exit 1
     fi
     
-    # Check Python version
     PYTHON_VERSION=$($PYTHON_CMD --version 2>&1 | cut -d' ' -f2)
     log_info "Python Version: $PYTHON_VERSION"
     
-    # Check if required packages are installed
-    log_info "Checking required Python packages..."
+    # check packages
+    log_info "Checking Python packages..."
     if ! $PYTHON_CMD -c "import pandas, openpyxl" 2>/dev/null; then
-        log_error "Required Python packages not found. Installing..."
+        log_error "Required packages not found"
+        log_info "Installing: pandas, openpyxl"
         $PYTHON_CMD -m pip install pandas openpyxl
         if [ $? -ne 0 ]; then
-            log_error "Failed to install required packages"
+            log_error "Failed to install packages"
             exit 1
         fi
-        log_success "Required packages installed successfully"
+        log_success "Packages installed"
     else
-        log_success "Required packages are available"
+        log_success "Packages available"
     fi
     
-    # Check if Excel file exists
-    if [ ! -f "$EXCEL_FILE" ]; then
-        log_error "Excel file not found: $EXCEL_FILE"
-        exit 1
-    fi
+    # build command for main.py
+    CMD="$PYTHON_CMD main.py"
     
-    # Check if config file exists
-    if [ ! -f "$CONFIG_FILE" ]; then
-        log_warning "Config file not found: $CONFIG_FILE. Using defaults."
-        CONFIG_FILE=""
-    fi
-    
-    # Create output directory
-    mkdir -p "$OUTPUT_DIR"
-    log_info "Output directory created: $OUTPUT_DIR"
-    
-    # Run the automation pipeline
-    log_info "Starting automation pipeline..."
-    
-    # Build command
-    CMD="$PYTHON_CMD automation_pipeline.py"
-    if [ -n "$CONFIG_FILE" ]; then
+    if [ -n "$CONFIG_FILE" ] && [ -f "$CONFIG_FILE" ]; then
         CMD="$CMD --config $CONFIG_FILE"
     fi
-    CMD="$CMD --excel-file $EXCEL_FILE --output-dir $OUTPUT_DIR"
+    
+    if [ -n "$EXCEL_FILE" ]; then
+        CMD="$CMD --excel-file $EXCEL_FILE"
+    fi
+    
+    if [ -n "$OUTPUT_DIR" ]; then
+        CMD="$CMD --output-dir $OUTPUT_DIR"
+    fi
     
     log_info "Executing: $CMD"
+    log_info "=========================================="
     
-    # Execute the command and capture output
+    # run main.py and capture exit code
     if $CMD 2>&1 | tee -a "$LOG_FILE"; then
-        log_success "Automation pipeline completed successfully"
+        EXIT_CODE=${PIPESTATUS[0]}
         
-        # Check if output files were created
-        if [ -d "$OUTPUT_DIR" ] && [ "$(ls -A $OUTPUT_DIR 2>/dev/null)" ]; then
-            TERRAFORM_FILES=$(find "$OUTPUT_DIR" -name "*.tf" -o -name "*.tfvars" | wc -l)
-            log_success "Generated $TERRAFORM_FILES Terraform files in $OUTPUT_DIR"
+        if [ $EXIT_CODE -eq 0 ]; then
+            log_success "Automation completed successfully"
             
-            # List generated files
-            log_info "Generated files:"
-            find "$OUTPUT_DIR" -name "*.tf" -o -name "*.tfvars" -o -name "*.md" | while read file; do
-                log_info "  - $(basename "$file")"
-            done
-            
-            # Create deployment script if requested
-            if [ -f "automation_config.json" ] && grep -q '"create_deployment_script": true' automation_config.json; then
-                create_deployment_script
+            # check for generated files
+            if [ -d "output_package" ]; then
+                TERRAFORM_DIRS=$(find output_package -mindepth 1 -maxdepth 1 -type d | wc -l)
+                log_info "Generated $TERRAFORM_DIRS output folder(s)"
+                
+                # list output directories
+                find output_package -mindepth 1 -maxdepth 1 -type d | while read dir; do
+                    log_info "  - $(basename "$dir")"
+                done
             fi
             
+            log_info "Log saved to: $LOG_FILE"
+            exit 0
         else
-            log_warning "No Terraform files found in output directory"
+            log_error "Automation failed (exit code: $EXIT_CODE)"
+            log_info "Check log for details: $LOG_FILE"
+            exit $EXIT_CODE
         fi
-        
-        # Exit with success
-        exit 0
-        
     else
-        log_error "Automation pipeline failed"
+        log_error "Automation failed"
+        log_info "Check log for details: $LOG_FILE"
         exit 2
     fi
 }
 
-# Function to create deployment script
-create_deployment_script() {
-    log_info "Creating deployment script..."
-    
-    DEPLOY_SCRIPT="$OUTPUT_DIR/deploy.sh"
-    cat > "$DEPLOY_SCRIPT" << 'EOF'
-#!/bin/bash
-# Terraform Deployment Script
-# Generated by Excel to Terraform Automation Pipeline
-
-set -e
-
-echo "=========================================="
-echo "Terraform Infrastructure Deployment"
-echo "=========================================="
-
-# Check if terraform is installed
-if ! command -v terraform &> /dev/null; then
-    echo "ERROR: Terraform not found. Please install Terraform."
-    exit 1
-fi
-
-echo "Terraform version: $(terraform --version)"
-
-# Initialize Terraform
-echo "Initializing Terraform..."
-terraform init
-
-# Validate configuration
-echo "Validating Terraform configuration..."
-terraform validate
-
-# Plan deployment
-echo "Creating deployment plan..."
-terraform plan -out=tfplan
-
-# Show plan summary
-echo "Deployment plan created. Review the plan above."
-echo ""
-echo "To deploy the infrastructure, run:"
-echo "  terraform apply tfplan"
-echo ""
-echo "To destroy the infrastructure, run:"
-echo "  terraform destroy"
-echo ""
-
-# Ask for confirmation
-read -p "Do you want to proceed with deployment? (y/N): " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "Deploying infrastructure..."
-    terraform apply tfplan
-    echo "Deployment completed successfully!"
-else
-    echo "Deployment cancelled."
-fi
-EOF
-    
-    chmod +x "$DEPLOY_SCRIPT"
-    log_success "Deployment script created: $DEPLOY_SCRIPT"
-}
-
-# Function to handle cleanup on exit
+# cleanup handler
 cleanup() {
-    log_info "Cleaning up..."
-    # Add any cleanup tasks here
+    if [ $? -ne 0 ]; then
+        log_warning "Script terminated with errors"
+    fi
 }
 
-# Set up signal handlers
+# signal handlers
 trap cleanup EXIT INT TERM
 
-# Run main function
+# run
 main "$@"

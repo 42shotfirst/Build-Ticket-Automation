@@ -28,7 +28,7 @@ def create_terraform_json(data: Dict[str, Any], output_filename: str = "terrafor
             # Metadata section (if enabled in config)
             "metadata": {
                 "generated_at": current_time,
-                "source_file": config.EXCEL_FILE_PATH,
+                "source_file": config.get_excel_file_path() or "sourcefiles",
                 "generator_version": "1.0.0",
                 "project_name": data.get('project_name', 'Unknown Project'),
                 "application_name": data.get('application_name', 'Unknown Application')

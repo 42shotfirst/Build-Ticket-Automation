@@ -8,8 +8,8 @@ Contains all configuration settings for the Excel to JSON conversion process.
 import os
 
 # paths
-EXCEL_FILE_PATH = None  # Will be determined from sourcefiles directory
 EXCEL_INPUT_DIRECTORY = "sourcefiles"  # Directory containing Excel files to process
+EXCEL_FILE_PATH = None  # Deprecated - use EXCEL_INPUT_DIRECTORY instead (kept for backward compatibility)
 TERRAFORM_JSON_PATH = "terraform_variables.json"  # Output path for Terraform JSON
 
 # options
@@ -65,6 +65,21 @@ REQUIRED_OVERVIEW_FIELDS = [
     "application_name", 
     "app_owner"
 ]
+
+def get_excel_file_path() -> str:
+    """Get Excel file path - either from EXCEL_FILE_PATH or first file in EXCEL_INPUT_DIRECTORY."""
+    if EXCEL_FILE_PATH and os.path.exists(EXCEL_FILE_PATH):
+        return EXCEL_FILE_PATH
+    
+    # find first Excel file in input directory
+    if os.path.exists(EXCEL_INPUT_DIRECTORY):
+        import glob
+        pattern = os.path.join(EXCEL_INPUT_DIRECTORY, "*.xls*")
+        excel_files = [f for f in glob.glob(pattern) if os.path.isfile(f) and not os.path.basename(f).startswith('~$')]
+        if excel_files:
+            return excel_files[0]
+    
+    return None
 
 def normalize_resource_name(name: str) -> str:
     """

@@ -16,7 +16,7 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional
 import traceback
 
-# Import our modules
+# imports
 from excel_to_json_converter import convert_excel_to_json
 from data_accessor import ExcelDataAccessor
 from enhanced_terraform_generator import EnhancedTerraformGenerator

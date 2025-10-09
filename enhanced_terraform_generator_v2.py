@@ -34,7 +34,7 @@ class EnhancedTerraformGeneratorV2:
     def generate_terraform_files(self, output_dir: str = "output_package") -> Dict[str, str]:
         """Generate complete deployment package following module.md patterns."""
         
-        # Create output directory structure
+        # setup output dirs
         os.makedirs(output_dir, exist_ok=True)
         os.makedirs(os.path.join(output_dir, "scripts"), exist_ok=True)
         os.makedirs(os.path.join(output_dir, "docs"), exist_ok=True)
@@ -178,21 +178,21 @@ module "base-vm" {{
         
         generated_files = {}
         
-        # Generate variables.tf
+        # variables.tf
         variables_tf = self._generate_variables_tf()
         variables_path = os.path.join(output_dir, "variables.tf")
         with open(variables_path, 'w', encoding='utf-8') as f:
             f.write(variables_tf)
         generated_files['variables.tf'] = variables_path
         
-        # Generate terraform.tfvars
+        # tfvars
         tfvars = self._generate_tfvars()
         tfvars_path = os.path.join(output_dir, "terraform.tfvars")
         with open(tfvars_path, 'w', encoding='utf-8') as f:
             f.write(tfvars)
         generated_files['terraform.tfvars'] = tfvars_path
         
-        # Generate outputs.tf
+        # outputs.tf
         outputs_tf = self._generate_outputs_tf()
         outputs_path = os.path.join(output_dir, "outputs.tf")
         with open(outputs_path, 'w', encoding='utf-8') as f:
@@ -1110,14 +1110,14 @@ echo "=========================================="
         
         generated_files = {}
         
-        # Generate README.md
+        # readme
         readme = self._generate_readme()
         readme_path = os.path.join(output_dir, "README.md")
         with open(readme_path, 'w', encoding='utf-8') as f:
             f.write(readme)
         generated_files['README.md'] = readme_path
         
-        # Generate .gitignore
+        # gitignore
         gitignore = self._generate_gitignore()
         gitignore_path = os.path.join(output_dir, ".gitignore")
         with open(gitignore_path, 'w', encoding='utf-8') as f:

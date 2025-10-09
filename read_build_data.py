@@ -40,16 +40,16 @@ def read_all_sheets_comprehensive(file_path: str) -> Dict[str, Any]:
                 sheet_data = read_sheet_comprehensive(excel_file, sheet_name, file_path)
                 if sheet_data:
                     all_data[sheet_name] = sheet_data
-                    print(f"  ✓ Successfully processed '{sheet_name}' - {len(sheet_data)} data points")
+                    print(f"  SUCCESS: Successfully processed '{sheet_name}' - {len(sheet_data)} data points")
                 else:
-                    print(f"  ⚠ '{sheet_name}' appears to be empty or unreadable")
+                    print(f"  WARNING: '{sheet_name}' appears to be empty or unreadable")
                     
             except Exception as e:
-                print(f"  ✗ Error reading sheet '{sheet_name}': {e}")
+                print(f"  ERROR: Error reading sheet '{sheet_name}': {e}")
                 continue
         
         excel_file.close()
-        print(f"\n✓ Completed processing all sheets")
+        print(f"\nSUCCESS: Completed processing all sheets")
         return all_data
         
     except Exception as e:
@@ -383,7 +383,7 @@ def export_comprehensive_data(all_sheets_data: Dict[str, Any], output_file: str 
     try:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(all_sheets_data, f, indent=2, default=str)
-        print(f"✓ Comprehensive data exported to: {output_file}")
+        print(f"SUCCESS: Comprehensive data exported to: {output_file}")
         return True
     except Exception as e:
         print(f"Error exporting comprehensive data: {e}")
@@ -400,7 +400,7 @@ if __name__ == '__main__':
     all_data = read_all_sheets_comprehensive(config.EXCEL_FILE_PATH)
     
     if all_data:
-        print(f"\n✓ Successfully read data from {len(all_data)} sheets")
+        print(f"\nSUCCESS: Successfully read data from {len(all_data)} sheets")
         
         # Export comprehensive data for review
         export_comprehensive_data(all_data)
@@ -422,10 +422,10 @@ if __name__ == '__main__':
             else:
                 print(f"{key}: {value}")
         
-        print("\n✓ Test completed successfully!")
+        print("\nSUCCESS: Test completed successfully!")
         print("Review 'comprehensive_excel_data.json' for complete data extraction")
         
     else:
-        print("\n✗ Failed to read Excel data")
+        print("\nERROR: Failed to read Excel data")
         print("Check your Excel file format and configuration.")
         

@@ -22,49 +22,49 @@ class EnhancedTerraformGenerator:
     def generate_terraform_files(self, output_dir: str = "output_package") -> Dict[str, str]:
         """Generate complete deployment package with all necessary files."""
         
-        # Create output directory structure
+        # setup output dirs
         os.makedirs(output_dir, exist_ok=True)
         os.makedirs(os.path.join(output_dir, "scripts"), exist_ok=True)
         os.makedirs(os.path.join(output_dir, "docs"), exist_ok=True)
         
         generated_files = {}
         
-        # Generate main.tf
+        # main.tf
         main_tf = self._generate_main_tf()
         main_tf_path = os.path.join(output_dir, "main.tf")
         with open(main_tf_path, 'w', encoding='utf-8') as f:
             f.write(main_tf)
         generated_files['main.tf'] = main_tf_path
         
-        # Generate variables.tf
+        # variables.tf
         variables_tf = self._generate_variables_tf()
         variables_tf_path = os.path.join(output_dir, "variables.tf")
         with open(variables_tf_path, 'w', encoding='utf-8') as f:
             f.write(variables_tf)
         generated_files['variables.tf'] = variables_tf_path
         
-        # Generate terraform.tfvars
+        # tfvars
         tfvars = self._generate_tfvars()
         tfvars_path = os.path.join(output_dir, "terraform.tfvars")
         with open(tfvars_path, 'w', encoding='utf-8') as f:
             f.write(tfvars)
         generated_files['terraform.tfvars'] = tfvars_path
         
-        # Generate outputs.tf
+        # outputs.tf
         outputs_tf = self._generate_outputs_tf()
         outputs_tf_path = os.path.join(output_dir, "outputs.tf")
         with open(outputs_tf_path, 'w', encoding='utf-8') as f:
             f.write(outputs_tf)
         generated_files['outputs.tf'] = outputs_tf_path
         
-        # Generate provider.tf
+        # provider.tf
         provider_tf = self._generate_provider_tf()
         provider_tf_path = os.path.join(output_dir, "provider.tf")
         with open(provider_tf_path, 'w', encoding='utf-8') as f:
             f.write(provider_tf)
         generated_files['provider.tf'] = provider_tf_path
         
-        # Generate validation script only (for ADO pipeline validation)
+        # validation script
         validate_script = self._generate_validate_script()
         validate_script_path = os.path.join(output_dir, "scripts", "validate.sh")
         with open(validate_script_path, 'w', encoding='utf-8') as f:
@@ -72,21 +72,21 @@ class EnhancedTerraformGenerator:
         os.chmod(validate_script_path, 0o755)  # Make executable
         generated_files['scripts/validate.sh'] = validate_script_path
         
-        # Generate README.md
+        # readme
         readme = self._generate_readme()
         readme_path = os.path.join(output_dir, "README.md")
         with open(readme_path, 'w', encoding='utf-8') as f:
             f.write(readme)
         generated_files['README.md'] = readme_path
         
-        # Generate deployment guide
+        # deployment guide
         deployment_guide = self._generate_deployment_guide()
         deployment_guide_path = os.path.join(output_dir, "docs", "DEPLOYMENT_GUIDE.md")
         with open(deployment_guide_path, 'w', encoding='utf-8') as f:
             f.write(deployment_guide)
         generated_files['docs/DEPLOYMENT_GUIDE.md'] = deployment_guide_path
         
-        # Generate .gitignore
+        # gitignore
         gitignore = self._generate_gitignore()
         gitignore_path = os.path.join(output_dir, ".gitignore")
         with open(gitignore_path, 'w', encoding='utf-8') as f:
@@ -753,7 +753,7 @@ provider "azurerm" {{
 
 This is a complete Terraform package generated from Excel data on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} for Azure DevOps deployment.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Azure DevOps pipeline configured
@@ -778,7 +778,7 @@ terraform plan
 terraform apply
 ```
 
-## 📋 Project Information
+## Project Information
 
 - **Project Name**: {project_info.get('project_name', 'default-project')}
 - **Application Name**: {project_info.get('application_name', 'default-app')}
@@ -786,7 +786,7 @@ terraform apply
 - **Business Owner**: {project_info.get('business_owner', 'TBD')}
 - **ServiceNow Ticket**: {project_info.get('service_now_ticket', 'TBD')}
 
-## 🏗️ Infrastructure Components
+## Infrastructure Components
 
 - **Resource Group**: 1
 - **Virtual Network**: 1 (10.0.0.0/16)
@@ -795,7 +795,7 @@ terraform apply
 - **Security Rules**: {security_rule_count}
 - **Virtual Machines**: {vm_count}
 
-## 📁 Package Contents
+## Package Contents
 
 ### Core Terraform Files
 - `main.tf` - Main resource definitions
@@ -813,7 +813,7 @@ terraform apply
 - `docs/DEPLOYMENT_GUIDE.md` - Comprehensive deployment guide
 - `.gitignore` - Git ignore rules for Terraform
 
-## ⚙️ Configuration
+## Configuration
 
 ### Before Deploying
 1. **Review Variables**: Edit `terraform.tfvars` with your specific values
@@ -828,7 +828,7 @@ terraform apply
 - `vm_count` - Number of VMs
 - `vm_size` - VM size
 
-## 🚀 Deployment Options
+## Deployment Options
 
 ### Azure DevOps Pipeline (Recommended)
 This package is designed for Azure DevOps deployment:
@@ -859,7 +859,7 @@ terraform apply
 - **Terraform Docs**: https://terraform.io/docs
 - **Azure Docs**: https://docs.microsoft.com/azure
 
-## 🔧 Customization
+## Customization
 
 ### Adding Resources
 - Edit `main.tf` to add new Azure resources
@@ -871,14 +871,14 @@ terraform apply
 - Add/remove VMs by editing the VM resources in `main.tf`
 - Modify security rules in the NSG section
 
-## 🛡️ Security Notes
+## Security Notes
 
 - Review all security group rules before deployment
 - Ensure SSH keys are properly configured
 - Consider using Azure Key Vault for sensitive data
 - Enable Azure Security Center recommendations
 
-## 📊 Monitoring
+## Monitoring
 
 After deployment:
 - Check Azure Portal for resource status
@@ -886,16 +886,16 @@ After deployment:
 - Set up alerts for resource health
 - Review Terraform outputs for connection information
 
-## 🧹 Cleanup
+## Cleanup
 
 To destroy all resources:
 ```bash
 ./scripts/destroy.sh
 ```
 
-**⚠️ Warning**: This will permanently delete all resources and data!
+**WARNING**: This will permanently delete all resources and data!
 
-## 🆘 Support
+## Support
 
 - **Terraform Issues**: Check [Terraform documentation](https://terraform.io/docs)
 - **Azure Issues**: Check [Azure documentation](https://docs.microsoft.com/azure)

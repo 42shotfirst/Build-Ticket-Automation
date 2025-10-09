@@ -7,12 +7,12 @@ Contains all configuration settings for the Excel to JSON conversion process.
 
 import os
 
-# File paths
+# paths
 EXCEL_FILE_PATH = None  # Will be determined from sourcefiles directory
 EXCEL_INPUT_DIRECTORY = "sourcefiles"  # Directory containing Excel files to process
 TERRAFORM_JSON_PATH = "terraform_variables.json"  # Output path for Terraform JSON
 
-# Debug and processing options
+# options
 DEBUG_MODE = True  # Enable debug output and verbose logging
 INCLUDE_METADATA = True  # Include metadata in generated JSON
 INCLUDE_GENERATION_TIMESTAMP = True  # Include generation timestamp in tags
@@ -20,13 +20,13 @@ JSON_INDENT = 2  # JSON indentation level
 JSON_SORT_KEYS = False  # Sort JSON keys alphabetically
 SKIP_EMPTY_VMS = True  # Skip VM entries that don't have hostnames
 
-# Azure and infrastructure defaults
+# azure defaults
 DEFAULT_AZURE_REGION = "East US"
 DEFAULT_VM_SIZE = "Standard_D2s_v3"
 DEFAULT_OS_IMAGE = "Ubuntu 22.04 LTS"
 DEFAULT_ADMIN_USERNAME = "azureuser"
 
-# Default tags for resources
+# default tags
 DEFAULT_TAGS = {
     "CreatedBy": "Excel-to-JSON-Converter",
     "Environment": "Development",
@@ -34,9 +34,9 @@ DEFAULT_TAGS = {
     "ManagedBy": "Terraform"
 }
 
-# Field mapping from Excel to Terraform variables
+# field mappings
 EXCEL_TO_TERRAFORM_MAPPING = {
-    # Overview sheet mappings
+    # overview mappings
     "Project Name": "project_name",
     "Abbreviated App Name": "application_name", 
     "Application Description": "app_description",
@@ -47,7 +47,7 @@ EXCEL_TO_TERRAFORM_MAPPING = {
     "Environments": "environments"
 }
 
-# Default values for required fields
+# defaults
 DEFAULT_VALUES = {
     "project_name": "Default Project",
     "application_name": "default-app",
@@ -59,7 +59,7 @@ DEFAULT_VALUES = {
     "environments": "dev"
 }
 
-# Required fields that must be present
+# required fields
 REQUIRED_OVERVIEW_FIELDS = [
     "project_name",
     "application_name", 
@@ -79,22 +79,22 @@ def normalize_resource_name(name: str) -> str:
     if not name:
         return "default-resource"
     
-    # Convert to lowercase and replace spaces/special chars with hyphens
+    # normalize to lowercase with hyphens
     normalized = str(name).lower().strip()
     normalized = normalized.replace(' ', '-')
     normalized = normalized.replace('_', '-')
     
-    # Remove any remaining special characters except hyphens
+    # strip special chars
     import re
     normalized = re.sub(r'[^a-z0-9-]', '', normalized)
     
-    # Remove multiple consecutive hyphens
+    # remove duplicate hyphens
     normalized = re.sub(r'-+', '-', normalized)
     
-    # Remove leading/trailing hyphens
+    # trim hyphens
     normalized = normalized.strip('-')
     
-    # Ensure it's not empty and not too long
+    # validate length
     if not normalized:
         normalized = "default-resource"
     elif len(normalized) > 60:  # Azure resource name limit
@@ -106,13 +106,13 @@ def validate_config():
     """Validate configuration settings."""
     errors = []
     
-    # Check if Excel input directory exists
+    # validate input dir
     if not os.path.exists(EXCEL_INPUT_DIRECTORY):
         errors.append(f"Excel input directory not found: {EXCEL_INPUT_DIRECTORY}")
     elif not os.path.isdir(EXCEL_INPUT_DIRECTORY):
         errors.append(f"Excel input path is not a directory: {EXCEL_INPUT_DIRECTORY}")
     
-    # Check output directory is writable
+    # validate output dir
     output_dir = os.path.dirname(TERRAFORM_JSON_PATH) or '.'
     if not os.access(output_dir, os.W_OK):
         errors.append(f"Cannot write to output directory: {output_dir}")
@@ -136,8 +136,8 @@ if __name__ == "__main__":
     print()
     
     if validate_config():
-        print("✓ Configuration is valid")
-        # List Excel files in the directory
+        print("SUCCESS: Configuration is valid")
+        # list excel files
         if os.path.exists(EXCEL_INPUT_DIRECTORY):
             excel_files = [f for f in os.listdir(EXCEL_INPUT_DIRECTORY) 
                           if f.endswith(('.xlsx', '.xlsm', '.xls')) and not f.startswith('~$')]
@@ -146,6 +146,6 @@ if __name__ == "__main__":
                 for f in excel_files:
                     print(f"  - {f}")
             else:
-                print("\n⚠ No Excel files found in the input directory")
+                print("\nWARNING: No Excel files found in the input directory")
     else:
-        print("✗ Configuration has errors")
+        print("ERROR: Configuration has errors")

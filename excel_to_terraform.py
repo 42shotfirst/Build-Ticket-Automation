@@ -55,13 +55,13 @@ class ExcelToTerraformConverter:
                 return results
             
             results['json_file'] = json_result
-            print(f"✓ JSON conversion completed: {json_result}")
+            print(f"SUCCESS: JSON conversion completed: {json_result}")
             
             # Step 2: Create data accessor
             print("\nStep 2: Creating data accessor...")
             accessor = ExcelDataAccessor(json_result)
             summary = accessor.get_summary()
-            print(f"✓ Data accessor created - {summary['total_sheets']} sheets, {summary['total_tables']} tables")
+            print(f"SUCCESS: Data accessor created - {summary['total_sheets']} sheets, {summary['total_tables']} tables")
             
             # Step 3: Generate Terraform files
             print(f"\nStep 3: Generating Terraform files in '{self.terraform_output_dir}'...")
@@ -69,7 +69,7 @@ class ExcelToTerraformConverter:
             terraform_files = generator.generate_terraform_files(self.terraform_output_dir)
             
             results['terraform_files'] = terraform_files
-            print(f"✓ Terraform files generated: {len(terraform_files)} files")
+            print(f"SUCCESS: Terraform files generated: {len(terraform_files)} files")
             
             # Step 4: Generate summary
             terraform_summary = generator.generate_summary()
@@ -103,7 +103,7 @@ class ExcelToTerraformConverter:
         except Exception as e:
             error_msg = f"Conversion failed: {e}"
             results['errors'].append(error_msg)
-            print(f"\n✗ {error_msg}")
+            print(f"\nERROR: {error_msg}")
             import traceback
             traceback.print_exc()
         
@@ -185,10 +185,10 @@ def main():
     results = converter.convert(output_dir)
     
     if results['success']:
-        print(f"\n✓ SUCCESS! Conversion completed successfully.")
+        print(f"\nSUCCESS: SUCCESS! Conversion completed successfully.")
         return True
     else:
-        print(f"\n✗ FAILED! Conversion did not complete successfully.")
+        print(f"\nERROR: FAILED! Conversion did not complete successfully.")
         if results['errors']:
             print("Errors:")
             for error in results['errors']:

@@ -80,11 +80,11 @@ class ExcelToJSONConverter:
                 self._show_conversion_summary(output_file)
                 return output_file
             else:
-                print("\n✗ Conversion failed during JSON export")
+                print("\nERROR: Conversion failed during JSON export")
                 return None
                 
         except Exception as e:
-            print(f"\n✗ Conversion failed: {e}")
+            print(f"\nERROR: Conversion failed: {e}")
             import traceback
             traceback.print_exc()
             return None
@@ -256,11 +256,11 @@ def main():
     result = convert_excel_to_json(excel_file, output_file)
     
     if result:
-        print(f"\n✓ Conversion completed successfully!")
+        print(f"\nSUCCESS: Conversion completed successfully!")
         print(f"Output file: {result}")
         return True
     else:
-        print(f"\n✗ Conversion failed!")
+        print(f"\nERROR: Conversion failed!")
         return False
 
 

@@ -104,12 +104,12 @@ def demo_column_referencing():
     print("COLUMN REFERENCING DEMO COMPLETED")
     print("=" * 80)
     print("\nKey Features Demonstrated:")
-    print("  ✓ Sheet information and structure")
-    print("  ✓ Keyword-based data retrieval")
-    print("  ✓ Column data extraction")
-    print("  ✓ Table searching and filtering")
-    print("  ✓ Cross-sheet data search")
-    print("  ✓ Terraform-ready data export")
+    print("  SUCCESS: Sheet information and structure")
+    print("  SUCCESS: Keyword-based data retrieval")
+    print("  SUCCESS: Column data extraction")
+    print("  SUCCESS: Table searching and filtering")
+    print("  SUCCESS: Cross-sheet data search")
+    print("  SUCCESS: Terraform-ready data export")
     print("\nYou can now use these methods to:")
     print("  - Reference specific columns by keywords")
     print("  - Extract data for Terraform generation")
@@ -161,7 +161,7 @@ def demo_terraform_generation():
         if len(summary['security_rules']) > 5:
             print(f"  ... and {len(summary['security_rules']) - 5} more rules")
     
-    print(f"\n✓ Terraform generation ready!")
+    print(f"\nSUCCESS: Terraform generation ready!")
     print(f"  Run: python enhanced_terraform_generator.py {json_file}")
     
     return True
@@ -179,10 +179,10 @@ def main():
     success2 = demo_terraform_generation()
     
     if success1 and success2:
-        print("\n✓ All demos completed successfully!")
+        print("\nSUCCESS: All demos completed successfully!")
         return True
     else:
-        print("\n✗ Some demos failed!")
+        print("\nERROR: Some demos failed!")
         return False
 
 if __name__ == "__main__":

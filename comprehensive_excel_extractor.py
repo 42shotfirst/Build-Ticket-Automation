@@ -75,11 +75,11 @@ class ComprehensiveExcelExtractor:
             # Extract comments
             self._extract_comments()
             
-            print(f"✓ Comprehensive extraction completed successfully")
+            print(f"SUCCESS: Comprehensive extraction completed successfully")
             return self.extracted_data
             
         except Exception as e:
-            print(f"✗ Error during extraction: {e}")
+            print(f"ERROR: Error during extraction: {e}")
             import traceback
             traceback.print_exc()
             return self.extracted_data
@@ -131,14 +131,14 @@ class ComprehensiveExcelExtractor:
                         # Extract key-value pairs
                         self._extract_key_value_pairs(df_raw, sheet_data)
                         
-                        print(f"    ✓ Extracted {sheet_data['dimensions']['rows']}x{sheet_data['dimensions']['columns']} data")
+                        print(f"    SUCCESS: Extracted {sheet_data['dimensions']['rows']}x{sheet_data['dimensions']['columns']} data")
                     else:
-                        print(f"    ⚠ Sheet '{sheet_name}' is empty")
+                        print(f"    WARNING: Sheet '{sheet_name}' is empty")
                     
                     self.extracted_data['sheets'][sheet_name] = sheet_data
                     
                 except Exception as e:
-                    print(f"    ✗ Error reading sheet '{sheet_name}': {e}")
+                    print(f"    ERROR: Error reading sheet '{sheet_name}': {e}")
                     self.extracted_data['sheets'][sheet_name] = {
                         'name': sheet_name,
                         'error': str(e),
@@ -448,11 +448,11 @@ class ComprehensiveExcelExtractor:
                 json.dump(self.extracted_data, f, indent=2, default=str, ensure_ascii=False)
             
             file_size = os.path.getsize(output_file)
-            print(f"✓ Exported comprehensive data to: {output_file} ({file_size:,} bytes)")
+            print(f"SUCCESS: Exported comprehensive data to: {output_file} ({file_size:,} bytes)")
             return output_file
             
         except Exception as e:
-            print(f"✗ Error exporting to JSON: {e}")
+            print(f"ERROR: Error exporting to JSON: {e}")
             return None
     
     def get_summary(self) -> Dict[str, Any]:

@@ -184,11 +184,11 @@ class VBAMacroExtractor:
                 json.dump(self.extracted_macros, f, indent=2, ensure_ascii=False)
             
             file_size = os.path.getsize(output_file)
-            print(f"✓ Exported VBA macro info to: {output_file} ({file_size:,} bytes)")
+            print(f"SUCCESS: Exported VBA macro info to: {output_file} ({file_size:,} bytes)")
             return output_file
             
         except Exception as e:
-            print(f"✗ Error exporting VBA macros: {e}")
+            print(f"ERROR: Error exporting VBA macros: {e}")
             return None
     
     def get_macro_summary(self) -> Dict[str, Any]:

@@ -45,14 +45,14 @@ def test_ado_package():
     
     if results['success']:
         print("\n" + "=" * 80)
-        print("✅ AZURE DEVOPS PACKAGE GENERATED SUCCESSFULLY!")
+        print("SUCCESS: AZURE DEVOPS PACKAGE GENERATED SUCCESSFULLY!")
         print("=" * 80)
         
-        print(f"\n📁 Output Package Location: output_package/")
-        print(f"📊 Files Generated: {len(results['files_generated'])}")
-        print(f"⏱️  Duration: {results['duration_seconds']:.2f} seconds")
+        print(f"\nOutput Package Location: output_package/")
+        print(f"Files Generated: {len(results['files_generated'])}")
+        print(f"Duration: {results['duration_seconds']:.2f} seconds")
         
-        print(f"\n📋 Package Contents:")
+        print(f"\nPackage Contents:")
         if os.path.exists("output_package"):
             for root, dirs, files in os.walk("output_package"):
                 level = root.replace("output_package", "").count(os.sep)
@@ -62,7 +62,7 @@ def test_ado_package():
                 for file in files:
                     print(f"{subindent}{file}")
         
-        print(f"\n🚀 Azure DevOps Integration:")
+        print(f"\nAzure DevOps Integration:")
         print(f"1. Copy the output_package contents to your ADO repository")
         print(f"2. Configure Terraform tasks in your ADO pipeline:")
         print(f"   - Terraform Init")
@@ -78,7 +78,7 @@ def test_ado_package():
         return True
     else:
         print("\n" + "=" * 80)
-        print("❌ PACKAGE GENERATION FAILED!")
+        print("ERROR: PACKAGE GENERATION FAILED!")
         print("=" * 80)
         
         print(f"\nErrors:")
@@ -111,15 +111,15 @@ output_package/
     
     print(structure)
     
-    print("\n🎯 Azure DevOps Integration Features:")
-    print("  ✅ Complete Terraform configuration ready for ADO")
-    print("  ✅ Terraform tasks compatible (Init, Plan, Apply, Destroy)")
-    print("  ✅ Variable files for easy configuration")
-    print("  ✅ Validation script for pipeline validation")
-    print("  ✅ Comprehensive documentation for ADO setup")
-    print("  ✅ Git-ready with proper .gitignore")
+    print("\nAzure DevOps Integration Features:")
+    print("  * Complete Terraform configuration ready for ADO")
+    print("  * Terraform tasks compatible (Init, Plan, Apply, Destroy)")
+    print("  * Variable files for easy configuration")
+    print("  * Validation script for pipeline validation")
+    print("  * Comprehensive documentation for ADO setup")
+    print("  * Git-ready with proper .gitignore")
     
-    print("\n🔧 ADO Pipeline Tasks:")
+    print("\nADO Pipeline Tasks:")
     print("  1. Terraform Init Task")
     print("  2. Terraform Plan Task")
     print("  3. Terraform Apply Task")

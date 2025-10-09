@@ -48,7 +48,7 @@ def main():
     result = convert_excel_to_json(excel_file, output_file)
     
     if result:
-        print(f"\n✓ SUCCESS! Conversion completed.")
+        print(f"\nSUCCESS: SUCCESS! Conversion completed.")
         print(f"Output file: {result}")
         
         # Show file size
@@ -57,7 +57,7 @@ def main():
         
         return True
     else:
-        print(f"\n✗ FAILED! Conversion did not complete successfully.")
+        print(f"\nERROR: FAILED! Conversion did not complete successfully.")
         return False
 
 if __name__ == "__main__":

@@ -22,6 +22,9 @@ class EnhancedTerraformGeneratorV2:
         self.accessor = ExcelDataAccessor(json_file_path)
         self.terraform_data = self.accessor.get_terraform_ready_data()
         self.schema = self._load_schema()
+        # Cache raw_data for quick access
+        self.raw_data_cache = {}
+        self._build_raw_data_cache()
         
     def _load_schema(self) -> Dict[str, Any]:
         """Load the Terraform output schema."""
@@ -30,6 +33,35 @@ class EnhancedTerraformGeneratorV2:
             with open(schema_file, 'r') as f:
                 return json.load(f)
         return {}
+    
+    def _build_raw_data_cache(self):
+        """Build a cache of raw_data values for quick lookup."""
+        comprehensive_data = self.terraform_data.get('comprehensive_data', {})
+        
+        for sheet_name, sheet_data in comprehensive_data.items():
+            raw_data = sheet_data.get('raw_data', [])
+            if sheet_name not in self.raw_data_cache:
+                self.raw_data_cache[sheet_name] = {}
+            
+            for row in raw_data:
+                if isinstance(row, dict):
+                    var_name = row.get('1')
+                    value = row.get('2')
+                    if var_name:
+                        self.raw_data_cache[sheet_name][var_name] = value
+    
+    def _get_raw_value(self, var_name: str, sheet_name: str = 'Build_ENV', default: Any = None) -> Any:
+        """Get a value from raw_data cache.
+        
+        Args:
+            var_name: The variable name to look up (from column "1")
+            sheet_name: The sheet to search in
+            default: Default value if not found
+            
+        Returns:
+            The value from column "2" or default if not found
+        """
+        return self.raw_data_cache.get(sheet_name, {}).get(var_name, default)
         
     def generate_terraform_files(self, output_dir: str = "output_package") -> Dict[str, str]:
         """Generate complete deployment package following module.md patterns."""
@@ -307,7 +339,7 @@ variable "key_vault" {{
     name                       = null
     sku_name                   = "standard"
     soft_delete_retention_days = 90
-    public_network_access      = false
+    public_network_access      = true
     snet_key                   = "snet1"
     key_name                   = null
   }}
@@ -636,6 +668,19 @@ variable "resource_specific_tags" {{
                    build_env.get('key_value_pairs', {}).get('Service Principal', 
                    f"spn-terraform-{project_name.lower().replace(' ', '-')}"))
         
+        # Extract key vault settings from raw_data (from Excel source)
+        kvlt_sku = self._get_raw_value('sku_name', 'Build_ENV', 'standard')
+        kvlt_retention = self._get_raw_value('soft_delete_retention_days', 'Build_ENV', 90)
+        kvlt_public_access_raw = self._get_raw_value('public_network_access', 'Build_ENV', 1)
+        
+        # Convert public_network_access from numeric (1/0) to boolean string
+        if kvlt_public_access_raw == 1:
+            kvlt_public_access = 'true'
+        elif kvlt_public_access_raw == 0:
+            kvlt_public_access = 'false'
+        else:
+            kvlt_public_access = str(kvlt_public_access_raw).lower() if isinstance(kvlt_public_access_raw, bool) else 'true'
+        
         tfvars = f'''# Begin terraform.tfvars
 
 spn      = "{spn_name}"
@@ -649,9 +694,9 @@ user_assigned_identity_name = "umid-{project_name.lower().replace(' ', '-')}-{en
 
 key_vault = {{
   name                       = "kvlt-{project_name.lower().replace(' ', '-')}-{environment.lower()}"
-  sku_name                   = "standard"
-  soft_delete_retention_days = 7
-  public_network_access      = true
+  sku_name                   = "{kvlt_sku}"
+  soft_delete_retention_days = {kvlt_retention}
+  public_network_access      = {kvlt_public_access}
   snet_key                   = "snet1"
   key_name                   = "key-{project_name.lower().replace(' ', '-')}-{environment.lower()}"
 }}
@@ -696,8 +741,20 @@ common_tags = {{
             vm_name = self._extract_vm_name(vm, i)
             vm_size = self._extract_vm_size(vm)
             os_type = self._extract_os_type(vm)
-            os_disk_size = self._extract_vm_disk_size(vm)
-            os_disk_type = self._extract_vm_disk_type(vm)
+            
+            # Extract VM settings from raw_data first, then fall back to extraction functions
+            # VM config is in Resources sheet, not Build_ENV
+            # Check for vm1-specific values first, then generic values
+            vm_key = f"vm{i+1}" if i < 10 else f"vm{i+1}"
+            os_disk_size = (self._get_raw_value(f'vm_list.{vm_key}.os_disk_size', 'Resources') or 
+                           self._get_raw_value('vm_list.vm1.os_disk_size', 'Resources') or 
+                           self._extract_vm_disk_size(vm))
+            os_disk_type = (self._get_raw_value(f'vm_list.{vm_key}.os_disk_type', 'Resources') or 
+                           self._get_raw_value('vm_list.vm1.os_disk_type', 'Resources') or 
+                           self._extract_vm_disk_type(vm))
+            ip_allocation = (self._get_raw_value(f'vm_list.{vm_key}.ip_allocation', 'Resources') or 
+                            self._get_raw_value('vm_list.vm1.ip_allocation', 'Resources') or 
+                            'Dynamic')
             
             # Extract additional fields from VM data
             role = vm.get('Role', project_info.get('role', 'Application'))
@@ -717,7 +774,7 @@ common_tags = {{
     image_os          = "{os_type}"
     marketplace_image = false
     image_urn         = "{image_urn}"
-    ip_allocation     = "Dynamic"
+    ip_allocation     = "{ip_allocation}"
     identity_type     = "SystemAssigned, UserAssigned"
     os_disk_size      = {os_disk_size}
     os_disk_type      = "{os_disk_type}"
@@ -1413,7 +1470,7 @@ Thumbs.db
                 except (ValueError, TypeError):
                     pass
         
-        return 128  # Default
+        return 30  # Default (more reasonable for OS disk)
     
     def _extract_vm_disk_type(self, vm: Dict[str, Any]) -> str:
         """Extract OS disk type from VM data."""

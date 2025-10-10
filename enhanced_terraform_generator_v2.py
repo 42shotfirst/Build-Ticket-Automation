@@ -631,9 +631,14 @@ variable "resource_specific_tags" {{
         # Generate network security rules
         network_security_rules = self._generate_nsg_rules_for_tfvars()
         
+        # Extract or construct SPN name from project data
+        spn_name = build_env.get('key_value_pairs', {}).get('SPN', 
+                   build_env.get('key_value_pairs', {}).get('Service Principal', 
+                   f"spn-terraform-{project_name.lower().replace(' ', '-')}"))
+        
         tfvars = f'''# Begin terraform.tfvars
 
-spn      = "spn-terraform-devops_dev_qa"
+spn      = "{spn_name}"
 location = "{location}"
 resource_group_name = "rg-{project_name.lower().replace(' ', '-')}-{environment.lower()}"
 
@@ -734,77 +739,130 @@ common_tags = {{
 }}'''
     
     def _generate_subnets_for_tfvars(self) -> str:
-        """Generate subnets configuration for tfvars."""
+        """Generate subnets configuration for tfvars from Excel or project data."""
         
-        return '''{
-  snet1 = {
-    resource_group_name  = "rg-devops_dev_qa-networking"
-    virtual_network_name = "vnet-devops_dev_qa"
-    network_security_group_id   = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-devops_dev_qa-networking/providers/Microsoft.Network/networkSecurityGroups/nsg-devops_dev_qa"
-    route_table_id              = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-devops_dev_qa-networking/providers/Microsoft.Network/routeTables/rt-devops_dev_qa"
-    name              = "snet-base-vm-module-test"
-    prefixes          = ["10.187.18.128/29"]
+        project_info = self.terraform_data.get('project_info', {})
+        build_env = self.terraform_data.get('build_environment', {})
+        
+        # Extract project/app name for resource naming
+        app_name = project_info.get('application_name', 'app')
+        project_name = project_info.get('project_name', 'project')
+        environment = project_info.get('environment', 'dev')
+        subscription = build_env.get('key_value_pairs', {}).get('Subscription', 'subscription')
+        
+        # Construct resource names from project data instead of hardcoded test values
+        network_rg = f"rg-{project_name.lower()}-networking"
+        vnet_name = f"vnet-{project_name.lower()}-{environment.lower()}"
+        nsg_name = f"nsg-{project_name.lower()}-{environment.lower()}"
+        route_table_name = f"rt-{project_name.lower()}-{environment.lower()}"
+        subnet_name = f"snet-{app_name.lower()}-{environment.lower()}"
+        
+        # TODO: Extract actual subscription ID from Excel if available
+        # For now, use placeholder that needs to be updated
+        subscription_id = "SUBSCRIPTION_ID_PLACEHOLDER"
+        
+        return f'''{{
+  snet1 = {{
+    resource_group_name  = "{network_rg}"
+    virtual_network_name = "{vnet_name}"
+    network_security_group_id   = "/subscriptions/{subscription_id}/resourceGroups/{network_rg}/providers/Microsoft.Network/networkSecurityGroups/{nsg_name}"
+    route_table_id              = "/subscriptions/{subscription_id}/resourceGroups/{network_rg}/providers/Microsoft.Network/routeTables/{route_table_name}"
+    name              = "{subnet_name}"
+    prefixes          = ["10.0.1.0/24"]  # TODO: Extract from Excel if available
     service_endpoints = ["Microsoft.KeyVault"]
-  }
-}'''
+  }}
+}}'''
     
     def _generate_asg_for_tfvars(self) -> str:
-        """Generate application security groups for tfvars."""
+        """Generate application security groups for tfvars from project data."""
         
-        return '''{
-  asg_nic = {
-    name = "asg-base-vm-module-nic-test"
-  }
-  asg_pe = {
-    name = "asg-base-vm-module-pe-test"
-  }
-}'''
+        project_info = self.terraform_data.get('project_info', {})
+        app_name = project_info.get('application_name', 'app')
+        environment = project_info.get('environment', 'dev')
+        
+        # Use project-specific naming instead of hardcoded test values
+        return f'''{{
+  asg_nic = {{
+    name = "asg-{app_name.lower()}-nic-{environment.lower()}"
+  }}
+  asg_pe = {{
+    name = "asg-{app_name.lower()}-pe-{environment.lower()}"
+  }}
+}}'''
     
     def _generate_private_endpoints_for_tfvars(self) -> str:
-        """Generate private endpoints for tfvars."""
+        """Generate private endpoints for tfvars from project data."""
         
-        return '''{
-  pe_kvlt = {
-    name                           = "pvep-kvlt-base-vm-module-test"
+        project_info = self.terraform_data.get('project_info', {})
+        app_name = project_info.get('application_name', 'app')
+        environment = project_info.get('environment', 'dev')
+        
+        # Use project-specific naming instead of hardcoded test values
+        return f'''{{
+  pe_kvlt = {{
+    name                           = "pvep-kvlt-{app_name.lower()}-{environment.lower()}"
     subresource_names              = ["vault"]
     snet_key                       = "snet1"
     asg_key                        = "asg_pe"
-  }
-}'''
+  }}
+}}'''
     
     def _generate_nsg_rules_for_tfvars(self) -> str:
-        """Generate network security rules for tfvars."""
+        """Generate network security rules for tfvars from Excel NSG data."""
         
         security_groups = self.terraform_data.get('security_groups', [])
+        project_info = self.terraform_data.get('project_info', {})
+        
+        project_name = project_info.get('project_name', 'project')
+        environment = project_info.get('environment', 'dev')
+        
+        # Use project-specific networking resource group
+        network_rg = f"rg-{project_name.lower()}-networking"
+        nsg_name = f"nsg-{project_name.lower()}-{environment.lower()}"
         
         if not security_groups:
-            return '''{
-  resource_group_name         = "rg-devops_dev_qa-networking"
-  network_security_group_name = "nsg-devops_dev_qa"
+            return f'''{{
+  resource_group_name         = "{network_rg}"
+  network_security_group_name = "{nsg_name}"
   rules = []
-}'''
+}}'''
         
         rules = []
-        for i, rule in enumerate(security_groups[:2]):  # Limit to first 2 rules
+        for i, rule in enumerate(security_groups):  # Process all rules
+            # Extract actual values from Excel NSG data
+            rule_name = rule.get('name', f'rule_{i}')
+            priority = rule.get('priority', 100 + i * 10)
+            direction = rule.get('direction', 'Inbound')
+            access = rule.get('access', 'Allow')
+            protocol = rule.get('protocol', 'Tcp')
+            source_port = rule.get('source_port_range', '*')
+            dest_ports = rule.get('destination_port_ranges', ['443'])
+            description = rule.get('description', f'Security rule for {project_name}')
+            
+            # Handle port ranges - could be string or list
+            if isinstance(dest_ports, str):
+                dest_ports = [dest_ports]
+            
             rule_entry = f'''    {{
-      source_name                = "Source"
-      destination_name           = "Dest"
-      priority                   = {140 + i * 10}
-      direction                  = "{rule.get('direction', 'Inbound')}"
-      access                     = "{rule.get('access', 'Allow')}"
-      protocol                   = "{rule.get('protocol', 'Tcp')}"
-      source_port_range          = "*"
-      destination_port_ranges    = ["443"]
+      name                       = "{rule_name}"
+      source_name                = "{rule.get('source_name', 'Source')}"
+      destination_name           = "{rule.get('destination_name', 'Destination')}"
+      priority                   = {priority}
+      direction                  = "{direction}"
+      access                     = "{access}"
+      protocol                   = "{protocol}"
+      source_port_range          = "{source_port}"
+      destination_port_ranges    = {dest_ports}
       source_asg_keys            = ["asg_nic"]
       destination_asg_keys       = ["asg_pe"]
-      description                = "Module Testing"
+      description                = "{description}"
     }}'''
             rules.append(rule_entry)
         
         rules_text = chr(10).join(rules)
         return f'''{{
-  resource_group_name         = "rg-devops_dev_qa-networking"
-  network_security_group_name = "nsg-devops_dev_qa"
+  resource_group_name         = "{network_rg}"
+  network_security_group_name = "{nsg_name}"
   rules = [
 {rules_text}
   ]

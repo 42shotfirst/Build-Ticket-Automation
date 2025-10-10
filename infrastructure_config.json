@@ -1,0 +1,22 @@
+{
+  "description": "Infrastructure dependencies that need to be configured per environment",
+  "azure_subscription_id": "REPLACE_WITH_YOUR_SUBSCRIPTION_ID",
+  "networking": {
+    "subnet_cidr_ranges": {
+      "dev": "10.0.1.0/24",
+      "qa": "10.1.1.0/24",
+      "uat": "10.2.1.0/24",
+      "prod": "10.3.1.0/24"
+    },
+    "note": "Subnet CIDR ranges are environment-specific. Update these values to match your Azure network design."
+  },
+  "service_principal": {
+    "naming_pattern": "spn-terraform-{project_name}",
+    "note": "Service Principal will be named based on project. Ensure it has appropriate RBAC permissions."
+  },
+  "private_dns_zones": {
+    "keyvault": "/subscriptions/{subscription_id}/resourceGroups/rg-privatedns-prod-001/providers/Microsoft.Network/privateDnsZones/privatelink.vaultcore.azure.net",
+    "note": "Update the subscription ID and resource group for your private DNS zones."
+  }
+}
+

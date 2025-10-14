@@ -900,6 +900,9 @@ common_tags = {{
             if isinstance(dest_ports, str):
                 dest_ports = [dest_ports]
             
+            # Convert list to Terraform format with double quotes
+            dest_ports_str = '[' + ', '.join([f'"{port}"' for port in dest_ports]) + ']'
+            
             rule_entry = f'''    {{
       name                       = "{rule_name}"
       source_name                = "{rule.get('source_name', 'Source')}"
@@ -909,7 +912,7 @@ common_tags = {{
       access                     = "{access}"
       protocol                   = "{protocol}"
       source_port_range          = "{source_port}"
-      destination_port_ranges    = {dest_ports}
+      destination_port_ranges    = {dest_ports_str}
       source_asg_keys            = ["asg_nic"]
       destination_asg_keys       = ["asg_pe"]
       description                = "{description}"

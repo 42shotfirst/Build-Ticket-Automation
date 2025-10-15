@@ -117,7 +117,7 @@ class EnhancedTerraformGeneratorV2:
 module "base-vm" {{
   source = "app.terraform.io/wab-cloudengineering-org/base-vm/iac"
 
-  # Using a variable for the module version isn't supported yet: https://github.com/hashicorp/terraform/issues/28912
+  # Using a variable for the module version is not supported yet: https://github.com/hashicorp/terraform/issues/28912
   #version                     = var.test_module_version
   version                              = "__DYNAMIC_MODULE_VERSION__"
   spn                                  = var.spn
@@ -286,7 +286,7 @@ variable "location" {{
         "EAST US",
       ], var.location
     )
-    error_message = format("A location value of '%s' is not allowed. Please use one of the following: \\n %s", var.location,
+    error_message = format("A location value of \"%s\" is not allowed. Please use one of the following: \\n %s", var.location,
       join("\\n ",
         [
           "US WEST",
@@ -515,19 +515,19 @@ variable "vm_list" {{
   map(object({{
     name              =  
     size              = The SKU which should be used for this Virtual Machine. Nonprod options: Standard_B2s_v2,Standard_B4as_v2,Standard_B4ls_v2,Standard_B16als_v2,Standard_B16as_v2,Standard_B8als_v2,Standard_B4als_v2,Standard_B8s_v2
-    zone              = (optional) The Availability Zone which the Virtual Machine should be allocated in, only one zone would be accepted. If set then this module won't create `azurerm_availability_set` resource. Changing this forces a new resource to be created.
-    image_os          = Enum flag of virtual machine's os system. windows or linux
+    zone              = (optional) The Availability Zone which the Virtual Machine should be allocated in, only one zone would be accepted. If set then this module will not create \"azurerm_availability_set\" resource. Changing this forces a new resource to be created.
+    image_os          = Enum flag of virtual machine os system. windows or linux
     image_urn         = Azure urn Publisher:Offer:SKU:Version
     ip_allocation     = The allocation method used for the Private IP Address. Possible values are Dynamic and Static
     os_disk_name      = (optional) The name which should be used for the Internal OS Disk. Changing this forces a new resource to be created. By default will be based off the vm name.
-    os_disk_size      = The Size of the Internal OS Disk in GB, if you wish to vary from the size used in the image this Virtual Machine is sourced from. If specified this must be equal to or larger than the size of the Image the Virtual Machine is based on. When creating a larger disk than exists in the image you'll need to repartition the disk to use the remaining space.
+    os_disk_size      = The Size of the Internal OS Disk in GB, if you wish to vary from the size used in the image this Virtual Machine is sourced from. If specified this must be equal to or larger than the size of the Image the Virtual Machine is based on. When creating a larger disk than exists in the image you will need to repartition the disk to use the remaining space.
     os_disk_type      = (optional) Storage type of the OS disk. Standard_LRS, StandardSSD_LRS, StandardSSD_ZRS, Premium_ZRS, Premium_LRS, PremiumV2_LRS or UltraSSD_LRS
     os_disk_tier      = (optional) The disk performance tier to use. Possible values are documented here https://learn.microsoft.com/en-us/azure/virtual-machines/disks-change-performance. This feature is currently supported only for premium SSDs.
-    data_disk_sizes   = (optional) Specifies the size of the managed disk to create in gigabytes. If `create_option` is `Copy` or `FromImage`, then the value must be equal to or greater than the source's size. The size can only be increased. In certain conditions the Data Disk size can be updated without shutting down the Virtual Machine, however only a subset of Virtual Machine SKUs/Disk combinations support this. More information can be found [for Linux Virtual Machines](https://learn.microsoft.com/en-us/azure/virtual-machines/linux/expand-disks?tabs=azure-cli%2Cubuntu#expand-without-downtime) and [Windows Virtual Machines](https://learn.microsoft.com/azure/virtual-machines/windows/expand-os-disk#expand-without-downtime) respectively. If No Downtime Resizing is not available, be aware that changing this value is disruptive if the disk is attached to a Virtual Machine. The VM will be shut down and de-allocated as required by Azure to action the change. Terraform will attempt to start the machine again after the update if it was in a `running` state when the apply was started."
+    data_disk_sizes   = (optional) Specifies the size of the managed disk to create in gigabytes. If create_option is Copy or FromImage, then the value must be equal to or greater than the source size. The size can only be increased. Changing this value may be disruptive if the disk is attached to a Virtual Machine.
     data_disk_type    = (optional) Storage type of the data disk. Standard_LRS, StandardSSD_LRS, StandardSSD_ZRS, Premium_ZRS, Premium_LRS, PremiumV2_LRS or UltraSSD_LRS
     data_disks = map(object({{
       name = (optional) The name which should be used for the Internal OS Disk. Changing this forces a new resource to be created. By default will be based off the vm name.
-      size = The Size of the data Disk in GB, if you wish to vary from the size used in the image this Virtual Machine is sourced from. If specified this must be equal to or larger than the size of the Image the Virtual Machine is based on. When creating a larger disk than exists in the image you'll need to repartition the disk to use the remaining space.
+      size = The Size of the data Disk in GB, if you wish to vary from the size used in the image this Virtual Machine is sourced from. If specified this must be equal to or larger than the size of the Image the Virtual Machine is based on. When creating a larger disk than exists in the image you will need to repartition the disk to use the remaining space.
       type = (optional) Storage type of the data disk. Standard_LRS, StandardSSD_LRS, StandardSSD_ZRS, Premium_ZRS, Premium_LRS, PremiumV2_LRS or UltraSSD_LRS
       tier = (optional) The disk performance tier to use. Possible values are documented here https://learn.microsoft.com/en-us/azure/virtual-machines/disks-change-performance. This feature is currently supported only for premium SSDs.
     }}))
@@ -570,7 +570,7 @@ variable "common_tags" {{
         "DR"
       ], var.common_tags.environment
     )
-    error_message = format("An environment tag value of '%s' is not allowed. Please use one of the following: \\n %s", var.common_tags.environment,
+    error_message = format("An environment tag value of \"%s\" is not allowed. Please use one of the following: \\n %s", var.common_tags.environment,
       join("\\n ",
         [
           "DEV",
@@ -593,7 +593,7 @@ variable "common_tags" {{
         "Bronze",
       ], var.common_tags.app-tier
     )
-    error_message = format("A app-tier tag value of '%s' is not allowed. Please use one of the following: \\n %s", var.common_tags.app-tier,
+    error_message = format("A app-tier tag value of \"%s\" is not allowed. Please use one of the following: \\n %s", var.common_tags.app-tier,
       join("\\n ",
         [
           "Platinum",
@@ -608,7 +608,7 @@ variable "common_tags" {{
 
   validation {{
     condition     = var.common_tags.it-cost-center == "NA" || can(var.common_tags.it-cost-center * 1)
-    error_message = format("An it-cost-center tag value of '%s' is not allowed. Please use NA or a whole number", var.common_tags.it-cost-center)
+    error_message = format("An it-cost-center tag value of \"%s\" is not allowed. Please use NA or a whole number", var.common_tags.it-cost-center)
   }}
 }}
 
@@ -625,7 +625,7 @@ variable "resource_specific_tags" {{
 
   validation {{
     condition     = contains(["YES", "NO", "NA"], var.resource_specific_tags.patch-optin)
-    error_message = format("A patch-optin tag value of '%s' is not allowed. Please use one of the following: YES, NO, NA", var.resource_specific_tags.patch-optin)
+    error_message = format("A patch-optin tag value of \"%s\" is not allowed. Please use one of the following: YES, NO, NA", var.resource_specific_tags.patch-optin)
   }}
 }}
 '''

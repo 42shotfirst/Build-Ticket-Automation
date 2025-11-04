@@ -398,6 +398,7 @@ class ExcelDataAccessor:
         print()
         
         # COMPREHENSIVE NSG EXTRACTION - Extract ALL security rules
+        # Using field mapping: rules.name -> name, rules.priority -> priority, etc.
         print("COMPREHENSIVE NSG EXTRACTION")
         print("=" * 30)
         
@@ -414,9 +415,43 @@ class ExcelDataAccessor:
                 
                 for j, rule in enumerate(data):
                     if rule:  # Only add non-empty rules
-                        security_rules.append(rule)
+                        # Map Excel field names to Terraform field names
+                        # Target Excel uses: name, priority, direction, access, protocol, 
+                        # source_port_range, destination_port_ranges, source_asg, destination_asg, description
+                        mapped_rule = {}
+                        
+                        # Direct mappings (same name in both)
+                        for field in ['name', 'priority', 'direction', 'access', 'protocol', 
+                                     'source_port_range', 'description']:
+                            if field in rule:
+                                mapped_rule[field] = rule[field]
+                        
+                        # Mapping: destination_port_ranges (Terraform) <- destination_port_ranges (Excel)
+                        if 'destination_port_ranges' in rule:
+                            mapped_rule['destination_port_ranges'] = rule['destination_port_ranges']
+                        elif 'destination_port_range' in rule:  # Handle singular form
+                            mapped_rule['destination_port_ranges'] = rule['destination_port_range']
+                        
+                        # Mapping: source_asg_keys (Terraform) <- source_asg (Excel)
+                        if 'source_asg' in rule:
+                            mapped_rule['source_asg'] = rule['source_asg']
+                            mapped_rule['source_asg_keys'] = rule.get('source_asg_keys', [])
+                        elif 'source_asg_keys' in rule:
+                            mapped_rule['source_asg_keys'] = rule['source_asg_keys']
+                        
+                        # Mapping: destination_asg_keys (Terraform) <- destination_asg (Excel)
+                        if 'destination_asg' in rule:
+                            mapped_rule['destination_asg'] = rule['destination_asg']
+                            mapped_rule['destination_asg_keys'] = rule.get('destination_asg_keys', [])
+                        elif 'destination_asg_keys' in rule:
+                            mapped_rule['destination_asg_keys'] = rule['destination_asg_keys']
+                        
+                        # Keep all original fields for backward compatibility
+                        mapped_rule.update(rule)
+                        security_rules.append(mapped_rule)
+                        
                         if j < 3:  # Show first 3 rules
-                            print(f"    Rule {j+1}: {list(rule.keys())[:5]}...")
+                            print(f"    Rule {j+1}: {list(mapped_rule.keys())[:5]}...")
         
         terraform_data['security_groups'] = security_rules
         print(f"  Total security rules extracted: {len(security_rules)}")

@@ -738,51 +738,105 @@ common_tags = {{
         
         vm_entries = []
         for i, vm in enumerate(vm_instances):  # Process all VMs
-            vm_name = self._extract_vm_name(vm, i)
-            vm_size = self._extract_vm_size(vm)
-            os_type = self._extract_os_type(vm)
+            vm_key = f"vm{i+1}"
             
-            # Extract VM settings from raw_data first, then fall back to extraction functions
-            # VM config is in Resources sheet, not Build_ENV
-            # Check for vm1-specific values first, then generic values
-            vm_key = f"vm{i+1}" if i < 10 else f"vm{i+1}"
-            os_disk_size = (self._get_raw_value(f'vm_list.{vm_key}.os_disk_size', 'Resources') or 
-                           self._get_raw_value('vm_list.vm1.os_disk_size', 'Resources') or 
-                           self._extract_vm_disk_size(vm))
-            os_disk_type = (self._get_raw_value(f'vm_list.{vm_key}.os_disk_type', 'Resources') or 
-                           self._get_raw_value('vm_list.vm1.os_disk_type', 'Resources') or 
+            # Extract VM fields using the correct mapping structure
+            # Mapping: vm_list.vmX.name -> vm_list.vm1.name (Target Excel)
+            vm_name = (self._get_raw_value(f'vm_list.{vm_key}.name', 'Resources') or
+                      self._get_raw_value('vm_list.vm1.name', 'Resources') or
+                      self._extract_vm_name(vm, i))
+            
+            # Mapping: vm_list.vmX.size -> vm_list.vm1.size (Target Excel)
+            vm_size = (self._get_raw_value(f'vm_list.{vm_key}.size', 'Resources') or
+                      self._get_raw_value('vm_list.vm1.size', 'Resources') or
+                      self._extract_vm_size(vm))
+            
+            # Mapping: vm_list.vmX.image_os -> vm_list.vm1.image_os (Target Excel)
+            os_type = (self._get_raw_value(f'vm_list.{vm_key}.image_os', 'Resources') or
+                      self._get_raw_value('vm_list.vm1.image_os', 'Resources') or
+                      self._extract_os_type(vm))
+            
+            # Mapping: vm_list.vmX.image_urn -> vm_list.vm1.image_urn (Target Excel)
+            image_urn = (self._get_raw_value(f'vm_list.{vm_key}.image_urn', 'Resources') or
+                        self._get_raw_value('vm_list.vm1.image_urn', 'Resources'))
+            if not image_urn:
+                # Determine image URN based on OS type if not in Excel
+                if os_type == "windows":
+                    image_urn = "MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest"
+                else:
+                    image_urn = "Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest"
+            
+            # Mapping: vm_list.vmX.os_disk_size -> vm_list.vm1.os_disk_size (Target Excel)
+            os_disk_size = (self._get_raw_value(f'vm_list.{vm_key}.os_disk_size', 'Resources') or
+                           self._get_raw_value('vm_list.vm1.os_disk_size', 'Resources'))
+            if os_disk_size:
+                try:
+                    os_disk_size = int(os_disk_size)
+                except (ValueError, TypeError):
+                    os_disk_size = self._extract_vm_disk_size(vm)
+            else:
+                os_disk_size = self._extract_vm_disk_size(vm)
+            
+            # Mapping: vm_list.vmX.os_disk_type -> vm_list.vm1.os_disk_type (Target Excel)
+            os_disk_type = (self._get_raw_value(f'vm_list.{vm_key}.os_disk_type', 'Resources') or
+                           self._get_raw_value('vm_list.vm1.os_disk_type', 'Resources') or
                            self._extract_vm_disk_type(vm))
-            ip_allocation = (self._get_raw_value(f'vm_list.{vm_key}.ip_allocation', 'Resources') or 
-                            self._get_raw_value('vm_list.vm1.ip_allocation', 'Resources') or 
+            
+            # Mapping: vm_list.vmX.ip_allocation -> vm_list.vm1.ip_allocation (Target Excel)
+            ip_allocation = (self._get_raw_value(f'vm_list.{vm_key}.ip_allocation', 'Resources') or
+                            self._get_raw_value('vm_list.vm1.ip_allocation', 'Resources') or
                             'Dynamic')
             
-            # Extract additional fields from VM data
-            role = vm.get('Role', project_info.get('role', 'Application'))
-            patch_optin = vm.get('Patch Optin', project_info.get('patch_optin', 'NO'))
+            # Mapping: vm_list.vmX.ip_address -> vm_list.vm1.ip_address (Target Excel)
+            ip_address = (self._get_raw_value(f'vm_list.{vm_key}.ip_address', 'Resources') or
+                         self._get_raw_value('vm_list.vm1.ip_address', 'Resources') or
+                         None)
+            
+            # Mapping: vm_list.vmX.snet_key -> vm_list.vm1.snet_key (Target Excel)
+            snet_key = (self._get_raw_value(f'vm_list.{vm_key}.snet_key', 'Resources') or
+                       self._get_raw_value('vm_list.vm1.snet_key', 'Resources') or
+                       'snet1')
+            
+            # Mapping: vm_list.vmX.asg_key -> vm_list.vm1.asg_key (Target Excel)
+            asg_key = (self._get_raw_value(f'vm_list.{vm_key}.asg_key', 'Resources') or
+                      self._get_raw_value('vm_list.vm1.asg_key', 'Resources') or
+                      'asg_nic')
+            
+            # Mapping: vm_list.vmX.tags.role -> vm_list.vm1.tags.wab:role (Target Excel)
+            # Note: Excel uses "wab:role" but Terraform uses "role"
+            role = (self._get_raw_value(f'vm_list.{vm_key}.tags.wab:role', 'Resources') or
+                   self._get_raw_value(f'vm_list.{vm_key}.tags.role', 'Resources') or
+                   self._get_raw_value('vm_list.vm1.tags.wab:role', 'Resources') or
+                   vm.get('Role', project_info.get('role', 'Application')))
+            
+            # Mapping: vm_list.vmX.tags.patch-optin -> vm_list.vm1.tags.wab:patch-optin (Target Excel)
+            # Note: Excel uses "wab:patch-optin" but Terraform uses "patch-optin"
+            patch_optin = (self._get_raw_value(f'vm_list.{vm_key}.tags.wab:patch-optin', 'Resources') or
+                          self._get_raw_value(f'vm_list.{vm_key}.tags.patch-optin', 'Resources') or
+                          self._get_raw_value('vm_list.vm1.tags.wab:patch-optin', 'Resources') or
+                          vm.get('Patch Optin', project_info.get('patch_optin', 'NO')))
+            
             snow_item = vm.get('Service Now Ticket', project_info.get('service_now_ticket', 'RITM000000'))
             
-            # Determine image URN based on OS type
-            if os_type == "windows":
-                image_urn = "MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest"
-            else:
-                image_urn = "Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest"
+            # Build VM entry with ip_address if provided
+            ip_address_line = f'\n    ip_address        = "{ip_address}"' if ip_address else ""
             
-            vm_entry = f'''  vm{i+1} = {{
+            vm_entry = f'''  {vm_key} = {{
     name              = "{vm_name}"
     size              = "{vm_size}"
     zone              = null
     image_os          = "{os_type}"
     marketplace_image = false
     image_urn         = "{image_urn}"
-    ip_allocation     = "{ip_allocation}"
+    ip_allocation     = "{ip_allocation}"{ip_address_line}
     identity_type     = "SystemAssigned, UserAssigned"
     os_disk_size      = {os_disk_size}
     os_disk_type      = "{os_disk_type}"
     os_disk_tier      = null
     data_disk_sizes   = [50, 50]
     data_disk_type    = "Standard_LRS"
-    snet_key          = "snet1"
-    asg_key           = "asg_nic"
+    snet_key          = "{snet_key}"
+    asg_key           = "{asg_key}"
     tags = {{
       "role"        = "{role}",
       "patch-optin" = "{patch_optin}",
@@ -886,22 +940,71 @@ common_tags = {{
         
         rules = []
         for i, rule in enumerate(security_groups):  # Process all rules
-            # Extract actual values from Excel NSG data
+            # Extract actual values from Excel NSG data using correct field mappings
+            # Mapping: rules.name (Source) -> name (Target Excel)
             rule_name = rule.get('name', f'rule_{i}')
-            priority = rule.get('priority', 100 + i * 10)
-            direction = rule.get('direction', 'Inbound')
-            access = rule.get('access', 'Allow')
-            protocol = rule.get('protocol', 'Tcp')
-            source_port = rule.get('source_port_range', '*')
-            dest_ports = rule.get('destination_port_ranges', ['443'])
-            description = rule.get('description', f'Security rule for {project_name}')
             
-            # Handle port ranges - could be string or list
+            # Mapping: rules.priority (Source) -> priority (Target Excel)
+            priority = rule.get('priority', 100 + i * 10)
+            # Try to convert to int if it's a string
+            try:
+                priority = int(priority) if priority else (100 + i * 10)
+            except (ValueError, TypeError):
+                priority = 100 + i * 10
+            
+            # Mapping: rules.direction (Source) -> direction (Target Excel)
+            direction = rule.get('direction', 'Inbound')
+            
+            # Mapping: rules.access (Source) -> access (Target Excel)
+            access = rule.get('access', 'Allow')
+            
+            # Mapping: rules.protocol (Source) -> protocol (Target Excel)
+            protocol = rule.get('protocol', 'Tcp')
+            
+            # Mapping: rules.source_port_range (Source) -> source_port_range (Target Excel)
+            source_port = rule.get('source_port_range', '*')
+            
+            # Mapping: rules.destination_port_ranges (Source) -> destination_port_ranges (Target Excel)
+            dest_ports = rule.get('destination_port_ranges', ['443'])
+            # Handle port ranges - could be string, number, or list
             if isinstance(dest_ports, str):
-                dest_ports = [dest_ports]
+                # Try to parse as comma-separated or single value
+                if ',' in dest_ports:
+                    dest_ports = [p.strip() for p in dest_ports.split(',')]
+                else:
+                    dest_ports = [dest_ports]
+            elif isinstance(dest_ports, (int, float)):
+                dest_ports = [str(dest_ports)]
+            elif not isinstance(dest_ports, list):
+                dest_ports = ['443']
+            
+            # Mapping: rules.source_asg_keys (Source) -> source_asg (Target Excel)
+            # Note: Excel uses 'source_asg' but Terraform expects 'source_asg_keys' (list)
+            source_asg = rule.get('source_asg', rule.get('source_asg_keys', []))
+            if isinstance(source_asg, str):
+                source_asg_keys = [source_asg] if source_asg else ["asg_nic"]
+            elif isinstance(source_asg, list):
+                source_asg_keys = source_asg if source_asg else ["asg_nic"]
+            else:
+                source_asg_keys = ["asg_nic"]
+            
+            # Mapping: rules.destination_asg_keys (Source) -> destination_asg (Target Excel)
+            # Note: Excel uses 'destination_asg' but Terraform expects 'destination_asg_keys' (list)
+            dest_asg = rule.get('destination_asg', rule.get('destination_asg_keys', []))
+            if isinstance(dest_asg, str):
+                destination_asg_keys = [dest_asg] if dest_asg else ["asg_pe"]
+            elif isinstance(dest_asg, list):
+                destination_asg_keys = dest_asg if dest_asg else ["asg_pe"]
+            else:
+                destination_asg_keys = ["asg_pe"]
+            
+            # Mapping: rules.description (Source) -> description (Target Excel)
+            description = rule.get('description', f'Security rule for {project_name}')
             
             # Convert list to Terraform format with double quotes
             dest_ports_str = '[' + ', '.join([f'"{port}"' for port in dest_ports]) + ']'
+            source_asg_str = '[' + ', '.join([f'"{asg}"' for asg in source_asg_keys]) + ']'
+            dest_asg_str = '[' + ', '.join([f'"{asg}"' for asg in destination_asg_keys]) + ']'
             
             rule_entry = f'''    {{
       name                       = "{rule_name}"
@@ -913,8 +1016,8 @@ common_tags = {{
       protocol                   = "{protocol}"
       source_port_range          = "{source_port}"
       destination_port_ranges    = {dest_ports_str}
-      source_asg_keys            = ["asg_nic"]
-      destination_asg_keys       = ["asg_pe"]
+      source_asg_keys            = {source_asg_str}
+      destination_asg_keys       = {dest_asg_str}
       description                = "{description}"
     }}'''
             rules.append(rule_entry)

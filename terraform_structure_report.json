@@ -1,0 +1,90 @@
+{
+  "timestamp": "2025-11-13T10:13:45.194484",
+  "output_directory": "terraform_output",
+  "validation_results": {
+    "syntax": {
+      "valid": [
+        "\u2713 NSG rules properly comma-separated",
+        "\u2713 Subnet prefixes list has valid list syntax",
+        "\u2713 Data disk sizes list has valid list syntax",
+        "\u2713 Service endpoints list has valid list syntax",
+        "\u2713 Destination port ranges list has valid list syntax",
+        "\u2713 Subresource names list has valid list syntax",
+        "\u2713 Found string type definitions",
+        "\u2713 Found map type definitions",
+        "\u2713 Found object type definitions",
+        "\u2713 Assignment operators are correct",
+        "\u2713 Null value syntax are correct",
+        "\u2713 Boolean value syntax are correct"
+      ],
+      "issues": [
+        "\u2717 Found Unclosed curly brackets (syntax error)",
+        "\u2717 Found Unclosed square brackets (syntax error)"
+      ]
+    },
+    "structure": {
+      "valid": [
+        "\u2713 Application Security Groups map structure is properly formatted",
+        "\u2713 Key Vault object structure is properly formatted",
+        "\u2713 Subnets map structure is properly formatted",
+        "\u2713 VM list map structure is properly formatted",
+        "\u2713 Network Security Rules object structure is properly formatted",
+        "\u2713 Common tags map structure is properly formatted",
+        "\u2713 VM tags nested object properly nested",
+        "\u2713 Subnet nested configuration properly nested",
+        "\u2713 Private endpoint configuration properly nested",
+        "\u2713 Found 15 variable definitions",
+        "\u2713 Terraform configuration block present",
+        "\u2713 AzureRM provider configured",
+        "\u2713 Provider features block configured",
+        "\u2713 Module block(s) defined: base-vm"
+      ],
+      "issues": []
+    },
+    "best_practices": {
+      "valid": [
+        "\u2713 Variables have descriptions",
+        "\u2713 Using optional() for nullable object attributes",
+        "\u2713 Terraform version constraint specified",
+        "\u2713 Configuration is documented (19 comments)",
+        "\u2713 Consistent resource naming prefixes",
+        "\u2713 Password properly commented out/referenced to Key Vault",
+        "\u2713 Resource tagging implemented"
+      ],
+      "issues": []
+    },
+    "formatting": {
+      "valid": [
+        "\u2713 String values properly quoted",
+        "\u2713 Consistent indentation detected"
+      ],
+      "issues": []
+    },
+    "completeness": {
+      "valid": [
+        "\u2713 Required file 'main.tf' present",
+        "\u2713 Required file 'variables.tf' present",
+        "\u2713 Required file 'terraform.tfvars' present",
+        "\u2713 Essential variable 'spn' defined",
+        "\u2713 Essential variable 'location' defined",
+        "\u2713 Essential variable 'resource_group_name' defined",
+        "\u2713 Essential variable 'vm_list' defined",
+        "\u2713 Essential variable 'network_security_rules' defined",
+        "\u2713 Essential variable 'common_tags' defined",
+        "\u2713 Module argument 'source' configured",
+        "\u2713 Module argument 'version' configured",
+        "\u2713 Module argument 'location' configured",
+        "\u2713 Module argument 'resource_group_name' configured",
+        "\u2713 Module argument 'vm_list' configured",
+        "\u2713 Module argument 'network_security_rules' configured",
+        "\u2713 Module argument 'common_tags' configured"
+      ],
+      "issues": []
+    }
+  },
+  "summary": {
+    "total_valid_items": 51,
+    "total_issues": 2,
+    "structure_ready": false
+  }
+}

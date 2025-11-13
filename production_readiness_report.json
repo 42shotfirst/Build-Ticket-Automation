@@ -1,0 +1,128 @@
+{
+  "timestamp": "2025-11-13T10:04:08.798050",
+  "file": "terraform_output/terraform.tfvars",
+  "summary": {
+    "critical_issues": 3,
+    "high_issues": 3,
+    "medium_issues": 3,
+    "low_issues": 0,
+    "info_items": 1,
+    "valid_configurations": 5,
+    "recommendations": 1
+  },
+  "production_ready": false,
+  "issues": {
+    "critical": [
+      {
+        "field": "Subscription ID",
+        "issue": "Placeholder subscription ID found",
+        "location": "subnets.snet1.network_security_group_id, route_table_id",
+        "fix": "Replace with actual Azure subscription ID (36 character UUID)"
+      },
+      {
+        "field": "OS Disk Size",
+        "issue": "OS disk size of 10 GB is too small for production",
+        "location": "vm_list.vm1.os_disk_size",
+        "fix": "Windows VMs need minimum 127 GB, Linux minimum 30 GB"
+      },
+      {
+        "field": "NSG Rules",
+        "issue": "Invalid test data in network security rules",
+        "location": "network_security_rules.rules",
+        "problems": [
+          "Source port \"1\" is not a valid port configuration",
+          "Source port \"2\" is not a valid port configuration",
+          "Destination port \"5\" is not a standard service port",
+          "Destination port \"6\" is not a standard service port",
+          "Source ASG \"9\" is not a valid ASG reference",
+          "Destination ASG \"13\" is not a valid ASG reference"
+        ],
+        "fix": "Use valid ports (22, 443, 3389, etc.) and actual ASG names"
+      }
+    ],
+    "high": [
+      {
+        "field": "Application Name",
+        "issue": "Test application name \"bob\" found",
+        "location": "Multiple resources use \"bob\" as app name",
+        "fix": "Use meaningful application name (e.g., \"webportal\", \"dataprocessor\")"
+      },
+      {
+        "field": "Resource Group",
+        "issue": "Non-descriptive resource group name \"rsg1\"",
+        "location": "resource_group_name",
+        "fix": "Use pattern: rg-<app>-<env>-<region> (e.g., rg-webportal-uat-westus3)"
+      },
+      {
+        "field": "ServiceNow Ticket",
+        "issue": "Invalid ServiceNow ticket number \"1\"",
+        "location": "common_tags.snow-item, vm tags",
+        "fix": "Use valid format: RITM0123456 or CHG0123456"
+      }
+    ],
+    "medium": [
+      {
+        "field": "Subnet Prefix",
+        "issue": "Using default subnet prefix 10.0.1.0/24",
+        "location": "subnets.snet1.prefixes",
+        "fix": "Verify this doesn't conflict with existing network ranges"
+      },
+      {
+        "field": "NSG Rule Names",
+        "issue": "Non-descriptive rule names (one, two, three, four)",
+        "location": "network_security_rules.rules[].name",
+        "fix": "Use descriptive names: \"allow-https-inbound\", \"allow-rdp-from-bastion\""
+      },
+      {
+        "field": "Tags",
+        "issue": "TBD placeholder values in tags",
+        "location": "common_tags: cost-center, department, line-of-business",
+        "fix": "Provide actual cost center and department information"
+      }
+    ],
+    "low": [],
+    "info": [
+      {
+        "field": "VM Size",
+        "issue": "Using burstable B-series VM (Standard_B2s)",
+        "location": "vm_list.vm1.size",
+        "fix": "Consider D-series or E-series for production workloads"
+      }
+    ]
+  },
+  "valid_values": [
+    {
+      "field": "Admin Username",
+      "value": "cisadmin",
+      "status": "Good - using enterprise standard admin name"
+    },
+    {
+      "field": "Environment Tag",
+      "value": "UAT",
+      "status": "Valid environment designation"
+    },
+    {
+      "field": "Disk Encryption",
+      "value": "Configured",
+      "status": "Good - disk encryption set is configured"
+    },
+    {
+      "field": "Managed Identity",
+      "value": "Both System and User Assigned",
+      "status": "Good - using managed identities"
+    },
+    {
+      "field": "Key Vault Name",
+      "value": "kv-bob-uat",
+      "status": "Valid naming convention"
+    }
+  ],
+  "recommendations": [
+    {
+      "field": "Key Vault Network Access",
+      "recommendation": "Consider restricting public network access for Key Vault",
+      "current": "public_network_access = true",
+      "suggested": "Use private endpoints for production"
+    }
+  ]
+}

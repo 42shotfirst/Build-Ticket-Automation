@@ -845,8 +845,10 @@ common_tags = {{
   }}'''
             vm_entries.append(vm_entry)
         
+        # Join with commas between map entries (Terraform requires commas between map objects)
+        vm_entries_str = ',\n'.join(vm_entries)
         return f'''{{
-{chr(10).join(vm_entries)}
+{vm_entries_str}
 }}'''
     
     def _generate_subnets_for_tfvars(self) -> str:
@@ -895,7 +897,7 @@ common_tags = {{
         return f'''{{
   asg_nic = {{
     name = "asg-{app_name.lower()}-nic-{environment.lower()}"
-  }}
+  }},
   asg_pe = {{
     name = "asg-{app_name.lower()}-pe-{environment.lower()}"
   }}
@@ -909,6 +911,7 @@ common_tags = {{
         environment = project_info.get('environment', 'dev')
         
         # Use project-specific naming instead of hardcoded test values
+        # Note: Only one private endpoint in this example, but comma would be needed if more are added
         return f'''{{
   pe_kvlt = {{
     name                           = "pvep-kvlt-{app_name.lower()}-{environment.lower()}"
@@ -1022,7 +1025,8 @@ common_tags = {{
     }}'''
             rules.append(rule_entry)
         
-        rules_text = chr(10).join(rules)
+        # Join with commas between list items (Terraform lists require commas)
+        rules_text = ',\n'.join(rules)
         return f'''{{
   resource_group_name         = "{network_rg}"
   network_security_group_name = "{nsg_name}"

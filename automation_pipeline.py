@@ -401,8 +401,8 @@ class AutomationPipeline:
 
             # Convert Excel to JSON using ComprehensiveExcelExtractor
             extractor = ComprehensiveExcelExtractor(excel_file)
-            extractor.extract_all_sheets()
-            output_file = extractor.save_to_json(json_file)
+            extractor.extract_all()
+            output_file = extractor.export_to_json(json_file)
 
             if output_file and os.path.exists(output_file):
                 result['success'] = True

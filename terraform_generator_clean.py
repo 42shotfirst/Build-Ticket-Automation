@@ -58,175 +58,217 @@ class TerraformGeneratorClean:
     def _generate_main_tf(self) -> str:
         """Generate main.tf with module call."""
 
-        # Get actual module version or use default
-        module_version = self.clean_values.get('module_version', '1.0.0')
+        # Use client-standard placeholder for module version
+        module_version = "__DYNAMIC_MODULE_VERSION__"
 
-        return f'''# main.tf
-# Generated from Excel data
-
-terraform {{
-  required_version = ">= 1.0"
-
-  required_providers {{
-    azurerm = {{
-      source  = "hashicorp/azurerm"
-      version = "~> 3.0"
-    }}
-  }}
-}}
-
-provider "azurerm" {{
-  features {{
-    key_vault {{
-      purge_soft_delete_on_destroy = false
-    }}
-  }}
-}}
+        return f'''# Begin main.tf
 
 module "base-vm" {{
-  source  = "app.terraform.io/wab-cloudengineering-org/base-vm/iac"
-  version = "{module_version}"
+  source = "app.terraform.io/wab-cloudengineering-org/base-vm/iac"
 
-  # Core configuration
-  spn                 = var.spn
-  location            = var.location
-  resource_group_name = var.resource_group_name
-
-  # Security groups
-  application_security_groups = var.application_security_groups
-
-  # Key vault and identity
-  key_vault                   = var.key_vault
-  user_assigned_identity_name = var.user_assigned_identity_name
-  disk_encryption_set_name    = var.disk_encryption_set_name
-
-  # Networking
-  subnets           = var.subnets
-  private_endpoints = var.private_endpoints
-
-  # VM configuration
-  admin_username = var.admin_username
-  admin_password = var.admin_password
-  vm_list        = var.vm_list
-
-  # Security rules
-  network_security_rules = var.network_security_rules
-
-  # Tags
-  common_tags            = var.common_tags
-  resource_specific_tags = var.resource_specific_tags
+  # Using a variable for the module version isn't supported yet: https://github.com/hashicorp/terraform/issues/28912
+  #version                     = var.test_module_version
+  version                              = "{module_version}"
+  spn                                  = var.spn
+  location                             = var.location
+  resource_group_name                  = var.resource_group_name
+  existing_application_security_groups = var.existing_application_security_groups
+  application_security_groups          = var.application_security_groups
+  key_vault                            = var.key_vault
+  user_assigned_identity_name          = var.user_assigned_identity_name
+  disk_encryption_set_name             = var.disk_encryption_set_name
+  subnets                              = var.subnets
+  existing_subnets                     = var.existing_subnets
+  private_endpoints                    = var.private_endpoints
+  admin_username                       = var.admin_username
+  admin_password                       = var.admin_password
+  vm_list                              = var.vm_list
+  network_security_rules               = var.network_security_rules
+  common_tags                          = var.common_tags
+  resource_specific_tags               = var.resource_specific_tags
 }}
 '''
 
     def _generate_variables_tf(self) -> str:
-        """Generate variables.tf."""
+        """Generate variables.tf with client-standard validation blocks."""
 
-        location = self._fix_location(self.clean_values.get('location', 'West US 3'))
+        location = self._fix_location(self.clean_values.get('location', 'WEST US 3'))
 
-        return f'''# variables.tf
-# Generated from Excel data
+        return f'''# Begin variables.tf
 
 variable "spn" {{
   type        = string
-  description = "Service Principal Name"
-}}
-
-variable "location" {{
-  type        = string
-  default     = "{location}"
-  description = "Azure region for resources"
+  default     = null
+  description = "Display name for Service Principal"
 }}
 
 variable "resource_group_name" {{
-  type        = string
-  description = "Resource group name"
+  type    = string
+  default = null
+}}
+
+variable "location" {{
+  type     = string
+  default  = "{location}"
+  nullable = false
+  validation {{
+    condition = contains(
+      [
+        "WEST US",
+        "WEST US 2",
+        "WEST US 3",
+        "EAST US",
+      ], var.location
+    )
+    error_message = format("A location value of '%s' is not allowed. Please use one of the following: \\n %s", var.location,
+      join("\\n ",
+        [
+          "US WEST",
+          "US WEST 2",
+          "US WEST 3",
+          "US EAST",
+        ]
+      )
+    )
+  }}
+}}
+
+variable "existing_application_security_groups" {{
+  type = map(object({{
+    name                = string
+    resource_group_name = optional(string)
+  }}))
+  default     = {{}}
+  description = <<-EOT
+  map(object({{
+    name         = Name of the application security group
+  }}))
+  EOT
+  nullable    = false
 }}
 
 variable "application_security_groups" {{
   type = map(object({{
     name = string
   }}))
-  description = "Application security groups"
+  default     = {{}}
+  description = <<-EOT
+  map(object({{
+    name         = Name of the application security group
+  }}))
+  EOT
+  nullable    = false
 }}
 
 variable "key_vault" {{
   type = object({{
-    name                       = string
-    sku_name                   = string
-    soft_delete_retention_days = number
-    public_network_access      = bool
+    name                       = optional(string)
+    sku_name                   = optional(string)
+    soft_delete_retention_days = optional(number)
+    public_network_access      = optional(string)
     snet_key                   = string
-    key_name                   = string
+    key_name                   = optional(string)
   }})
-  description = "Key vault configuration"
+  default = {{
+    name                       = null
+    sku_name                   = "standard"
+    soft_delete_retention_days = 90
+    public_network_access      = true
+    snet_key                   = "snet1"
+    key_name                   = null
+  }}
+  description = <<-EOT
+  name                          = The name of the vault
+  sku_name                      = The name of the SKU used for this Key Vault. Possible values are standard and premium
+  soft_delete_retention_days    = The number of days that items should be retained for once soft-deleted. This value can be between 7 and 90
+  public_network_access_enabled = Whether public network access is allowed for this Key Vault.
+  snet_key                      = Subnet key that this key vault should be in
+  key_name                = The name of the key vault key
+  EOT
+  nullable    = false
 }}
 
 variable "user_assigned_identity_name" {{
   type        = string
+  default     = null
   description = "User assigned identity name"
 }}
 
 variable "disk_encryption_set_name" {{
   type        = string
+  default     = null
   description = "Disk encryption set name"
+}}
+
+variable "existing_subnets" {{
+  type = map(object({{
+    resource_group_name  = string
+    virtual_network_name = string
+    name                 = string
+  }}))
+  default     = null
+  description = <<-EOT
+  map(object({{
+    resource_group_name         = Name of the resource group the vnet is in
+    virtual_network_name        = Name of virtual network the subnet is will be attached to
+    network_security_group_name = Name of the network security group to associate with the subnet
+    route_table_name            = Name of the route table to associate with the subnet
+    name                        = Name of the subnet
+    prefixes                    = Address prefixes to use for the subnet
+    service_endpoints           = List of Service endpoints to associate with the subnet
+  }}))
+  EOT
 }}
 
 variable "subnets" {{
   type = map(object({{
     resource_group_name         = string
     virtual_network_name        = string
-    network_security_group_id   = string
-    route_table_id              = string
+    network_security_group_name = optional(string)
+    network_security_group_id   = optional(string)
+    route_table_name            = optional(string)
+    route_table_id              = optional(string)
     name                        = string
     prefixes                    = list(string)
     service_endpoints           = list(string)
   }}))
-  description = "Subnet configurations"
+  default     = null
+  description = <<-EOT
+  map(object({{
+    resource_group_name         = Name of the resource group the vnet is in
+    virtual_network_name        = Name of virtual network the subnet is will be attached to
+    network_security_group_name = Name of the network security group to associate with the subnet
+    route_table_name            = Name of the route table to associate with the subnet
+    name                        = Name of the subnet
+    prefixes                    = Address prefixes to use for the subnet
+    service_endpoints           = List of Service endpoints to associate with the subnet
+  }}))
+  EOT
 }}
 
 variable "private_endpoints" {{
   type = map(object({{
-    name              = string
-    subresource_names = list(string)
-    snet_key          = string
-    asg_key           = string
+    name                           = string
+    subresource_names              = list(string)
+    private_connection_resource_id = optional(string)
+    is_manual_connection           = optional(string)
+    private_dns_zone_group_name    = optional(string)
+    private_dns_zone_ids           = optional(list(string))
+    snet_key                       = string
+    asg_key                        = string
   }}))
-  description = "Private endpoint configurations"
-}}
-
-variable "admin_username" {{
-  type        = string
-  default     = "azureadmin"
-  description = "VM admin username"
-}}
-
-variable "admin_password" {{
-  type        = string
-  sensitive   = true
-  description = "VM admin password"
-}}
-
-variable "vm_list" {{
-  type = map(object({{
-    name              = string
-    size              = string
-    zone              = optional(string)
-    image_os          = string
-    marketplace_image = bool
-    image_urn         = string
-    ip_allocation     = string
-    ip_address        = optional(string)
-    identity_type     = string
-    os_disk_size      = number
-    os_disk_type      = string
-    os_disk_tier      = optional(string)
-    data_disk_sizes   = list(number)
-    data_disk_type    = string
-    snet_key          = string
-    asg_key           = string
-    tags              = map(string)
+  default     = {{}}
+  description = <<-EOT
+  map(object({{
+    name                           = (Required) Specifies the Name of the Private Endpoint.
+    subresource_names              = (Optional) A list of subresource names which the Private Endpoint is able to connect to. subresource_names corresponds to group_id. Possible values are detailed in the product documentation in the Subresources column.
+    private_connection_resource_id = (Optional) The ID of the Private Link Enabled Remote Resource which this Private Endpoint should be connected to.
+    is_manual_connection           = (Required) Does the Private Endpoint require Manual Approval from the remote resource owner?
+    private_dns_zone_group_name    = (Required) Specifies the Name of the Private Service Connection
+    private_dns_zone_ids           = (Required) Specifies the list of Private DNS Zones to include within the private_dns_zone_group
   }}))
-  description = "Virtual machine configurations"
+  EOT
+  nullable    = false
 }}
 
 variable "network_security_rules" {{
@@ -234,30 +276,165 @@ variable "network_security_rules" {{
     resource_group_name         = string
     network_security_group_name = string
     rules = list(object({{
-      name                    = string
-      priority                = number
-      direction               = string
-      access                  = string
-      protocol                = string
-      source_port_range       = string
-      destination_port_ranges = list(string)
-      source_asg              = string
-      destination_asg         = string
-      description             = string
+      name                         = optional(string)
+      priority                     = number
+      direction                    = string
+      access                       = string
+      protocol                     = string
+      description                  = optional(string)
+      source_port_range            = optional(string)
+      source_port_ranges           = optional(list(string))
+      destination_port_range       = optional(string)
+      destination_port_ranges      = optional(list(string))
+      source_address_prefix        = optional(string)
+      source_address_prefixes      = optional(list(string))
+      destination_address_prefix   = optional(string)
+      destination_address_prefixes = optional(list(string))
+      source_asg_keys              = optional(list(string))
+      destination_asg_keys         = optional(list(string))
+      source_name                  = optional(string)
+      destination_name             = optional(string)
+      snow-item                    = optional(string)
     }}))
   }})
-  description = "Network security rules"
+  default = null
+}}
+
+variable "admin_username" {{
+  type     = string
+  default  = "cisadmin"
+  nullable = false
+}}
+
+variable "admin_password" {{
+  sensitive = true
+  type      = string
+  default   = null
+}}
+
+variable "vm_list" {{
+  type = map(object({{
+    name              = string
+    size              = string
+    zone              = optional(number)
+    image_os          = string
+    image_urn         = optional(string)
+    source_image_id   = optional(string)
+    marketplace_image = optional(bool)
+    ip_allocation     = string
+    ip_address        = optional(string)
+    identity_type     = optional(string)
+    os_disk_name      = optional(string)
+    os_disk_size      = number
+    os_disk_type      = optional(string)
+    os_disk_tier      = optional(string)
+    data_disk_sizes   = optional(list(number))
+    data_disk_type    = optional(string)
+    data_disks = optional(map(object({{
+      name = optional(string)
+      size = string
+      type = optional(string)
+      tier = optional(string)
+    }})))
+    snet_key = string
+    asg_key  = string
+    tags = object({{
+      role        = string
+      patch-optin = string
+      snow-item   = optional(string)
+    }})
+  }}))
+  default     = null
+  description = "Virtual machine configurations"
+  nullable    = true
 }}
 
 variable "common_tags" {{
-  type        = map(string)
-  description = "Common tags for all resources"
+  type = object({{
+    terraform           = optional(bool)
+    shared-service-name = string
+    app-name            = string
+    environment         = string
+    app-tier            = string
+    snow-item           = string
+    it-cost-center      = string
+    it-domain           = string
+    notes               = optional(string)
+    segment             = optional(string)
+    lineofbusiness      = optional(string)
+    department          = optional(string)
+    cost-center         = optional(string)
+  }})
+
+  description = "Required tags on all resources."
+
+  validation {{
+    condition = contains(
+      [
+        "DEV",
+        "QA",
+        "UAT",
+        "PROD",
+        "DR"
+      ], var.common_tags.environment
+    )
+    error_message = format("An environment tag value of '%s' is not allowed. Please use one of the following: \\n %s", var.common_tags.environment,
+      join("\\n ",
+        [
+          "DEV",
+          "QA",
+          "UAT",
+          "PROD",
+          "DR"
+        ]
+      )
+    )
+  }}
+
+  validation {{
+    condition = contains(
+      [
+        "Platinum",
+        "Gold",
+        "Iron",
+        "Silver",
+        "Bronze",
+      ], var.common_tags.app-tier
+    )
+    error_message = format("A app-tier tag value of '%s' is not allowed. Please use one of the following: \\n %s", var.common_tags.app-tier,
+      join("\\n ",
+        [
+          "Platinum",
+          "Gold",
+          "Iron",
+          "Silver",
+          "Bronze",
+        ]
+      )
+    )
+  }}
+
+  validation {{
+    condition     = var.common_tags.it-cost-center == "NA" || can(var.common_tags.it-cost-center * 1)
+    error_message = format("An it-cost-center tag value of '%s' is not allowed. Please use NA or a whole number", var.common_tags.it-cost-center)
+  }}
 }}
 
 variable "resource_specific_tags" {{
-  type        = map(map(string))
-  default     = {{}}
-  description = "Resource-specific tags"
+  type = object({{
+    role        = optional(string)
+    patch-optin = optional(string)
+  }})
+  default = {{
+    role        = "NA"
+    patch-optin = "NA"
+  }}
+  description = "These need to be on all resources. Some resources such as VMs will have values. Those tag values are controlled under that variable."
+
+  validation {{
+    condition     = contains(["YES", "NO", "NA"], var.resource_specific_tags.patch-optin)
+    error_message = format("A patch-optin tag value of '%s' is not allowed. Please use one of the following: YES, NO, NA", var.resource_specific_tags.patch-optin)
+  }}
 }}
 '''
 
@@ -296,7 +473,7 @@ variable "resource_specific_tags" {{
         os_disk_type = vm_config.get('os_disk_type', 'StandardSSD_LRS')
         ip_allocation = vm_config.get('ip_allocation', 'Dynamic')
         ip_address = vm_config.get('ip_address')
-        admin_username = vm_config.get('admin_username', 'azureadmin')
+        admin_username = vm_config.get('admin_username', 'cisadmin')
 
         # Get data disk configuration from Excel or use defaults
         data_disk_sizes = vm_config.get('data_disk_sizes', [50, 50])
@@ -337,53 +514,60 @@ variable "resource_specific_tags" {{
                 dest_ports = [str(dest_ports)]
             dest_ports_formatted = ', '.join(f'"{p}"' for p in dest_ports)
 
-            # Handle ASGs
-            source_asg = str(rule.get('source_asg', 'asg_nic'))
-            dest_asg = str(rule.get('destination_asg', 'asg_nic'))
-            description = str(rule.get('description', f'Security rule {i+1}'))
+            # Handle ASGs - client standard uses lists
+            source_asg_keys = rule.get('source_asg_keys', ['asg_nic'])
+            if not isinstance(source_asg_keys, list):
+                source_asg_keys = [str(source_asg_keys)]
+            source_asg_formatted = ', '.join(f'"{k}"' for k in source_asg_keys)
+
+            dest_asg_keys = rule.get('destination_asg_keys', ['asg_pe'])
+            if not isinstance(dest_asg_keys, list):
+                dest_asg_keys = [str(dest_asg_keys)]
+            dest_asg_formatted = ', '.join(f'"{k}"' for k in dest_asg_keys)
+
+            source_name = str(rule.get('source_name', 'Source'))
+            destination_name = str(rule.get('destination_name', 'Destination'))
+            description = str(rule.get('description', f'Security rule for {app_name}'))
 
             rule_text = f'''    {{
-      name                    = "{name}"
-      priority                = {priority}
-      direction               = "{direction}"
-      access                  = "{access}"
-      protocol                = "{protocol}"
-      source_port_range       = "{source_port}"
-      destination_port_ranges = [{dest_ports_formatted}]
-      source_asg              = "{source_asg}"
-      destination_asg         = "{dest_asg}"
-      description             = "{description}"
+      name                       = "{name}"
+      source_name                = "{source_name}"
+      destination_name           = "{destination_name}"
+      priority                   = {priority}
+      direction                  = "{direction}"
+      access                     = "{access}"
+      protocol                   = "{protocol}"
+      source_port_range          = "{source_port}"
+      destination_port_ranges    = [{dest_ports_formatted}]
+      source_asg_keys            = [{source_asg_formatted}]
+      destination_asg_keys       = [{dest_asg_formatted}]
+      description                = "{description}"
     }}'''
             formatted_rules.append(rule_text)
 
         # Join rules with commas
         rules_string = ',\n'.join(formatted_rules) if formatted_rules else ''
 
-        return f'''# terraform.tfvars
-# Generated from Excel data extraction
+        return f'''# Begin terraform.tfvars
 
-# Service Principal
-spn = "spn-{app_name}-{environment.lower()}"
-
-# Location
+spn      = "spn-terraform-{app_name}"
 location = "{location}"
-
-# Resource Group
 resource_group_name = "{resource_group}"
 
-# Application Security Groups
 application_security_groups = {{
   asg_nic = {{
     name = "asg-{app_name}-nic-{environment.lower()}"
-  }},
+  }}
   asg_pe = {{
     name = "asg-{app_name}-pe-{environment.lower()}"
   }}
 }}
 
-# Key Vault Configuration
+disk_encryption_set_name    = "dsk-{app_name}-{environment.lower()}"
+user_assigned_identity_name = "umid-{app_name}-{environment.lower()}"
+
 key_vault = {{
-  name                       = "kv-{app_name[:20]}-{environment.lower()}"
+  name                       = "kvlt-{app_name}-{environment.lower()}"
   sku_name                   = "standard"
   soft_delete_retention_days = 90
   public_network_access      = true
@@ -391,34 +575,24 @@ key_vault = {{
   key_name                   = "key-{app_name}-{environment.lower()}"
 }}
 
-# Identity and Encryption
-user_assigned_identity_name = "id-{app_name}-{environment.lower()}"
-disk_encryption_set_name    = "des-{app_name}-{environment.lower()}"
-
-# Admin credentials
-admin_username = "{admin_username}"
-# admin_password = "CHANGE-ME-IN-KEYVAULT"  # Store in Key Vault, not in code
-
-# Subnet Configuration
 subnets = {{
   snet1 = {{
-    resource_group_name  = "{resource_group}-network"
+    resource_group_name  = "{resource_group}-networking"
     virtual_network_name = "vnet-{app_name}-{environment.lower()}"
-    network_security_group_id = "/subscriptions/{subscription_id}/resourceGroups/{resource_group}-network/providers/Microsoft.Network/networkSecurityGroups/nsg-{app_name}-{environment.lower()}"{subscription_comment}
-    route_table_id            = "/subscriptions/{subscription_id}/resourceGroups/{resource_group}-network/providers/Microsoft.Network/routeTables/rt-{app_name}-{environment.lower()}"{subscription_comment}
+    network_security_group_id   = "/subscriptions/{subscription_id}/resourceGroups/{resource_group}-networking/providers/Microsoft.Network/networkSecurityGroups/nsg-{app_name}-{environment.lower()}"{subscription_comment}
+    route_table_id              = "/subscriptions/{subscription_id}/resourceGroups/{resource_group}-networking/providers/Microsoft.Network/routeTables/rt-{app_name}-{environment.lower()}"{subscription_comment}
     name              = "snet-{app_name}-{environment.lower()}"
     prefixes          = ["{network_prefix}"]
     service_endpoints = ["Microsoft.KeyVault"]
   }}
 }}
 
-# Private Endpoints
 private_endpoints = {{
   pe_kvlt = {{
-    name              = "pe-kv-{app_name}-{environment.lower()}"
-    subresource_names = ["vault"]
-    snet_key          = "snet1"
-    asg_key           = "asg_pe"
+    name                           = "pvep-kvlt-{app_name}-{environment.lower()}"
+    subresource_names              = ["vault"]
+    snet_key                       = "snet1"
+    asg_key                        = "asg_pe"
   }}
 }}
 
@@ -442,34 +616,34 @@ vm_list = {{
     asg_key           = "asg_nic"
     tags = {{
       "role"        = "Application",
-      "patch-optin" = "YES",
+      "patch-optin" = "NO",
       "snow-item"   = "{snow_ticket}"
     }}
   }}
 }}
 
-# Network Security Rules
 network_security_rules = {{
-  resource_group_name         = "{resource_group}-network"
+  resource_group_name         = "{resource_group}-networking"
   network_security_group_name = "nsg-{app_name}-{environment.lower()}"
   rules = [
 {rules_string}
   ]
 }}
 
-# Common Tags
 common_tags = {{
+  "shared-service-name" = "NA",
   "app-name"            = "{app_name}",
   "environment"         = "{environment}",
+  "data-classification" = "Internal",
+  "criticality"         = "4-Very Minor to Operations",
+  "app-tier"            = "{project_info.get('app_tier', 'Bronze')}",
   "snow-item"           = "{snow_ticket}",
-  "managed-by"          = "terraform",
-  "cost-center"         = "{project_info.get('cost_center_id', 'TBD')}",
-  "department"          = "{project_info.get('department', 'TBD')}",
-  "line-of-business"    = "{project_info.get('line_of_business', 'TBD')}"
+  "it-cost-center"      = "{project_info.get('it_cost_center', 'NA')}",
+  "it-domain"           = "{project_info.get('it_domain', 'Platform Engineering')}",
+  "lineofbusiness"      = "{project_info.get('line_of_business', 'TBD')}",
+  "department"          = "{project_info.get('department', 'Cloud Engineering')}",
+  "cost-center"         = "{project_info.get('cost_center', 'TBD')}"
 }}
-
-# Resource-specific tags (customize as needed)
-resource_specific_tags = {{}}
 '''
 
     def _generate_outputs_tf(self) -> str:
@@ -504,34 +678,34 @@ output "key_vault_uri" {
 '''
 
     def _fix_location(self, location: str) -> str:
-        """Fix location value to be a valid Azure region."""
+        """Fix location value to be a valid Azure region in uppercase format."""
 
         # Map common values to valid Azure regions
         location_map = {
-            'here': 'West US 3',
-            'us': 'West US',
-            'west': 'West US',
-            'east': 'East US',
-            'central': 'Central US',
+            'here': 'WEST US 3',
+            'us': 'WEST US',
+            'west': 'WEST US',
+            'east': 'EAST US',
+            'central': 'CENTRAL US',
         }
 
         location_lower = location.lower()
 
         # Check if it's already a valid region format
         if any(region in location_lower for region in ['west us', 'east us', 'central us', 'north', 'south']):
-            # Capitalize properly
-            return ' '.join(word.capitalize() for word in location.split())
+            # Uppercase properly for client standards
+            return location.upper()
 
         # Try to map it
         for key, value in location_map.items():
             if key in location_lower:
                 return value
 
-        # Default to West US 3 if unknown
+        # Default to WEST US 3 if unknown
         if location_lower in ['here', 'tbd', 'todo', '']:
-            return 'West US 3'
+            return 'WEST US 3'
 
-        return location
+        return location.upper()
 
 
 def main():

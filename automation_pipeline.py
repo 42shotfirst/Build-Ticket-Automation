@@ -17,10 +17,9 @@ from typing import Dict, Any, List, Optional
 import traceback
 
 # imports
-from excel_to_json_converter import convert_excel_to_json
+from comprehensive_excel_extractor import ComprehensiveExcelExtractor
 from data_accessor import ExcelDataAccessor
-from enhanced_terraform_generator import EnhancedTerraformGenerator
-from enhanced_terraform_generator_v2 import EnhancedTerraformGeneratorV2
+from terraform_generator_clean import TerraformGeneratorClean
 
 class AutomationPipeline:
     """Complete automation pipeline for Excel to Terraform conversion."""
@@ -398,15 +397,17 @@ class AutomationPipeline:
         try:
             # Generate unique JSON filename based on Excel file
             base_name = os.path.splitext(os.path.basename(excel_file))[0]
-            json_file = f"{base_name}_comprehensive_data.json"
-            
-            # Convert Excel to JSON
-            output_file = convert_excel_to_json(excel_file, json_file)
-            
+            json_file = f"{base_name}_comprehensive_extract.json"
+
+            # Convert Excel to JSON using ComprehensiveExcelExtractor
+            extractor = ComprehensiveExcelExtractor(excel_file)
+            extractor.extract_all_sheets()
+            output_file = extractor.save_to_json(json_file)
+
             if output_file and os.path.exists(output_file):
                 result['success'] = True
                 result['json_file'] = output_file
-                
+
                 # Get file size
                 file_size = os.path.getsize(output_file)
                 self.logger.info(f"JSON file created: {output_file} ({file_size:,} bytes)")
@@ -551,31 +552,25 @@ class AutomationPipeline:
         result = {'success': False, 'errors': [], 'files': [], 'output_dir': None}
         
         try:
-            # Extract subscription and create dynamic output directory
-            terraform_dir = self._create_dynamic_output_directory(json_file, excel_file)
-            
-            # Create generator based on configuration
-            use_v2_generator = self.config.get('terraform', {}).get('use_enhanced_generator_v2', True)
-            
-            if use_v2_generator:
-                generator = EnhancedTerraformGeneratorV2(json_file)
-                self.logger.info("Using Enhanced Terraform Generator v2 (module.md patterns)")
-            else:
-                generator = EnhancedTerraformGenerator(json_file)
-                self.logger.info("Using Enhanced Terraform Generator v1 (legacy patterns)")
-            
+            # Use default terraform_clean output directory
+            terraform_dir = "terraform_clean"
+
+            # Create generator using the clean version
+            generator = TerraformGeneratorClean(json_file)
+            self.logger.info("Using TerraformGeneratorClean (client standards compliant)")
+
             # Generate files
-            terraform_files = generator.generate_terraform_files(terraform_dir)
-            
+            terraform_files = generator.generate_all()
+
             if terraform_files:
                 result['success'] = True
                 result['files'] = list(terraform_files.keys())
                 result['output_dir'] = terraform_dir
-                
-                # Get summary
-                summary = generator.generate_summary()
+
                 self.logger.info(f"Generated {len(terraform_files)} Terraform files")
-                self.logger.info(f"Resources: {summary['resources']['virtual_machines']} VMs, {summary['resources']['network_security_rules']} security rules")
+                for filename, filepath in terraform_files.items():
+                    file_size = os.path.getsize(filepath)
+                    self.logger.info(f"  - {filename} ({file_size:,} bytes)")
             else:
                 result['errors'].append("Failed to generate Terraform files")
                 

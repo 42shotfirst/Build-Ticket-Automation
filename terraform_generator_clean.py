@@ -298,6 +298,17 @@ variable "resource_specific_tags" {{
         ip_address = vm_config.get('ip_address')
         admin_username = vm_config.get('admin_username', 'azureadmin')
 
+        # Get data disk configuration from Excel or use defaults
+        data_disk_sizes = vm_config.get('data_disk_sizes', [50, 50])
+        if not isinstance(data_disk_sizes, list):
+            data_disk_sizes = [50, 50]
+        data_disk_type = vm_config.get('data_disk_type', 'Standard_LRS')
+
+        # Get network prefix from Excel or use default
+        network_prefix = build_env.get('network_prefix', '10.0.1.0/24')
+        if not network_prefix or network_prefix == '':
+            network_prefix = '10.0.1.0/24'
+
         # Determine image URN
         if os_type == 'windows':
             image_urn = "MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest"
@@ -396,7 +407,7 @@ subnets = {{
     network_security_group_id = "/subscriptions/{subscription_id}/resourceGroups/{resource_group}-network/providers/Microsoft.Network/networkSecurityGroups/nsg-{app_name}-{environment.lower()}"{subscription_comment}
     route_table_id            = "/subscriptions/{subscription_id}/resourceGroups/{resource_group}-network/providers/Microsoft.Network/routeTables/rt-{app_name}-{environment.lower()}"{subscription_comment}
     name              = "snet-{app_name}-{environment.lower()}"
-    prefixes          = ["10.0.1.0/24"]
+    prefixes          = ["{network_prefix}"]
     service_endpoints = ["Microsoft.KeyVault"]
   }}
 }}
@@ -425,8 +436,8 @@ vm_list = {{
     os_disk_size      = {os_disk_size}
     os_disk_type      = "{os_disk_type}"
     os_disk_tier      = null
-    data_disk_sizes   = [50, 50]
-    data_disk_type    = "Standard_LRS"
+    data_disk_sizes   = {data_disk_sizes}
+    data_disk_type    = "{data_disk_type}"
     snet_key          = "snet1"
     asg_key           = "asg_nic"
     tags = {{

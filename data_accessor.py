@@ -841,6 +841,79 @@ class ExcelDataAccessor:
         print("  Could not auto-detect application name")
         return None
 
+    def _extract_vms_from_vertical_format(self, terraform_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Extract VMs from vertical key-value format (Resources sheet).
+
+        This handles Excel sheets where VM data is structured as:
+        Row N:   Virtual Machine | Value
+        Row N+1: Key             | vm1
+        Row N+2: SKU             | Standard_D2s_v3
+        etc.
+        """
+        vm_instances = []
+
+        # Check Resources sheet raw data
+        resources_data = terraform_data.get('comprehensive_data', {}).get('Resources', {})
+        raw_data = resources_data.get('raw_data', [])
+
+        if not raw_data:
+            return vm_instances
+
+        print("  Searching for VM data in vertical key-value format...")
+
+        # Find sections starting with "Virtual Machine"
+        i = 0
+        while i < len(raw_data):
+            row = raw_data[i]
+            if isinstance(row, dict):
+                # Check if this row marks start of a VM section
+                first_col = str(row.get('0', '')).strip()
+                value_col = str(row.get('2', '')).strip()
+
+                if 'virtual machine' in first_col.lower() and value_col.lower() in ['value', '']:
+                    # Found VM section start, extract VM data
+                    vm_data = {}
+                    i += 1  # Move to next row
+
+                    # Extract VM fields until we hit an empty row or new section
+                    while i < len(raw_data):
+                        data_row = raw_data[i]
+                        if not isinstance(data_row, dict):
+                            i += 1
+                            continue
+
+                        field_name = str(data_row.get('0', '')).strip()
+                        field_value = str(data_row.get('2', '')).strip()
+
+                        # Stop if we hit empty row or new section
+                        if not field_name or any(marker in field_name.lower() for marker in
+                            ['data disk', 'storage account', 'network', 'subnet', 'load balancer']):
+                            break
+
+                        # Skip header rows
+                        if field_value.lower() in ['value', 'existing', 'validation']:
+                            i += 1
+                            continue
+
+                        # Store the field
+                        if field_name and field_value:
+                            vm_data[field_name] = field_value
+
+                        i += 1
+
+                    # If we collected VM data, add it
+                    if vm_data and len(vm_data) >= 3:  # Must have at least 3 fields
+                        # Standardize the VM fields
+                        standardized_vm = self._standardize_vm_fields(vm_data)
+                        if standardized_vm:
+                            vm_instances.append(standardized_vm)
+                            print(f"    Found VM: {standardized_vm.get('hostname', standardized_vm.get('key', 'unknown'))}")
+                    continue
+
+            i += 1
+
+        return vm_instances
+
     def get_terraform_ready_data(self) -> Dict[str, Any]:
         """Extract data in a format ready for Terraform generation."""
         terraform_data = {
@@ -935,8 +1008,14 @@ class ExcelDataAccessor:
             'host configuration', 'instance details'
         ]
 
-        # Try to find VM tables in Resources sheet AND other sheets
+        # Try to extract VMs from vertical key-value format (Resources sheet)
         vm_instances = []
+        vm_instances_from_kv = self._extract_vms_from_vertical_format(terraform_data)
+        if vm_instances_from_kv:
+            print(f"  Extracted {len(vm_instances_from_kv)} VMs from vertical key-value format")
+            vm_instances.extend(vm_instances_from_kv)
+
+        # Try to find VM tables in Resources sheet AND other sheets
         sheets_to_check = ['Resources', 'Build_ENV', 'VM', 'VMs', 'Servers', 'Compute']
 
         for sheet_name in sheets_to_check:
@@ -1352,6 +1431,41 @@ class ExcelDataAccessor:
             detected_subscription = self._auto_detect_subscription(terraform_data)
             if detected_subscription:
                 terraform_data['project_info']['subscription'] = detected_subscription
+
+        # SET INTELLIGENT DEFAULTS FOR MISSING CRITICAL FIELDS
+        print("APPLYING INTELLIGENT DEFAULTS")
+        print("=" * 40)
+
+        # Default environment based on context clues
+        if not terraform_data['project_info'].get('environment') or \
+           str(terraform_data['project_info'].get('environment')).strip() in ['', 'None', 'TBD', 'N/A']:
+            # Check for DR indicators
+            filename_lower = self.source_filename.lower() if self.source_filename else ''
+            if 'dr' in filename_lower or 'disaster' in filename_lower:
+                terraform_data['project_info']['environment'] = 'dr'
+                print(f"  Set environment to 'dr' based on filename context")
+            elif 'prod' in filename_lower:
+                terraform_data['project_info']['environment'] = 'prod'
+                print(f"  Set environment to 'prod' based on filename context")
+            else:
+                # Default to 'dev' for safety
+                terraform_data['project_info']['environment'] = 'dev'
+                print(f"  Set environment to 'dev' (safe default)")
+
+        # Default service_now_ticket - generate placeholder
+        if not terraform_data['project_info'].get('service_now_ticket') or \
+           str(terraform_data['project_info'].get('service_now_ticket')).strip() in ['', 'None', 'TBD', 'N/A', '1', '0']:
+            # Generate ticket placeholder from app name or filename
+            app_name = terraform_data['project_info'].get('application_name', 'app')
+            safe_app_name = ''.join(c for c in app_name if c.isalnum())[:10]
+            import datetime
+            timestamp = datetime.datetime.now().strftime('%Y%m%d')
+            placeholder_ticket = f"RITM{timestamp}{safe_app_name}"
+            terraform_data['project_info']['service_now_ticket'] = placeholder_ticket
+            print(f"  Generated placeholder service_now_ticket: {placeholder_ticket}")
+            print(f"  WARNING: Please replace with actual ServiceNow ticket number")
+
+        print()
 
         print()
 

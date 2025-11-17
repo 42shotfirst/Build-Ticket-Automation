@@ -184,25 +184,46 @@ class ComprehensiveExcelExtractor:
     def _extract_tables(self, df: pd.DataFrame, sheet_data: Dict):
         """Extract tabular data from DataFrame."""
         tables = []
-        
+
         if df.empty:
             return
-        
+
         # Look for potential table headers
         for row_idx in range(min(20, len(df))):  # Check first 20 rows
             row = df.iloc[row_idx]
             non_empty_count = sum(1 for val in row if pd.notna(val) and str(val).strip())
-            
+
             if non_empty_count >= 3:  # Potential header row
-                # Extract headers
+                # Extract headers with improved detection
                 headers = []
+                header_quality_score = 0
+
                 for col_idx in range(len(row)):
                     val = row.iloc[col_idx]
                     if pd.notna(val) and str(val).strip():
-                        headers.append(str(val).strip())
+                        header_text = str(val).strip()
+                        headers.append(header_text)
+                        # Score header quality (text-heavy = likely header)
+                        if any(c.isalpha() for c in header_text):
+                            header_quality_score += 1
                     else:
-                        headers.append(f"Column_{col_idx}")
-                
+                        # Check if previous row has a value (merged cell scenario)
+                        prev_val = None
+                        if row_idx > 0:
+                            prev_val = df.iloc[row_idx - 1].iloc[col_idx]
+
+                        if pd.notna(prev_val) and str(prev_val).strip():
+                            headers.append(str(prev_val).strip())
+                        else:
+                            headers.append(f"Column_{col_idx}")
+
+                # Skip if header quality is too low (too many generic Column_N names)
+                generic_count = sum(1 for h in headers if h.startswith('Column_'))
+                if generic_count > len(headers) * 0.5:  # More than 50% generic
+                    # Only proceed if no better header row found yet
+                    if len(tables) > 0:
+                        continue
+
                 # Extract data rows
                 data_rows = []
                 for data_idx in range(row_idx + 1, min(row_idx + 100, len(df))):

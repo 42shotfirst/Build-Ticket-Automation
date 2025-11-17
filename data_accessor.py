@@ -263,7 +263,92 @@ class ExcelDataAccessor:
                 return val
         
         return value  # Return original if no match found
-    
+
+    def _map_nsg_generic_columns(self, headers: List[str], data: List[Dict]) -> List[str]:
+        """Map generic Column_N names to proper NSG field names.
+
+        Analyzes column content and position to determine the actual field names.
+        Expected NSG fields: name, priority, direction, access, protocol,
+        source_port_range, destination_port_ranges, source_asg, destination_asg, description
+        """
+        mapped_headers = headers.copy()
+
+        # NSG field patterns to detect by content
+        field_patterns = {
+            'direction': ['inbound', 'outbound', 'in', 'out'],
+            'access': ['allow', 'deny'],
+            'protocol': ['tcp', 'udp', 'icmp', 'any', '*'],
+            'priority': ['100', '110', '120', '200', '300', '400', '500'],  # Common priority values
+        }
+
+        # Analyze first few rows to detect patterns
+        sample_size = min(5, len(data))
+        sample_data = data[:sample_size] if data else []
+
+        for col_idx, header in enumerate(headers):
+            if not header.startswith('Column_'):
+                continue  # Already has a proper name
+
+            # Collect values from this column
+            column_values = []
+            for row in sample_data:
+                value = row.get(header, '')
+                if value:
+                    column_values.append(str(value).lower().strip())
+
+            # Try to detect field by content
+            detected_field = None
+
+            # Check each field pattern
+            for field_name, patterns in field_patterns.items():
+                matches = sum(1 for val in column_values if any(p in val for p in patterns))
+                if matches >= len(column_values) * 0.5:  # 50% or more match
+                    detected_field = field_name
+                    break
+
+            # Positional detection (common NSG table layouts)
+            if not detected_field:
+                # Common positions: name(0), priority(1), direction(2), access(3), protocol(4)
+                position_map = {
+                    0: 'name',
+                    1: 'priority',
+                    2: 'direction',
+                    3: 'access',
+                    4: 'protocol',
+                    5: 'source_port_range',
+                    6: 'destination_port_ranges',
+                    7: 'source_address_prefix',
+                    8: 'destination_address_prefix',
+                    9: 'source_asg',
+                    10: 'destination_asg',
+                    11: 'description'
+                }
+
+                if col_idx in position_map:
+                    detected_field = position_map[col_idx]
+
+            if detected_field:
+                mapped_headers[col_idx] = detected_field
+                print(f"    Mapped {header} -> {detected_field}")
+
+        return mapped_headers
+
+    def _remap_table_data(self, data: List[Dict], old_headers: List[str], new_headers: List[str]) -> List[Dict]:
+        """Remap table data dictionaries from old headers to new headers."""
+        if not data or len(old_headers) != len(new_headers):
+            return data
+
+        remapped_data = []
+        for row in data:
+            new_row = {}
+            for old_h, new_h in zip(old_headers, new_headers):
+                if old_h in row:
+                    new_row[new_h] = row[old_h]
+            if new_row:  # Only add if there's data
+                remapped_data.append(new_row)
+
+        return remapped_data
+
     def get_terraform_ready_data(self) -> Dict[str, Any]:
         """Extract data in a format ready for Terraform generation."""
         terraform_data = {
@@ -361,36 +446,50 @@ class ExcelDataAccessor:
             data = table.get('data', [])
             
             # Expanded VM keywords for better detection
-            vm_keywords = ['hostname', 'vm', 'server', 'machine', 'instance', 'node', 'compute', 'sku', 'recommended sku']
-            
+            vm_keywords = ['hostname', 'vm', 'server', 'machine', 'instance', 'node', 'compute',
+                          'sku', 'recommended sku', 'virtual machine', 'host name', 'computer']
+
             # Check if this table contains VM data by looking at headers
             is_vm_table = any(any(keyword in str(header).lower() for keyword in vm_keywords) for header in headers)
-            
-            # Also check if table has sufficient columns that look like VM config
-            has_vm_like_columns = len(headers) >= 5 and len(data) > 0
-            
+
+            # Also check if table has sufficient columns that look like VM config (reduced threshold)
+            has_vm_like_columns = len(headers) >= 3 and len(data) > 0
+
             # Check data content for VM-like patterns
             has_vm_data = False
+            vm_field_keywords = ['owner', 'recommended', 'os', 'disk', 'image', 'size', 'sku',
+                                'ip', 'subnet', 'zone', 'region', 'availability']
+
             if data:
                 first_row = data[0]
                 # Look for common VM fields in the data
                 for key in first_row.keys():
-                    if any(kw in str(key).lower() for kw in ['owner', 'recommended', 'os', 'disk', 'image']):
+                    if any(kw in str(key).lower() for kw in vm_field_keywords):
                         has_vm_data = True
                         break
-            
+
+                # Also check if data values look like VM names (heuristic)
+                for value in first_row.values():
+                    value_str = str(value).lower()
+                    if any(pattern in value_str for pattern in ['-vm-', 'server', 'host', 'node']):
+                        has_vm_data = True
+                        break
+
             if (is_vm_table or has_vm_data) and has_vm_like_columns:
                 print(f"  Found potential VM table {i+1}: {len(data)} entries")
                 print(f"    Headers ({len(headers)}): {headers[:8] if len(headers) > 8 else headers}")
-                
+
                 # Process each VM entry
                 for j, row in enumerate(data):
                     vm_instance = {}
                     for key, value in row.items():
-                        if value and str(value).strip():  # Only include non-empty values
-                            vm_instance[key] = value
-                    
-                    if vm_instance and len(vm_instance) >= 3:  # Only add if we have meaningful data
+                        if value and str(value).strip():
+                            # Skip obvious header rows or placeholder values
+                            value_str = str(value).strip()
+                            if value_str not in ['Value', 'Column', 'Header', 'N/A', 'TBD', '']:
+                                vm_instance[key] = value
+
+                    if vm_instance and len(vm_instance) >= 2:  # Reduced threshold
                         vm_instances.append(vm_instance)
                         if j < 2:  # Show first 2 VMs
                             print(f"    VM {j+1} fields: {list(vm_instance.keys())[:6]}...")
@@ -410,14 +509,22 @@ class ExcelDataAccessor:
         # Using field mapping: rules.name -> name, rules.priority -> priority, etc.
         print("COMPREHENSIVE NSG EXTRACTION")
         print("=" * 30)
-        
+
         nsg_tables = terraform_data['all_tables'].get('NSG', [])
         security_rules = []
-        
+
         for i, table in enumerate(nsg_tables):
             data = table.get('data', [])
             headers = table.get('headers', [])
-            
+
+            # Fix generic column names (Column_0, Column_1, etc.)
+            if headers and any(h.startswith('Column_') for h in headers):
+                headers = self._map_nsg_generic_columns(headers, data)
+                # Update table with mapped headers
+                table['headers'] = headers
+                # Remap data dictionaries to use new headers
+                data = self._remap_table_data(data, table.get('headers', []), headers)
+
             if data:
                 print(f"  Found NSG table {i+1}: {len(data)} rules")
                 print(f"    Headers: {headers[:5]}...")
@@ -707,8 +814,64 @@ class ExcelDataAccessor:
             'has_macros': bool(self.data.get('vba_macros', {}).get('project_info', {}).get('filename')),
             'formula_count': sum(len(formulas) for formulas in self.data.get('formulas', {}).values() if isinstance(formulas, list))
         }
-        
+
         return summary
+
+    def validate_extraction_quality(self, terraform_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Validate that required data was extracted and report issues.
+
+        Args:
+            terraform_data: Output from get_terraform_ready_data()
+
+        Returns:
+            Dict with 'valid', 'errors', 'warnings', 'missing_fields'
+        """
+        validation = {
+            'valid': True,
+            'errors': [],
+            'warnings': [],
+            'missing_fields': [],
+            'extraction_quality': 'unknown'
+        }
+
+        # Check required fields
+        required_fields = {
+            'application_name': terraform_data['project_info'].get('application_name'),
+            'environment': terraform_data['project_info'].get('environment'),
+            'service_now_ticket': terraform_data['project_info'].get('service_now_ticket'),
+        }
+
+        # Track missing required fields
+        for field_name, field_value in required_fields.items():
+            if not field_value or str(field_value).strip() in ['', 'None', 'TBD', 'N/A']:
+                validation['missing_fields'].append(field_name)
+                validation['errors'].append(f"Required field '{field_name}' is missing or empty")
+                validation['valid'] = False
+
+        # Check VM extraction
+        vm_count = len(terraform_data.get('vm_instances', []))
+        if vm_count == 0:
+            validation['errors'].append("No VM instances extracted")
+            validation['valid'] = False
+        elif vm_count <= 2:
+            validation['warnings'].append(f"Only {vm_count} VM(s) extracted - may be using fallback defaults")
+
+        # Check NSG rules
+        nsg_count = len(terraform_data.get('security_groups', []))
+        if nsg_count == 0:
+            validation['warnings'].append("No NSG security rules extracted")
+
+        # Assess extraction quality
+        if len(validation['errors']) == 0 and len(validation['warnings']) == 0:
+            validation['extraction_quality'] = 'excellent'
+        elif len(validation['errors']) == 0:
+            validation['extraction_quality'] = 'good'
+        elif len(validation['errors']) <= 2:
+            validation['extraction_quality'] = 'partial'
+        else:
+            validation['extraction_quality'] = 'poor'
+
+        return validation
 
 
 def main():

@@ -21,6 +21,11 @@ class EnhancedTerraformGeneratorV2:
         """Initialize with JSON file from comprehensive extraction."""
         self.accessor = ExcelDataAccessor(json_file_path)
         self.terraform_data = self.accessor.get_terraform_ready_data()
+
+        # Validate extraction quality
+        self.validation_results = self.accessor.validate_extraction_quality(self.terraform_data)
+        self._log_validation_results()
+
         self.schema = self._load_schema()
         # Cache raw_data for quick access
         self.raw_data_cache = {}
@@ -49,7 +54,47 @@ class EnhancedTerraformGeneratorV2:
                     value = row.get('2')
                     if var_name:
                         self.raw_data_cache[sheet_name][var_name] = value
-    
+
+    def _log_validation_results(self):
+        """Log validation results from data extraction."""
+        import logging
+        logger = logging.getLogger(__name__)
+
+        validation = self.validation_results
+
+        # Log extraction quality
+        logger.info("=" * 80)
+        logger.info("DATA EXTRACTION VALIDATION RESULTS")
+        logger.info("=" * 80)
+        logger.info(f"Extraction Quality: {validation['extraction_quality'].upper()}")
+        logger.info(f"Valid: {validation['valid']}")
+
+        # Log errors
+        if validation['errors']:
+            logger.error(f"ERRORS FOUND ({len(validation['errors'])}):")
+            for error in validation['errors']:
+                logger.error(f"  [ERROR] {error}")
+
+        # Log warnings
+        if validation['warnings']:
+            logger.warning(f"WARNINGS ({len(validation['warnings'])}):")
+            for warning in validation['warnings']:
+                logger.warning(f"  [WARN] {warning}")
+
+        # Log missing fields
+        if validation['missing_fields']:
+            logger.error(f"Missing Required Fields: {', '.join(validation['missing_fields'])}")
+
+        # Summary
+        if validation['valid'] and not validation['warnings']:
+            logger.info("[PASS] All required data extracted successfully")
+        elif validation['valid']:
+            logger.info("[PASS] Required data extracted with warnings")
+        else:
+            logger.error("[FAIL] Data extraction incomplete - missing required fields")
+
+        logger.info("=" * 80)
+
     def _get_raw_value(self, var_name: str, sheet_name: str = 'Build_ENV', default: Any = None) -> Any:
         """Get a value from raw_data cache.
         

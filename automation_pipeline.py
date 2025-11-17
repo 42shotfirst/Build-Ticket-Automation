@@ -778,7 +778,8 @@ class AutomationPipeline:
             file_info = {
                 'excel_file': os.path.basename(processed_file['excel_file']),
                 'json_file': os.path.basename(processed_file['json_file']),
-                'terraform_dir': os.path.basename(processed_file['terraform_dir'])
+                'terraform_dir': os.path.basename(processed_file['terraform_dir']),
+                'terraform_dir_full_path': processed_file['terraform_dir']  # Keep full path for results saving
             }
             
             # Count Terraform files
@@ -816,14 +817,36 @@ class AutomationPipeline:
                     self.logger.warning(f"Could not remove temporary file {file_name}: {e}")
     
     def _save_results(self, results: Dict[str, Any]):
-        """Save automation results to file."""
-        results_file = f"automation_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        """Save automation results to file in each terraform output directory."""
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        results_filename = f"automation_results.json"
+
+        # Save in each terraform output directory
+        saved_locations = []
+        if 'summary' in results and 'processed_files' in results['summary']:
+            for file_info in results['summary']['processed_files']:
+                terraform_dir = file_info.get('terraform_dir_full_path')
+                if terraform_dir and os.path.exists(terraform_dir):
+                    results_file = os.path.join(terraform_dir, results_filename)
+                    try:
+                        with open(results_file, 'w', encoding='utf-8') as f:
+                            json.dump(results, f, indent=2, default=str, ensure_ascii=False)
+                        saved_locations.append(results_file)
+                        self.logger.info(f"Results saved to: {results_file}")
+                    except Exception as e:
+                        self.logger.error(f"Could not save results to {results_file}: {e}")
+
+        # Also save a timestamped copy in root for backward compatibility
+        root_results_file = f"automation_results_{timestamp}.json"
         try:
-            with open(results_file, 'w', encoding='utf-8') as f:
+            with open(root_results_file, 'w', encoding='utf-8') as f:
                 json.dump(results, f, indent=2, default=str, ensure_ascii=False)
-            self.logger.info(f"Results saved to: {results_file}")
+            saved_locations.append(root_results_file)
         except Exception as e:
-            self.logger.error(f"Could not save results: {e}")
+            self.logger.error(f"Could not save root results file: {e}")
+
+        if not saved_locations:
+            self.logger.warning("No results files were saved")
     
     def _send_notifications(self, results: Dict[str, Any]):
         """Send notifications based on results."""

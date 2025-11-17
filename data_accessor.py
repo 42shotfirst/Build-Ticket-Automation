@@ -682,13 +682,17 @@ class ExcelDataAccessor:
             data = table.get('data', [])
             headers = table.get('headers', [])
 
-            # Fix generic column names (Column_0, Column_1, etc.)
+            # Fix generic column names (Column_0, Column_1, etc.) with error recovery
             if headers and any(h.startswith('Column_') for h in headers):
-                headers = self._map_nsg_generic_columns(headers, data)
-                # Update table with mapped headers
-                table['headers'] = headers
-                # Remap data dictionaries to use new headers
-                data = self._remap_table_data(data, table.get('headers', []), headers)
+                try:
+                    headers = self._map_nsg_generic_columns(headers, data)
+                    # Update table with mapped headers
+                    table['headers'] = headers
+                    # Remap data dictionaries to use new headers
+                    data = self._remap_table_data(data, table.get('headers', []), headers)
+                except Exception as e:
+                    print(f"  [WARN] NSG column mapping failed: {e}, using original headers")
+                    # Fallback: keep original headers
 
             if data:
                 print(f"  Found NSG table {i+1}: {len(data)} rules")

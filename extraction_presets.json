@@ -1,0 +1,69 @@
+{
+  "description": "Extraction presets for different Excel template types",
+  "presets": {
+    "default": {
+      "name": "Default Extraction Pattern",
+      "vm_keywords": [
+        "hostname", "vm", "server", "machine", "instance", "node", "compute",
+        "sku", "recommended sku", "virtual machine", "host name", "computer"
+      ],
+      "vm_section_markers": [
+        "virtual machine", "vm configuration", "server configuration",
+        "compute resources", "vm details", "server details",
+        "host configuration", "instance details"
+      ],
+      "nsg_field_order": [
+        "name", "priority", "direction", "access", "protocol",
+        "source_port_range", "destination_port_ranges",
+        "source_address_prefix", "destination_address_prefix",
+        "source_asg", "destination_asg", "description"
+      ],
+      "environment_patterns": {
+        "prod": ["prod", "production", "prd"],
+        "dr": ["dr", "disaster", "recovery", "disaster recovery"],
+        "uat": ["uat", "user acceptance", "test"],
+        "dev": ["dev", "development", "dvlp"],
+        "qa": ["qa", "quality", "qas"],
+        "stg": ["stg", "staging", "stage"],
+        "sbx": ["sbx", "sandbox", "sand"]
+      }
+    },
+    "azure_lld_v1": {
+      "name": "Azure LLD Template v1",
+      "description": "Standard Azure Low Level Design template",
+      "vm_keywords": [
+        "hostname", "recommended sku", "owner", "role"
+      ],
+      "vm_section_markers": [
+        "virtual machine", "vm configuration"
+      ],
+      "required_sheets": ["Build_ENV", "Resources", "NSG"],
+      "optional_sheets": ["APGW", "ACR NRS", "Resource Options"]
+    },
+    "azure_ad_template": {
+      "name": "Azure Active Directory Template",
+      "description": "Template for AD/Domain Controller deployments",
+      "vm_keywords": [
+        "dc", "domain controller", "ad server", "hostname"
+      ],
+      "vm_section_markers": [
+        "domain controller", "active directory"
+      ],
+      "environment_detect_priority": ["dr", "prod"]
+    }
+  },
+  "template_detection": {
+    "rules": [
+      {
+        "pattern": "(?i)active\\s*directory",
+        "preset": "azure_ad_template"
+      },
+      {
+        "pattern": "(?i)lld",
+        "preset": "azure_lld_v1"
+      }
+    ],
+    "fallback": "default"
+  },
+  "usage": "Auto-detected based on filename patterns or manually specified via --preset flag"
+}

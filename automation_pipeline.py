@@ -12,6 +12,7 @@ import json
 import logging
 import argparse
 import glob
+import subprocess
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 import traceback
@@ -583,7 +584,122 @@ class AutomationPipeline:
             self.logger.error(traceback.format_exc())
 
         return result
-    
+
+    def _validate_terraform(self, terraform_dir: str) -> Dict[str, Any]:
+        """Run Terraform fmt and validate on generated files.
+
+        Returns dict with validation results.
+        """
+        result = {
+            'success': True,
+            'fmt_result': None,
+            'validate_result': None,
+            'errors': [],
+            'warnings': []
+        }
+
+        # Check if terraform is installed
+        try:
+            version_check = subprocess.run(
+                ['terraform', 'version'],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            if version_check.returncode != 0:
+                result['warnings'].append("Terraform not installed - skipping validation")
+                self.logger.warning("Terraform not installed, skipping validation")
+                return result
+
+            terraform_version = version_check.stdout.split('\n')[0]
+            self.logger.info(f"Found {terraform_version}")
+
+        except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+            result['warnings'].append(f"Terraform not available: {e}")
+            self.logger.warning(f"Terraform not available: {e}")
+            return result
+
+        # Run terraform fmt
+        try:
+            self.logger.info(f"Running terraform fmt on {terraform_dir}")
+            fmt_result = subprocess.run(
+                ['terraform', 'fmt', '-check', '-diff', terraform_dir],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                cwd=terraform_dir
+            )
+
+            if fmt_result.returncode == 0:
+                result['fmt_result'] = 'PASS'
+                self.logger.info("Terraform fmt: [PASS] All files properly formatted")
+            else:
+                result['fmt_result'] = 'FAIL'
+                result['warnings'].append("Terraform fmt found formatting issues")
+                self.logger.warning(f"Terraform fmt: [FAIL] Formatting issues found")
+                if fmt_result.stdout:
+                    self.logger.warning(f"Diff:\n{fmt_result.stdout}")
+
+        except subprocess.TimeoutExpired:
+            result['warnings'].append("Terraform fmt timed out")
+            self.logger.warning("Terraform fmt timed out")
+        except Exception as e:
+            result['warnings'].append(f"Terraform fmt error: {e}")
+            self.logger.error(f"Terraform fmt error: {e}")
+
+        # Run terraform init (required for validation)
+        try:
+            self.logger.info("Running terraform init")
+            init_result = subprocess.run(
+                ['terraform', 'init', '-backend=false'],
+                capture_output=True,
+                text=True,
+                timeout=60,
+                cwd=terraform_dir
+            )
+
+            if init_result.returncode != 0:
+                result['warnings'].append("Terraform init failed - skipping validate")
+                self.logger.warning(f"Terraform init failed: {init_result.stderr}")
+                return result
+
+        except subprocess.TimeoutExpired:
+            result['warnings'].append("Terraform init timed out")
+            return result
+        except Exception as e:
+            result['warnings'].append(f"Terraform init error: {e}")
+            return result
+
+        # Run terraform validate
+        try:
+            self.logger.info("Running terraform validate")
+            validate_result = subprocess.run(
+                ['terraform', 'validate'],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                cwd=terraform_dir
+            )
+
+            if validate_result.returncode == 0:
+                result['validate_result'] = 'PASS'
+                self.logger.info("Terraform validate: [PASS] Configuration is valid")
+            else:
+                result['validate_result'] = 'FAIL'
+                result['errors'].append("Terraform validate found errors")
+                result['success'] = False
+                self.logger.error(f"Terraform validate: [FAIL]")
+                if validate_result.stderr:
+                    self.logger.error(f"Errors:\n{validate_result.stderr}")
+
+        except subprocess.TimeoutExpired:
+            result['warnings'].append("Terraform validate timed out")
+        except Exception as e:
+            result['errors'].append(f"Terraform validate error: {e}")
+            self.logger.error(f"Terraform validate error: {e}")
+
+        return result
+
     def _validate_outputs(self, processed_files: List[Dict[str, str]]) -> Dict[str, Any]:
         """Validate generated output files."""
         result = {'success': True, 'warnings': []}

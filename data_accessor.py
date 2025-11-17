@@ -456,16 +456,18 @@ class ExcelDataAccessor:
                 return False
 
         # Must have at least a name or priority to be considered valid
-        has_name = rule.get('name') and str(rule.get('name')).strip() not in ['', 'None', 'N/A', 'TBD']
-        has_priority = rule.get('priority') and str(rule.get('priority')).strip() not in ['', 'None', 'N/A', 'TBD']
+        has_name = rule.get('name') and str(rule.get('name')).strip() not in ['', 'None', 'N/A', 'TBD', 'Value']
+        has_priority = rule.get('priority') and str(rule.get('priority')).strip() not in ['', 'None', 'N/A', 'TBD', 'Value']
 
-        # Count how many standard fields have values
-        standard_fields = ['direction', 'access', 'protocol', 'source_port_range', 'destination_port_ranges']
+        # Count how many standard fields have values (include more field variations)
+        standard_fields = ['direction', 'access', 'protocol', 'source_port_range', 'destination_port_ranges',
+                          'source_address_prefix', 'destination_address_prefix', 'description']
         filled_fields = sum(1 for field in standard_fields
-                          if rule.get(field) and str(rule.get(field)).strip() not in ['', 'None', 'N/A', 'TBD'])
+                          if rule.get(field) and str(rule.get(field)).strip() not in ['', 'None', 'N/A', 'TBD', 'Value'])
 
-        # Valid if has name/priority AND at least 2 other fields
-        return (has_name or has_priority) and filled_fields >= 2
+        # Relaxed: Valid if has name/priority AND at least 1 other field (was 2)
+        # This handles partially filled NSG rules better
+        return (has_name or has_priority) and filled_fields >= 1
 
     def _standardize_vm_fields(self, vm_instance: Dict[str, Any]) -> Dict[str, Any]:
         """Standardize VM field names to common naming convention.
@@ -1078,10 +1080,16 @@ class ExcelDataAccessor:
                             has_vm_data = True
                             break
 
-                if (is_vm_table or has_vm_data or has_section_marker) and has_vm_like_columns:
+                # Skip tables that are clearly not VM tables (e.g., Data_Disk, Network_Interfaces)
+                non_vm_table_markers = ['data_disk', 'network_interface', 'storage_account', 'load_balancer',
+                                       'dns', 'backup', 'monitoring', 'tags', 'settings']
+                is_non_vm_table = any(marker in str(headers[0]).lower() for marker in non_vm_table_markers) if headers else False
+
+                if (is_vm_table or has_vm_data or has_section_marker) and has_vm_like_columns and not is_non_vm_table:
                     print(f"  Found potential VM table in {sheet_name} ({i+1}): {len(data)} entries")
                     print(f"    Headers ({len(headers)}): {headers[:8] if len(headers) > 8 else headers}")
 
+                    valid_vm_count = 0
                     # Process each VM entry with better filtering
                     for j, row in enumerate(data):
                         vm_instance = {}
@@ -1112,12 +1120,23 @@ class ExcelDataAccessor:
                                     if not key.startswith('Column_') or value_str not in ['', 'None']:
                                         vm_instance[key] = value
 
-                        if vm_instance and len(vm_instance) >= 2:  # Reduced threshold
+                        # Validate VM has required fields before adding
+                        if vm_instance and len(vm_instance) >= 2:
                             # Standardize VM field names
                             standardized_vm = self._standardize_vm_fields(vm_instance)
-                            vm_instances.append(standardized_vm)
-                            if j < 2:  # Show first 2 VMs
-                                print(f"    VM {j+1} fields: {list(standardized_vm.keys())[:6]}...")
+
+                            # Check if VM has at least one critical field (hostname, key, name, sku)
+                            has_critical_field = any(field in standardized_vm for field in
+                                                    ['hostname', 'key', 'name', 'vm_size', 'sku', 'os_type'])
+
+                            if has_critical_field:
+                                vm_instances.append(standardized_vm)
+                                valid_vm_count += 1
+                                if valid_vm_count <= 2:  # Show first 2 valid VMs
+                                    print(f"    VM {valid_vm_count} fields: {list(standardized_vm.keys())[:6]}...")
+
+                    if valid_vm_count > 0:
+                        print(f"    Extracted {valid_vm_count} valid VMs from this table")
 
         if vm_instances:
             terraform_data['vm_instances'] = vm_instances
@@ -1451,6 +1470,14 @@ class ExcelDataAccessor:
                 # Default to 'dev' for safety
                 terraform_data['project_info']['environment'] = 'dev'
                 print(f"  Set environment to 'dev' (safe default)")
+
+        # Default location if missing
+        if not terraform_data['project_info'].get('location') or \
+           str(terraform_data['project_info'].get('location')).strip() in ['', 'None', 'TBD', 'N/A']:
+            # Default to eastus (most common)
+            terraform_data['project_info']['location'] = 'eastus'
+            print(f"  Set location to 'eastus' (default)")
+            print(f"  WARNING: Please update location if different region required")
 
         # Default service_now_ticket - generate placeholder
         if not terraform_data['project_info'].get('service_now_ticket') or \

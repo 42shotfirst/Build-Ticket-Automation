@@ -185,7 +185,7 @@ class ExcelDataAccessor:
     
     def _extract_actual_values_from_tables(self, sheet_name: str, value_column_index: int = 1) -> Dict[str, str]:
         """Extract actual values from tables instead of variable references.
-        
+
         Args:
             sheet_name: Name of the sheet to extract from
             value_column_index: Which column contains the actual value (0-indexed after field name)
@@ -195,41 +195,50 @@ class ExcelDataAccessor:
         actual_values = {}
         sheet_data = self.sheets.get(sheet_name, {})
         tables = sheet_data.get('tables', [])
-        
-        # List of values to skip (headers, placeholders, etc.)
-        skip_values = {
-            'Value', 'Existing', 'Validation', 'Terraform Variable', 'SNOW form', 
-            'User', 'EA', 'CMDB', 'Cloud Engineering', 'Azure Client Managed', 
-            'Azure CMS Managed', 'OnPrem', 'AWS Client Managed', 'YES', 'NO', 
-            'ASR', 'GRS Backup/Restore', 'Warm/Standby', 'Cold Rebuild', 
-            'User/CMDB', 'CMDB APP NAME', 'SNOW team after request is complete?', 
-            'User/EA', 'DEV', 'UAT', 'QA', 'PROD', 'DR', 'Platinum', 'Gold', 
-            'Silver', 'Bronze', 'Iron', 'CMDB?', 'MUST BE A NUMBER', 
-            'Commercial', 'Consumer Related', 'Corporate', 'Corporate Support',
-            'Overview'
+
+        # List of HEADER values to skip (not data values)
+        skip_headers = {
+            'Terraform Variable', 'SNOW form', 'Validation', 'Column', 'Existing',
+            'MUST BE A NUMBER', 'SNOW team after request is complete?'
         }
-        
+
+        # List of VALUES to skip (placeholders)
+        skip_values = {
+            'User', 'EA', 'User/EA', 'User/CMDB', 'CMDB', 'CMDB?', 'CMDB APP NAME',
+            'Overview', 'Value'
+        }
+
         for table in tables:
             data = table.get('data', [])
             for row in data:
                 # Look for the pattern where the first column is a field name
                 row_items = list(row.items())
-                
+
                 # Need at least value_column_index + 1 columns
                 if len(row_items) >= value_column_index + 1:
                     field_name = str(row_items[0][1])  # First column is field name
                     field_value = str(row_items[value_column_index][1])  # Value at specified index (0-based)
-                    
-                    # Skip if it's a header row, empty, or invalid data
-                    if (field_name and field_value and 
-                        str(field_value).strip() and
-                        field_name not in skip_values and 
-                        field_value not in skip_values and
-                        not field_value.startswith('wab:') and
-                        not field_value.startswith('vm_list')):
-                        
+
+                    # Skip if it's a header row or empty
+                    if not field_name or not field_value or not str(field_value).strip():
+                        continue
+
+                    # Skip if field name is a known header
+                    if field_name in skip_headers:
+                        continue
+
+                    # Skip if value is a placeholder
+                    if field_value in skip_values:
+                        continue
+
+                    # Skip if value starts with internal references
+                    if field_value.startswith('wab:') or field_value.startswith('vm_list'):
+                        continue
+
+                    # Accept the value if it has substantial content
+                    if len(str(field_value).strip()) > 1:
                         actual_values[field_name] = field_value
-        
+
         return actual_values
     
     def _resolve_variable_reference(self, value: str, sheet_name: str = 'Resources') -> str:

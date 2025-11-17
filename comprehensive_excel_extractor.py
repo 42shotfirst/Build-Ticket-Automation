@@ -416,13 +416,23 @@ class ComprehensiveExcelExtractor:
                 # Note: openpyxl doesn't directly support reading comments in all cases
                 # This is a simplified approach
                 if hasattr(sheet, '_comments'):
-                    for cell_coord, comment in sheet._comments.items():
-                        comment_info = {
-                            'cell': cell_coord,
-                            'author': comment.author if hasattr(comment, 'author') else 'Unknown',
-                            'text': str(comment.text) if hasattr(comment, 'text') else ''
-                        }
-                        sheet_comments.append(comment_info)
+                    # Check if _comments is a dict or list
+                    if isinstance(sheet._comments, dict):
+                        for cell_coord, comment in sheet._comments.items():
+                            comment_info = {
+                                'cell': cell_coord,
+                                'author': comment.author if hasattr(comment, 'author') else 'Unknown',
+                                'text': str(comment.text) if hasattr(comment, 'text') else ''
+                            }
+                            sheet_comments.append(comment_info)
+                    elif isinstance(sheet._comments, list):
+                        for comment in sheet._comments:
+                            comment_info = {
+                                'cell': 'Unknown',
+                                'author': comment.author if hasattr(comment, 'author') else 'Unknown',
+                                'text': str(comment.text) if hasattr(comment, 'text') else str(comment)
+                            }
+                            sheet_comments.append(comment_info)
                 
                 if sheet_comments:
                     comments_data[sheet_name] = sheet_comments

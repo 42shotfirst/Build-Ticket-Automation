@@ -550,17 +550,20 @@ class AutomationPipeline:
     def _generate_terraform_files(self, json_file: str, excel_file: str) -> Dict[str, Any]:
         """Generate Terraform files from JSON data."""
         result = {'success': False, 'errors': [], 'files': [], 'output_dir': None}
-        
-        try:
-            # Use default terraform_clean output directory
-            terraform_dir = "terraform_clean"
 
-            # Create generator using the clean version
-            generator = TerraformGeneratorClean(json_file)
-            self.logger.info("Using TerraformGeneratorClean (client standards compliant)")
+        try:
+            # Create timestamped subdirectory under terraform_output
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            terraform_dir = os.path.join("terraform_output", timestamp)
+
+            # Create generator using the enhanced v2 version (generates all resource files)
+            from enhanced_terraform_generator_v2 import EnhancedTerraformGeneratorV2
+            generator = EnhancedTerraformGeneratorV2(json_file)
+            self.logger.info(f"Using EnhancedTerraformGeneratorV2 (full resource file generation)")
+            self.logger.info(f"Output directory: {terraform_dir}")
 
             # Generate files
-            terraform_files = generator.generate_all()
+            terraform_files = generator.generate_terraform_files(terraform_dir)
 
             if terraform_files:
                 result['success'] = True
@@ -573,12 +576,12 @@ class AutomationPipeline:
                     self.logger.info(f"  - {filename} ({file_size:,} bytes)")
             else:
                 result['errors'].append("Failed to generate Terraform files")
-                
+
         except Exception as e:
             result['errors'].append(f"Terraform generation failed: {e}")
             self.logger.error(f"Terraform generation error: {e}")
             self.logger.error(traceback.format_exc())
-        
+
         return result
     
     def _validate_outputs(self, processed_files: List[Dict[str, str]]) -> Dict[str, Any]:

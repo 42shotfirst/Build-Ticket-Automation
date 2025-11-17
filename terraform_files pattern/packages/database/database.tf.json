@@ -1,0 +1,36 @@
+{
+  "variable": {
+    "db_instance_class": {
+      "description": "RDS instance class",
+      "type": "string",
+      "default": "db.t3.micro"
+    },
+    "db_allocated_storage": {
+      "description": "Allocated storage for RDS instance",
+      "type": "number",
+      "default": 20
+    }
+  },
+  "resource": {
+    "aws_db_instance": {
+      "main": {
+        "identifier": "terraform-demo-db",
+        "engine": "mysql",
+        "engine_version": "8.0",
+        "instance_class": "${var.db_instance_class}",
+        "allocated_storage": "${var.db_allocated_storage}",
+        "storage_type": "gp2",
+        "username": "admin",
+        "password": "changeme123",
+        "backup_retention_period": 7,
+        "backup_window": "03:00-04:00",
+        "maintenance_window": "sun:04:00-sun:05:00",
+        "skip_final_snapshot": true,
+        "tags": {
+          "Name": "terraform-demo-database",
+          "Environment": "dev"
+        }
+      }
+    }
+  }
+}

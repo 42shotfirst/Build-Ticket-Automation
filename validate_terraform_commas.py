@@ -122,7 +122,7 @@ def main():
             print(f"  {issue['context']}\n")
         return 1
     else:
-        print("✓ All map structures have proper commas!")
+        print("[OK] All map structures have proper commas!")
         return 0
 
 if __name__ == "__main__":

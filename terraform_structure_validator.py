@@ -61,18 +61,18 @@ class TerraformStructureValidator:
             path = os.path.join(self.output_dir, file)
             if os.path.exists(path):
                 self.validation_results['completeness']['valid'].append(
-                    f"✓ Required file '{file}' present"
+                    f"[OK] Required file '{file}' present"
                 )
             else:
                 self.validation_results['completeness']['issues'].append(
-                    f"✗ Missing required file: {file}"
+                    f"[ERROR] Missing required file: {file}"
                 )
 
         for file in optional_files:
             path = os.path.join(self.output_dir, file)
             if os.path.exists(path):
                 self.validation_results['completeness']['valid'].append(
-                    f"✓ Optional file '{file}' present"
+                    f"[OK] Optional file '{file}' present"
                 )
 
     def _validate_tfvars_structure(self):
@@ -95,11 +95,11 @@ class TerraformStructureValidator:
         for pattern, name in map_patterns:
             if re.search(pattern, content, re.DOTALL):
                 self.validation_results['structure']['valid'].append(
-                    f"✓ {name} structure is properly formatted"
+                    f"[OK] {name} structure is properly formatted"
                 )
             else:
                 self.validation_results['structure']['issues'].append(
-                    f"✗ {name} structure may be malformed"
+                    f"[ERROR] {name} structure may be malformed"
                 )
 
         # Check for proper list syntax with commas
@@ -111,17 +111,17 @@ class TerraformStructureValidator:
                 # Check for comma separation between rules
                 if '},\n' in rules_content or '},' in rules_content:
                     self.validation_results['syntax']['valid'].append(
-                        "✓ NSG rules properly comma-separated"
+                        "[OK] NSG rules properly comma-separated"
                     )
                 else:
                     # Check if there's only one rule (no comma needed)
                     if rules_content.count('{') == 1:
                         self.validation_results['syntax']['valid'].append(
-                            "✓ Single NSG rule (no comma needed)"
+                            "[OK] Single NSG rule (no comma needed)"
                         )
                     else:
                         self.validation_results['syntax']['issues'].append(
-                            "✗ NSG rules missing comma separators"
+                            "[ERROR] NSG rules missing comma separators"
                         )
 
         # Check for proper nested object syntax
@@ -134,13 +134,13 @@ class TerraformStructureValidator:
         for pattern, name in nested_checks:
             if re.search(pattern, content, re.DOTALL):
                 self.validation_results['structure']['valid'].append(
-                    f"✓ {name} properly nested"
+                    f"[OK] {name} properly nested"
                 )
 
         # Check for proper string quotation
         if re.search(r'=\s*"[^"]*"', content):
             self.validation_results['formatting']['valid'].append(
-                "✓ String values properly quoted"
+                "[OK] String values properly quoted"
             )
 
         # Check for proper list syntax
@@ -155,7 +155,7 @@ class TerraformStructureValidator:
         for pattern, name in list_patterns:
             if re.search(pattern, content, re.DOTALL):
                 self.validation_results['syntax']['valid'].append(
-                    f"✓ {name} has valid list syntax"
+                    f"[OK] {name} has valid list syntax"
                 )
 
     def _validate_variables_tf(self):
@@ -173,7 +173,7 @@ class TerraformStructureValidator:
 
         if var_blocks:
             self.validation_results['structure']['valid'].append(
-                f"✓ Found {len(var_blocks)} variable definitions"
+                f"[OK] Found {len(var_blocks)} variable definitions"
             )
 
             # Check for essential variable attributes
@@ -183,11 +183,11 @@ class TerraformStructureValidator:
             for var in essential_vars:
                 if var in var_blocks:
                     self.validation_results['completeness']['valid'].append(
-                        f"✓ Essential variable '{var}' defined"
+                        f"[OK] Essential variable '{var}' defined"
                     )
                 else:
                     self.validation_results['completeness']['issues'].append(
-                        f"✗ Missing essential variable: {var}"
+                        f"[ERROR] Missing essential variable: {var}"
                     )
 
         # Check for proper type definitions
@@ -201,19 +201,19 @@ class TerraformStructureValidator:
         for pattern, name in type_patterns:
             if re.search(pattern, content):
                 self.validation_results['syntax']['valid'].append(
-                    f"✓ Found {name}"
+                    f"[OK] Found {name}"
                 )
 
         # Check for descriptions
         if 'description' in content:
             self.validation_results['best_practices']['valid'].append(
-                "✓ Variables have descriptions"
+                "[OK] Variables have descriptions"
             )
 
         # Check for optional() usage in object definitions
         if 'optional(' in content:
             self.validation_results['best_practices']['valid'].append(
-                "✓ Using optional() for nullable object attributes"
+                "[OK] Using optional() for nullable object attributes"
             )
 
     def _validate_main_tf(self):
@@ -229,32 +229,32 @@ class TerraformStructureValidator:
         # Check for terraform block
         if 'terraform {' in content:
             self.validation_results['structure']['valid'].append(
-                "✓ Terraform configuration block present"
+                "[OK] Terraform configuration block present"
             )
 
             # Check for required version
             if 'required_version' in content:
                 self.validation_results['best_practices']['valid'].append(
-                    "✓ Terraform version constraint specified"
+                    "[OK] Terraform version constraint specified"
                 )
 
         # Check for provider block
         if 'provider "azurerm"' in content:
             self.validation_results['structure']['valid'].append(
-                "✓ AzureRM provider configured"
+                "[OK] AzureRM provider configured"
             )
 
             # Check for features block
             if 'features {' in content:
                 self.validation_results['structure']['valid'].append(
-                    "✓ Provider features block configured"
+                    "[OK] Provider features block configured"
                 )
 
         # Check for module block
         if 'module "' in content:
             module_matches = re.findall(r'module\s+"([^"]+)"', content)
             self.validation_results['structure']['valid'].append(
-                f"✓ Module block(s) defined: {', '.join(module_matches)}"
+                f"[OK] Module block(s) defined: {', '.join(module_matches)}"
             )
 
             # Check module arguments
@@ -266,7 +266,7 @@ class TerraformStructureValidator:
             for arg in module_args:
                 if f'{arg}' in content:
                     self.validation_results['completeness']['valid'].append(
-                        f"✓ Module argument '{arg}' configured"
+                        f"[OK] Module argument '{arg}' configured"
                     )
 
     def _validate_hcl_syntax(self):
@@ -298,11 +298,11 @@ class TerraformStructureValidator:
             matches = re.findall(pattern, content, re.MULTILINE)
             if matches and should_exist:
                 self.validation_results['syntax']['valid'].append(
-                    f"✓ {name} are correct"
+                    f"[OK] {name} are correct"
                 )
             elif matches and not should_exist:
                 self.validation_results['syntax']['issues'].append(
-                    f"✗ Found {name} (syntax error)"
+                    f"[ERROR] Found {name} (syntax error)"
                 )
             elif not matches and should_exist:
                 # This is okay, not all patterns need to exist
@@ -322,30 +322,30 @@ class TerraformStructureValidator:
         if '#' in content:
             comment_count = content.count('#')
             self.validation_results['best_practices']['valid'].append(
-                f"✓ Configuration is documented ({comment_count} comments)"
+                f"[OK] Configuration is documented ({comment_count} comments)"
             )
 
         # Check for consistent naming
         if all(pattern in content for pattern in ['asg_', 'snet', 'vm', 'nsg']):
             self.validation_results['best_practices']['valid'].append(
-                "✓ Consistent resource naming prefixes"
+                "[OK] Consistent resource naming prefixes"
             )
 
         # Check for no hardcoded passwords
         if 'password' in content.lower():
             if '# admin_password' in content or 'CHANGE-ME' in content or 'KEYVAULT' in content:
                 self.validation_results['best_practices']['valid'].append(
-                    "✓ Password properly commented out/referenced to Key Vault"
+                    "[OK] Password properly commented out/referenced to Key Vault"
                 )
             else:
                 self.validation_results['best_practices']['issues'].append(
-                    "✗ Potential hardcoded password found"
+                    "[ERROR] Potential hardcoded password found"
                 )
 
         # Check for resource tagging
         if 'tags' in content:
             self.validation_results['best_practices']['valid'].append(
-                "✓ Resource tagging implemented"
+                "[OK] Resource tagging implemented"
             )
 
         # Check for proper indentation (2 or 4 spaces)
@@ -353,7 +353,7 @@ class TerraformStructureValidator:
         indented_lines = [line for line in lines if line.startswith('  ')]
         if indented_lines:
             self.validation_results['formatting']['valid'].append(
-                "✓ Consistent indentation detected"
+                "[OK] Consistent indentation detected"
             )
 
     def _generate_report(self) -> Dict:
@@ -421,10 +421,10 @@ def main():
     summary = report['summary']
 
     if summary['structure_ready']:
-        print("✅ TERRAFORM STRUCTURE IS VALID FOR PRODUCTION")
+        print("[PASS] TERRAFORM STRUCTURE IS VALID FOR PRODUCTION")
         print(f"\nAll {summary['total_valid_items']} structural checks passed!")
     else:
-        print("⚠️  TERRAFORM STRUCTURE HAS ISSUES")
+        print("[WARN]  TERRAFORM STRUCTURE HAS ISSUES")
         print(f"\nValid items: {summary['total_valid_items']}")
         print(f"Issues found: {summary['total_issues']}")
 

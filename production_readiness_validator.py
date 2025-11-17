@@ -329,7 +329,7 @@ def generate_production_report(tfvars_path: str):
 
     # Display valid configurations
     if report['valid_values']:
-        print("\n✅ VALID CONFIGURATIONS:")
+        print("\n[PASS] VALID CONFIGURATIONS:")
         print("-" * 60)
         for valid in report['valid_values']:
             print(f"  • {valid['field']}: {valid['value']}")
@@ -349,9 +349,9 @@ def generate_production_report(tfvars_path: str):
     print("=" * 80)
 
     if report['production_ready']:
-        print("✅ Configuration is READY for production")
+        print("[PASS] Configuration is READY for production")
     else:
-        print("❌ Configuration is NOT ready for production")
+        print("[FAIL] Configuration is NOT ready for production")
         print(f"\nMust fix: {report['summary']['critical_issues']} critical issues")
         print(f"Should fix: {report['summary']['high_issues']} high priority issues")
 

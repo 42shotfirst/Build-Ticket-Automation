@@ -384,12 +384,12 @@ class ExcelDataAccessor:
             'name': ['name', 'rule name', 'rule_name', 'security rule', 'rule'],
             # Priority
             'priority': ['priority', 'pri', 'order', 'precedence'],
-            # Direction
-            'direction': ['direction', 'dir', 'flow direction'],
-            # Access
-            'access': ['access', 'action', 'allow/deny'],
-            # Protocol
-            'protocol': ['protocol', 'proto', 'ip protocol'],
+            # Direction (include actual values as keys)
+            'direction': ['direction', 'dir', 'flow direction', 'inbound', 'outbound', 'in', 'out'],
+            # Access (include actual values as keys)
+            'access': ['access', 'action', 'allow/deny', 'allow', 'deny'],
+            # Protocol (include actual values as keys)
+            'protocol': ['protocol', 'proto', 'ip protocol', 'tcp', 'udp', 'icmp', 'any', '*'],
             # Source port
             'source_port_range': ['source port', 'source_port', 'source port range', 'source_port_range', 'src port', 'src_port'],
             # Destination port

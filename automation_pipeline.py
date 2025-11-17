@@ -268,7 +268,37 @@ class AutomationPipeline:
                     results['warnings'].extend(validation_result['warnings'])
                 results['steps_completed'].append('output_validation')
                 self.logger.info("SUCCESS: Output validation completed")
-            
+
+            # Step 5a: Run Terraform validation (if enabled)
+            terraform_validation_enabled = self.config.get('processing', {}).get('terraform_validation', True)
+            if terraform_validation_enabled:
+                self.logger.info("Step 5a: Running Terraform validation...")
+                for pf in processed_files:
+                    terraform_dir = pf['terraform_dir']
+                    self.logger.info(f"Validating Terraform in: {terraform_dir}")
+                    tf_validation = self._validate_terraform(terraform_dir)
+
+                    if tf_validation.get('fmt_result'):
+                        if tf_validation['fmt_result'] == 'PASS':
+                            self.logger.info("  Terraform fmt: [PASS]")
+                        else:
+                            results['warnings'].append(f"Terraform fmt: {tf_validation['fmt_result']}")
+                            self.logger.warning(f"  Terraform fmt: [{tf_validation['fmt_result']}]")
+
+                    if tf_validation.get('validate_result'):
+                        if tf_validation['validate_result'] == 'PASS':
+                            self.logger.info("  Terraform validate: [PASS]")
+                        else:
+                            results['warnings'].append(f"Terraform validate: {tf_validation['validate_result']}")
+                            self.logger.warning(f"  Terraform validate: [{tf_validation['validate_result']}]")
+
+                    # Add any warnings/errors from validation
+                    results['warnings'].extend(tf_validation.get('warnings', []))
+                    results['errors'].extend(tf_validation.get('errors', []))
+
+                results['steps_completed'].append('terraform_validation')
+                self.logger.info("SUCCESS: Terraform validation completed")
+
             # Step 6: Generate summary report
             self.logger.info("Step 6: Generating summary report...")
             summary = self._generate_summary_report(results, processed_files)

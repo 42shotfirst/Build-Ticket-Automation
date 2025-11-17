@@ -674,15 +674,35 @@ class ExcelDataAccessor:
                     print(f"  Found potential VM table in {sheet_name} ({i+1}): {len(data)} entries")
                     print(f"    Headers ({len(headers)}): {headers[:8] if len(headers) > 8 else headers}")
 
-                    # Process each VM entry
+                    # Process each VM entry with better filtering
                     for j, row in enumerate(data):
                         vm_instance = {}
+                        skip_row = False
+
+                        # Check if row contains instruction text (not actual VM data)
+                        for key, value in row.items():
+                            value_str = str(value).lower()
+                            # Skip rows with instruction text
+                            if any(phrase in value_str for phrase in [
+                                'to add resources', 'open this in desktop', 'hit the button',
+                                'click here', 'instructions', 'example', 'sample'
+                            ]):
+                                skip_row = True
+                                break
+
+                        if skip_row:
+                            continue
+
                         for key, value in row.items():
                             if value and str(value).strip():
                                 # Skip obvious header rows or placeholder values
                                 value_str = str(value).strip()
-                                if value_str not in ['Value', 'Column', 'Header', 'N/A', 'TBD', '']:
-                                    vm_instance[key] = value
+                                # Enhanced skip list
+                                if value_str not in ['Value', 'Column', 'Header', 'N/A', 'TBD', '',
+                                                     'None', 'null', 'NULL', '0', 'False', 'false']:
+                                    # Skip column names that are just generic placeholders
+                                    if not key.startswith('Column_') or value_str not in ['', 'None']:
+                                        vm_instance[key] = value
 
                         if vm_instance and len(vm_instance) >= 2:  # Reduced threshold
                             vm_instances.append(vm_instance)

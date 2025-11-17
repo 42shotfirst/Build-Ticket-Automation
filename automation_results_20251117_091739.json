@@ -1,0 +1,46 @@
+{
+  "success": true,
+  "start_time": "2025-11-17T09:17:37.205416",
+  "end_time": "2025-11-17T09:17:39.021233",
+  "duration_seconds": 1.815817,
+  "steps_completed": [
+    "validation",
+    "backup",
+    "excel_extraction_1",
+    "terraform_generation_1",
+    "output_validation",
+    "summary_report",
+    "cleanup"
+  ],
+  "files_generated": [
+    "LLDtest_comprehensive_extract.json",
+    "main.tf",
+    "variables.tf",
+    "terraform.tfvars",
+    "outputs.tf"
+  ],
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "total_files_generated": 5,
+    "files_processed": 1,
+    "steps_completed": 5,
+    "duration_seconds": 0,
+    "success": false,
+    "error_count": 0,
+    "warning_count": 0,
+    "processed_files": [
+      {
+        "excel_file": "LLDtest.xlsm",
+        "json_file": "LLDtest_comprehensive_extract.json",
+        "terraform_dir": "terraform_clean",
+        "terraform_file_count": 4,
+        "json_file_size_bytes": 4847738,
+        "json_file_size_mb": 4.62
+      }
+    ],
+    "total_terraform_files": 4,
+    "total_json_size_bytes": 4847738,
+    "total_json_size_mb": 4.62
+  }
+}

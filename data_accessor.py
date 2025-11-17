@@ -369,6 +369,21 @@ class ExcelDataAccessor:
             'sbx': ['sbx', 'sandbox', 'sand'],
         }
 
+        # 0. Check Build_ENV extracted values first (highest priority)
+        build_env = terraform_data.get('build_environment', {}).get('key_value_pairs', {})
+        for key, value in build_env.items():
+            key_lower = key.lower()
+            value_lower = str(value).lower()
+
+            # Direct environment field
+            if 'environment' in key_lower or 'env' in key_lower:
+                # Check if value matches known environments
+                for env, patterns in env_patterns.items():
+                    for pattern in patterns:
+                        if pattern in value_lower or value_lower == env:
+                            print(f"  Auto-detected environment '{env}' from Build_ENV/{key}: {value}")
+                            return env
+
         # 1. Check filename
         filename = self.source_filename.lower()
         for env, patterns in env_patterns.items():
@@ -430,6 +445,21 @@ class ExcelDataAccessor:
             r'(CTASK\d{7,})',    # Change Task: CTASK0012345
             r'(PRB\d{7,})',      # Problem: PRB0012345
         ]
+
+        # 0. Check Build_ENV extracted values first (highest priority)
+        build_env = terraform_data.get('build_environment', {}).get('key_value_pairs', {})
+        for key, value in build_env.items():
+            key_lower = key.lower()
+            value_upper = str(value).upper()
+
+            # Direct ticket field
+            if any(term in key_lower for term in ['ticket', 'snow', 'service now', 'ritm', 'inc', 'req', 'chg']):
+                for pattern in ticket_patterns:
+                    match = re.search(pattern, value_upper)
+                    if match:
+                        ticket = match.group(1)
+                        print(f"  Auto-detected Service Now ticket '{ticket}' from Build_ENV/{key}: {value}")
+                        return ticket
 
         # 1. Check filename
         filename = self.source_filename.upper()
@@ -885,6 +915,42 @@ class ExcelDataAccessor:
         
         terraform_data['naming_patterns'] = naming_patterns
         print(f"  Total naming patterns extracted: {len(naming_patterns)}")
+        print()
+
+        # MAP BUILD_ENV VALUES TO PROJECT_INFO
+        print("MAPPING BUILD_ENV TO PROJECT_INFO")
+        print("=" * 40)
+
+        # Map Build_ENV extracted values to project_info
+        build_env_values = build_env_actual_values
+
+        # Mapping of Build_ENV keys to project_info keys
+        build_env_mapping = {
+            'application name': 'application_name',
+            'app name': 'application_name',
+            'service now ticket': 'service_now_ticket',
+            'snow ticket': 'service_now_ticket',
+            'ticket': 'service_now_ticket',
+            'environment': 'environment',
+            'env': 'environment',
+            'location': 'location',
+            'region': 'location',
+            'subscription': 'subscription',
+            'resource group': 'resource_group_name',
+        }
+
+        for build_key, build_value in build_env_values.items():
+            build_key_lower = build_key.lower()
+            # Check if this key maps to a project_info field
+            for pattern, project_key in build_env_mapping.items():
+                if pattern in build_key_lower:
+                    # Only set if not already present or empty
+                    current_value = terraform_data['project_info'].get(project_key)
+                    if not current_value or str(current_value).strip() in ['', 'None', 'TBD', 'N/A']:
+                        terraform_data['project_info'][project_key] = build_value
+                        print(f"  Mapped Build_ENV[{build_key}] -> project_info[{project_key}]: {build_value}")
+                    break
+
         print()
 
         # AUTO-DETECT MISSING REQUIRED FIELDS

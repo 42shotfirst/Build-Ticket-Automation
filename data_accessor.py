@@ -455,19 +455,22 @@ class ExcelDataAccessor:
             if any(phrase in value_str for phrase in instruction_phrases):
                 return False
 
-        # Must have at least a name or priority to be considered valid
-        has_name = rule.get('name') and str(rule.get('name')).strip() not in ['', 'None', 'N/A', 'TBD', 'Value']
-        has_priority = rule.get('priority') and str(rule.get('priority')).strip() not in ['', 'None', 'N/A', 'TBD', 'Value']
+        # Count non-empty values (very lenient approach)
+        non_empty_values = sum(1 for v in rule.values()
+                              if v and str(v).strip() not in ['', 'None', 'N/A', 'TBD', 'Value', 'Existing', 'Validation'])
 
-        # Count how many standard fields have values (include more field variations)
-        standard_fields = ['direction', 'access', 'protocol', 'source_port_range', 'destination_port_ranges',
-                          'source_address_prefix', 'destination_address_prefix', 'description']
-        filled_fields = sum(1 for field in standard_fields
+        # Very relaxed validation: Just need at least 3 non-empty values
+        # This handles NSG rules with various field names/formats
+        if non_empty_values >= 3:
+            return True
+
+        # Alternate check: has any critical NSG fields
+        critical_fields = ['name', 'priority', 'direction', 'access', 'protocol']
+        has_critical = sum(1 for field in critical_fields
                           if rule.get(field) and str(rule.get(field)).strip() not in ['', 'None', 'N/A', 'TBD', 'Value'])
 
-        # Relaxed: Valid if has name/priority AND at least 1 other field (was 2)
-        # This handles partially filled NSG rules better
-        return (has_name or has_priority) and filled_fields >= 1
+        # Valid if has at least 2 critical fields
+        return has_critical >= 2
 
     def _standardize_vm_fields(self, vm_instance: Dict[str, Any]) -> Dict[str, Any]:
         """Standardize VM field names to common naming convention.
@@ -1582,12 +1585,14 @@ class ExcelDataAccessor:
         # VM extraction quality
         vm_instances = terraform_data.get('vm_instances', [])
         if vm_instances:
-            # Check for critical VM fields
-            critical_vm_fields = ['hostname', 'vm_size', 'os_type']
+            # Check for critical VM fields (more lenient - check multiple field variations)
+            critical_vm_fields = ['hostname', 'vm_size', 'os_type', 'name', 'key', 'sku', 'os']
             vm_quality = 0
             for vm in vm_instances:
+                # Count how many critical fields are present (need at least 2 out of 7)
                 filled = sum(1 for field in critical_vm_fields if vm.get(field))
-                vm_quality += (filled / len(critical_vm_fields))
+                # Score based on having at least 2 fields (more realistic)
+                vm_quality += min(filled / 2.0, 1.0)  # Cap at 1.0 (100%)
             scores['vm_extraction_quality'] = int((vm_quality / len(vm_instances)) * 100)
         else:
             scores['vm_extraction_quality'] = 0

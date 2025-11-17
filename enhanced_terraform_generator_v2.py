@@ -58,42 +58,80 @@ class EnhancedTerraformGeneratorV2:
     def _log_validation_results(self):
         """Log validation results from data extraction."""
         import logging
-        logger = logging.getLogger(__name__)
+        # Use automation_pipeline logger to ensure messages go to automation.log
+        logger = logging.getLogger('automation_pipeline')
+
+        # Also print to console for immediate feedback
+        print_output = True
 
         validation = self.validation_results
 
         # Log extraction quality
-        logger.info("=" * 80)
-        logger.info("DATA EXTRACTION VALIDATION RESULTS")
-        logger.info("=" * 80)
-        logger.info(f"Extraction Quality: {validation['extraction_quality'].upper()}")
-        logger.info(f"Valid: {validation['valid']}")
+        msg = "=" * 80
+        logger.info(msg)
+        if print_output: print(msg)
+
+        msg = "DATA EXTRACTION VALIDATION RESULTS"
+        logger.info(msg)
+        if print_output: print(msg)
+
+        msg = "=" * 80
+        logger.info(msg)
+        if print_output: print(msg)
+
+        msg = f"Extraction Quality: {validation['extraction_quality'].upper()}"
+        logger.info(msg)
+        if print_output: print(msg)
+
+        msg = f"Valid: {validation['valid']}"
+        logger.info(msg)
+        if print_output: print(msg)
 
         # Log errors
         if validation['errors']:
-            logger.error(f"ERRORS FOUND ({len(validation['errors'])}):")
+            msg = f"ERRORS FOUND ({len(validation['errors'])}):"
+            logger.error(msg)
+            if print_output: print(msg)
+
             for error in validation['errors']:
-                logger.error(f"  [ERROR] {error}")
+                msg = f"  [ERROR] {error}"
+                logger.error(msg)
+                if print_output: print(msg)
 
         # Log warnings
         if validation['warnings']:
-            logger.warning(f"WARNINGS ({len(validation['warnings'])}):")
+            msg = f"WARNINGS ({len(validation['warnings'])}):"
+            logger.warning(msg)
+            if print_output: print(msg)
+
             for warning in validation['warnings']:
-                logger.warning(f"  [WARN] {warning}")
+                msg = f"  [WARN] {warning}"
+                logger.warning(msg)
+                if print_output: print(msg)
 
         # Log missing fields
         if validation['missing_fields']:
-            logger.error(f"Missing Required Fields: {', '.join(validation['missing_fields'])}")
+            msg = f"Missing Required Fields: {', '.join(validation['missing_fields'])}"
+            logger.error(msg)
+            if print_output: print(msg)
 
         # Summary
         if validation['valid'] and not validation['warnings']:
-            logger.info("[PASS] All required data extracted successfully")
+            msg = "[PASS] All required data extracted successfully"
+            logger.info(msg)
+            if print_output: print(msg)
         elif validation['valid']:
-            logger.info("[PASS] Required data extracted with warnings")
+            msg = "[PASS] Required data extracted with warnings"
+            logger.info(msg)
+            if print_output: print(msg)
         else:
-            logger.error("[FAIL] Data extraction incomplete - missing required fields")
+            msg = "[FAIL] Data extraction incomplete - missing required fields"
+            logger.error(msg)
+            if print_output: print(msg)
 
-        logger.info("=" * 80)
+        msg = "=" * 80
+        logger.info(msg)
+        if print_output: print(msg)
 
     def _get_raw_value(self, var_name: str, sheet_name: str = 'Build_ENV', default: Any = None) -> Any:
         """Get a value from raw_data cache.

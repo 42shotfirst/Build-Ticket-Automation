@@ -17,6 +17,8 @@ class ExcelDataAccessor:
         self.json_file_path = json_file_path
         self.data = self._load_data()
         self.sheets = self.data.get('sheets', {})
+        # Extract source Excel filename for auto-detection
+        self.source_filename = self.data.get('metadata', {}).get('filename', '')
         
     def _load_data(self) -> Dict[str, Any]:
         """Load data from JSON file."""
@@ -349,6 +351,137 @@ class ExcelDataAccessor:
 
         return remapped_data
 
+    def _auto_detect_environment(self, terraform_data: Dict[str, Any]) -> Optional[str]:
+        """Auto-detect environment from filename, sheet names, or data.
+
+        Returns detected environment or None if not found.
+        """
+        import re
+
+        # Environment keywords in priority order
+        env_patterns = {
+            'prod': ['prod', 'production', 'prd'],
+            'dr': ['dr', 'disaster', 'recovery', 'disaster recovery'],
+            'uat': ['uat', 'user acceptance', 'test'],
+            'dev': ['dev', 'development', 'dvlp'],
+            'qa': ['qa', 'quality', 'qas'],
+            'stg': ['stg', 'staging', 'stage'],
+            'sbx': ['sbx', 'sandbox', 'sand'],
+        }
+
+        # 1. Check filename
+        filename = self.source_filename.lower()
+        for env, patterns in env_patterns.items():
+            for pattern in patterns:
+                if pattern in filename:
+                    print(f"  Auto-detected environment '{env}' from filename: {self.source_filename}")
+                    return env
+
+        # 2. Check sheet names
+        for sheet_name in self.get_sheet_names():
+            sheet_lower = sheet_name.lower()
+            for env, patterns in env_patterns.items():
+                for pattern in patterns:
+                    if pattern in sheet_lower:
+                        print(f"  Auto-detected environment '{env}' from sheet name: {sheet_name}")
+                        return env
+
+        # 3. Check Build_ENV data
+        build_env = terraform_data.get('all_key_value_pairs', {}).get('Build_ENV', {})
+        for key, value in build_env.items():
+            key_lower = key.lower()
+            value_lower = str(value).lower()
+
+            # Look for environment-related keys
+            if any(term in key_lower for term in ['environment', 'env', 'tier']):
+                for env, patterns in env_patterns.items():
+                    for pattern in patterns:
+                        if pattern in value_lower:
+                            print(f"  Auto-detected environment '{env}' from {key}: {value}")
+                            return env
+
+        # 4. Check Resources data
+        resources = terraform_data.get('all_key_value_pairs', {}).get('Resources', {})
+        for key, value in resources.items():
+            value_lower = str(value).lower()
+            for env, patterns in env_patterns.items():
+                for pattern in patterns:
+                    if pattern in value_lower and any(term in key.lower() for term in ['environment', 'env']):
+                        print(f"  Auto-detected environment '{env}' from Resources/{key}: {value}")
+                        return env
+
+        print("  Could not auto-detect environment")
+        return None
+
+    def _auto_detect_service_now_ticket(self, terraform_data: Dict[str, Any]) -> Optional[str]:
+        """Auto-detect Service Now ticket from filename or data.
+
+        Returns detected ticket number or None if not found.
+        """
+        import re
+
+        # ServiceNow ticket patterns
+        ticket_patterns = [
+            r'(INC\d{7,})',      # Incident: INC0012345
+            r'(RITM\d{7,})',     # Request Item: RITM0012345
+            r'(REQ\d{7,})',      # Request: REQ0012345
+            r'(CHG\d{7,})',      # Change: CHG0012345
+            r'(TASK\d{7,})',     # Task: TASK0012345
+            r'(CTASK\d{7,})',    # Change Task: CTASK0012345
+            r'(PRB\d{7,})',      # Problem: PRB0012345
+        ]
+
+        # 1. Check filename
+        filename = self.source_filename.upper()
+        for pattern in ticket_patterns:
+            match = re.search(pattern, filename)
+            if match:
+                ticket = match.group(1)
+                print(f"  Auto-detected Service Now ticket '{ticket}' from filename: {self.source_filename}")
+                return ticket
+
+        # 2. Check Build_ENV data
+        build_env = terraform_data.get('all_key_value_pairs', {}).get('Build_ENV', {})
+        for key, value in build_env.items():
+            key_lower = key.lower()
+            value_upper = str(value).upper()
+
+            # Look for ticket-related keys
+            if any(term in key_lower for term in ['ticket', 'snow', 'service now', 'incident', 'request', 'change']):
+                for pattern in ticket_patterns:
+                    match = re.search(pattern, value_upper)
+                    if match:
+                        ticket = match.group(1)
+                        print(f"  Auto-detected Service Now ticket '{ticket}' from {key}: {value}")
+                        return ticket
+
+        # 3. Check Resources data
+        resources = terraform_data.get('all_key_value_pairs', {}).get('Resources', {})
+        for key, value in resources.items():
+            value_upper = str(value).upper()
+            if any(term in key.lower() for term in ['ticket', 'snow', 'service now']):
+                for pattern in ticket_patterns:
+                    match = re.search(pattern, value_upper)
+                    if match:
+                        ticket = match.group(1)
+                        print(f"  Auto-detected Service Now ticket '{ticket}' from Resources/{key}: {value}")
+                        return ticket
+
+        # 4. Scan all key-value pairs across all sheets
+        all_kv = terraform_data.get('all_key_value_pairs', {})
+        for sheet_name, kv_pairs in all_kv.items():
+            for key, value in kv_pairs.items():
+                value_upper = str(value).upper()
+                for pattern in ticket_patterns:
+                    match = re.search(pattern, value_upper)
+                    if match:
+                        ticket = match.group(1)
+                        print(f"  Auto-detected Service Now ticket '{ticket}' from {sheet_name}/{key}: {value}")
+                        return ticket
+
+        print("  Could not auto-detect Service Now ticket")
+        return None
+
     def get_terraform_ready_data(self) -> Dict[str, Any]:
         """Extract data in a format ready for Terraform generation."""
         terraform_data = {
@@ -435,64 +568,96 @@ class ExcelDataAccessor:
         # COMPREHENSIVE VM EXTRACTION - Extract ALL VM data from Resources sheet
         print("COMPREHENSIVE VM EXTRACTION")
         print("=" * 30)
-        
-        # Try to find VM tables in Resources sheet
-        resources_tables = terraform_data['all_tables'].get('Resources', [])
+
+        # Section markers that indicate VM data
+        vm_section_markers = [
+            'virtual machine', 'vm configuration', 'server configuration',
+            'compute resources', 'vm details', 'server details',
+            'host configuration', 'instance details'
+        ]
+
+        # Try to find VM tables in Resources sheet AND other sheets
         vm_instances = []
-        
-        # Look for VM-related tables with improved detection
-        for i, table in enumerate(resources_tables):
-            headers = table.get('headers', [])
-            data = table.get('data', [])
-            
-            # Expanded VM keywords for better detection
-            vm_keywords = ['hostname', 'vm', 'server', 'machine', 'instance', 'node', 'compute',
-                          'sku', 'recommended sku', 'virtual machine', 'host name', 'computer']
+        sheets_to_check = ['Resources', 'Build_ENV', 'VM', 'VMs', 'Servers', 'Compute']
 
-            # Check if this table contains VM data by looking at headers
-            is_vm_table = any(any(keyword in str(header).lower() for keyword in vm_keywords) for header in headers)
+        for sheet_name in sheets_to_check:
+            if sheet_name not in terraform_data['all_tables']:
+                continue
 
-            # Also check if table has sufficient columns that look like VM config (reduced threshold)
-            has_vm_like_columns = len(headers) >= 3 and len(data) > 0
+            sheet_tables = terraform_data['all_tables'].get(sheet_name, [])
+            print(f"  Checking {sheet_name} sheet: {len(sheet_tables)} tables")
 
-            # Check data content for VM-like patterns
-            has_vm_data = False
-            vm_field_keywords = ['owner', 'recommended', 'os', 'disk', 'image', 'size', 'sku',
-                                'ip', 'subnet', 'zone', 'region', 'availability']
+            # Look for VM-related tables with improved detection
+            for i, table in enumerate(sheet_tables):
+                headers = table.get('headers', [])
+                data = table.get('data', [])
 
-            if data:
-                first_row = data[0]
-                # Look for common VM fields in the data
-                for key in first_row.keys():
-                    if any(kw in str(key).lower() for kw in vm_field_keywords):
-                        has_vm_data = True
-                        break
+                # Expanded VM keywords for better detection
+                vm_keywords = ['hostname', 'vm', 'server', 'machine', 'instance', 'node', 'compute',
+                              'sku', 'recommended sku', 'virtual machine', 'host name', 'computer']
 
-                # Also check if data values look like VM names (heuristic)
-                for value in first_row.values():
-                    value_str = str(value).lower()
-                    if any(pattern in value_str for pattern in ['-vm-', 'server', 'host', 'node']):
-                        has_vm_data = True
-                        break
+                # Check if this table contains VM data by looking at headers
+                is_vm_table = any(any(keyword in str(header).lower() for keyword in vm_keywords) for header in headers)
 
-            if (is_vm_table or has_vm_data) and has_vm_like_columns:
-                print(f"  Found potential VM table {i+1}: {len(data)} entries")
-                print(f"    Headers ({len(headers)}): {headers[:8] if len(headers) > 8 else headers}")
+                # Check for section markers before the table (in raw_data)
+                has_section_marker = False
+                sheet_data = terraform_data['comprehensive_data'].get(sheet_name, {})
+                raw_data = sheet_data.get('raw_data', [])
+                table_row_index = table.get('header_row_index', 0)
 
-                # Process each VM entry
-                for j, row in enumerate(data):
-                    vm_instance = {}
-                    for key, value in row.items():
-                        if value and str(value).strip():
-                            # Skip obvious header rows or placeholder values
-                            value_str = str(value).strip()
-                            if value_str not in ['Value', 'Column', 'Header', 'N/A', 'TBD', '']:
-                                vm_instance[key] = value
+                # Look for section markers in rows above the table
+                for row_idx in range(max(0, table_row_index - 5), table_row_index):
+                    if row_idx < len(raw_data):
+                        row = raw_data[row_idx]
+                        if isinstance(row, dict):
+                            for value in row.values():
+                                value_str = str(value).lower()
+                                if any(marker in value_str for marker in vm_section_markers):
+                                    has_section_marker = True
+                                    print(f"    Found VM section marker: '{value}'")
+                                    break
 
-                    if vm_instance and len(vm_instance) >= 2:  # Reduced threshold
-                        vm_instances.append(vm_instance)
-                        if j < 2:  # Show first 2 VMs
-                            print(f"    VM {j+1} fields: {list(vm_instance.keys())[:6]}...")
+                # Also check if table has sufficient columns that look like VM config (reduced threshold)
+                has_vm_like_columns = len(headers) >= 3 and len(data) > 0
+
+                # Check data content for VM-like patterns
+                has_vm_data = False
+                vm_field_keywords = ['owner', 'recommended', 'os', 'disk', 'image', 'size', 'sku',
+                                    'ip', 'subnet', 'zone', 'region', 'availability']
+
+                if data:
+                    first_row = data[0]
+                    # Look for common VM fields in the data
+                    for key in first_row.keys():
+                        if any(kw in str(key).lower() for kw in vm_field_keywords):
+                            has_vm_data = True
+                            break
+
+                    # Also check if data values look like VM names (heuristic)
+                    for value in first_row.values():
+                        value_str = str(value).lower()
+                        if any(pattern in value_str for pattern in ['-vm-', 'server', 'host', 'node']):
+                            has_vm_data = True
+                            break
+
+                if (is_vm_table or has_vm_data or has_section_marker) and has_vm_like_columns:
+                    print(f"  Found potential VM table in {sheet_name} ({i+1}): {len(data)} entries")
+                    print(f"    Headers ({len(headers)}): {headers[:8] if len(headers) > 8 else headers}")
+
+                    # Process each VM entry
+                    for j, row in enumerate(data):
+                        vm_instance = {}
+                        for key, value in row.items():
+                            if value and str(value).strip():
+                                # Skip obvious header rows or placeholder values
+                                value_str = str(value).strip()
+                                if value_str not in ['Value', 'Column', 'Header', 'N/A', 'TBD', '']:
+                                    vm_instance[key] = value
+
+                        if vm_instance and len(vm_instance) >= 2:  # Reduced threshold
+                            vm_instances.append(vm_instance)
+                            if j < 2:  # Show first 2 VMs
+                                print(f"    VM {j+1} fields: {list(vm_instance.keys())[:6]}...")
         
         if vm_instances:
             terraform_data['vm_instances'] = vm_instances
@@ -717,7 +882,25 @@ class ExcelDataAccessor:
         terraform_data['naming_patterns'] = naming_patterns
         print(f"  Total naming patterns extracted: {len(naming_patterns)}")
         print()
-        
+
+        # AUTO-DETECT MISSING REQUIRED FIELDS
+        print("AUTO-DETECTION OF MISSING FIELDS")
+        print("=" * 40)
+
+        # Auto-detect environment if missing
+        if not terraform_data['project_info'].get('environment'):
+            detected_env = self._auto_detect_environment(terraform_data)
+            if detected_env:
+                terraform_data['project_info']['environment'] = detected_env
+
+        # Auto-detect Service Now ticket if missing
+        if not terraform_data['project_info'].get('service_now_ticket'):
+            detected_ticket = self._auto_detect_service_now_ticket(terraform_data)
+            if detected_ticket:
+                terraform_data['project_info']['service_now_ticket'] = detected_ticket
+
+        print()
+
         # COMPREHENSIVE DATA SUMMARY
         print("COMPREHENSIVE DATA EXTRACTION SUMMARY")
         print("=" * 50)

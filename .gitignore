@@ -139,6 +139,11 @@ backup_*/
 terraform_output/
 *.tfvars.backup
 
+# Excel temporary files
+~$*.xls*
+~$*.xlsx
+~$*.xlsm
+
 # Markdown documentation files (except README.md)
 *.md
 !README.md

@@ -1,0 +1,63 @@
+{
+  "success": true,
+  "start_time": "2025-11-18T10:06:06.100335",
+  "end_time": "2025-11-18T10:06:07.904915",
+  "duration_seconds": 1.80458,
+  "steps_completed": [
+    "validation",
+    "backup",
+    "excel_extraction_1",
+    "terraform_generation_1",
+    "output_validation",
+    "terraform_validation",
+    "summary_report",
+    "cleanup"
+  ],
+  "files_generated": [
+    "test_data_comprehensive_extract.json",
+    "m-vm.tf",
+    "main.tf",
+    "r-asg.tf",
+    "r-snet.tf",
+    "r-kvlt.tf",
+    "r-umid.tf",
+    "r-dsk.tf",
+    "r-rnd.tf",
+    "r-dcra.tf",
+    "variables.tf",
+    "terraform.tfvars",
+    "outputs.tf",
+    "data.tf",
+    "locals.tf",
+    "scripts/validate.sh",
+    "README.md",
+    ".gitignore"
+  ],
+  "errors": [],
+  "warnings": [
+    "Terraform not available: [Errno 2] No such file or directory: 'terraform'"
+  ],
+  "summary": {
+    "total_files_generated": 18,
+    "files_processed": 1,
+    "steps_completed": 6,
+    "duration_seconds": 0,
+    "success": false,
+    "error_count": 0,
+    "warning_count": 1,
+    "processed_files": [
+      {
+        "excel_file": "test_data.xlsm",
+        "json_file": "test_data_comprehensive_extract.json",
+        "terraform_dir": "20251118_100607",
+        "terraform_dir_full_path": "terraform_output/20251118_100607",
+        "terraform_file_count": 14,
+        "json_file_size_bytes": 5143854,
+        "json_file_size_mb": 4.91
+      }
+    ],
+    "total_terraform_files": 14,
+    "total_json_size_bytes": 5143854,
+    "total_json_size_mb": 4.91
+  }
+}

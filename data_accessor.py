@@ -1323,11 +1323,30 @@ class ExcelDataAccessor:
         # Extract actual values from Build_ENV tables (values are in column 3, index 2)
         build_env_actual_values = self._extract_actual_values_from_tables('Build_ENV', value_column_index=2)
         print(f"  Extracted {len(build_env_actual_values)} actual values from Build_ENV tables")
-        
+
+        # CRITICAL: Directly extract important fields from Build_ENV raw data
+        # The table extractor sometimes misses these fields, so we extract them manually
+        build_env_sheet = self.data.get('sheets', {}).get('Build_ENV', {})
+        if 'raw_data' in build_env_sheet:
+            for row in build_env_sheet['raw_data']:
+                # Extract Project Name
+                if row.get('0') == 'Project Name' and row.get('2'):
+                    build_env_actual_values['Project Name'] = row.get('2')
+                    print(f"    Project Name: {row.get('2')} (manually extracted)")
+                # Extract Abbreviated App Name
+                elif row.get('0') == 'Abbreviated App Name' and row.get('2'):
+                    build_env_actual_values['Abbreviated App Name'] = row.get('2')
+                    print(f"    Abbreviated App Name: {row.get('2')} (manually extracted)")
+                # Extract VNET Resource Group
+                elif row.get('0') == 'VNET Resource Group' and row.get('2'):
+                    build_env_actual_values['VNET Resource Group'] = row.get('2')
+                    print(f"    VNET Resource Group: {row.get('2')} (manually extracted)")
+
         # Show extracted values
         for key, value in build_env_actual_values.items():
-            print(f"    {key}: {value}")
-        
+            if key not in ['Project Name', 'Abbreviated App Name', 'VNET Resource Group']:  # Already printed above
+                print(f"    {key}: {value}")
+
         terraform_data['build_environment'] = {
             'key_value_pairs': build_env_actual_values,  # Use extracted actual values
             'raw_key_value_pairs': build_env_kv_pairs,  # Keep original for reference
@@ -1387,9 +1406,14 @@ class ExcelDataAccessor:
         build_env_values = build_env_actual_values
 
         # Mapping of Build_ENV keys to project_info keys
+        # NOTE: Order matters - more specific patterns first
         build_env_mapping = {
-            'application name': 'application_name',
-            'app name': 'application_name',
+            'abbreviated app name': 'application_name',  # Abbreviated name takes priority
+            'abbreviated name': 'application_name',
+            'app abbreviation': 'application_name',
+            'project name': 'project_name',  # Full project name
+            'application name': 'cmdb_app_name',  # Full application name
+            'app name': 'cmdb_app_name',
             'service now ticket': 'service_now_ticket',
             'snow ticket': 'service_now_ticket',
             'ticket': 'service_now_ticket',
@@ -1399,6 +1423,7 @@ class ExcelDataAccessor:
             'region': 'location',
             'subscription': 'subscription',
             'resource group': 'resource_group_name',
+            'vnet resource group': 'vnet_resource_group',  # Add VNET RG
         }
 
         for build_key, build_value in build_env_values.items():

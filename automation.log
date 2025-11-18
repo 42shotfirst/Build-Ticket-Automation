@@ -2933,3 +2933,1278 @@
 2025-11-17 11:43:37,187 - automation_pipeline - INFO - Duration: 0.00 seconds
 2025-11-17 11:43:37,187 - automation_pipeline - INFO - Results saved to: terraform_output/20251117_114337/automation_results.json
 2025-11-17 11:43:37,187 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 09:21:18,876 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:21:18,877 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 09:21:18,877 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:21:18,877 - automation_pipeline - INFO - Started at: 2025-11-18 09:21:18.876941
+2025-11-18 09:21:18,877 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 09:21:18,877 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 09:21:18,877 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-11-18 09:21:18,877 - automation_pipeline - INFO -   - Test data for build ticket.xlsm
+2025-11-18 09:21:18,878 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 09:21:18,878 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-11-18 09:21:18,878 - automation_pipeline - INFO -   - Test data for build ticket.xlsm
+2025-11-18 09:21:18,878 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 09:21:18,878 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 09:21:18,878 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_092118
+2025-11-18 09:21:18,878 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 09:21:18,878 - automation_pipeline - INFO - Processing file 1/1: Test data for build ticket.xlsm
+2025-11-18 09:21:18,878 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 09:21:21,009 - automation_pipeline - INFO - JSON file created: Test data for build ticket_comprehensive_extract.json (5,143,888 bytes)
+2025-11-18 09:21:21,010 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: Test data for build ticket_comprehensive_extract.json
+2025-11-18 09:21:21,010 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 09:21:21,038 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:21:21,038 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 09:21:21,039 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:21:21,039 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 09:21:21,039 - automation_pipeline - INFO - Valid: True
+2025-11-18 09:21:21,039 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 09:21:21,039 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 09:21:21,039 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 09:21:21,039 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:21:21,039 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 09:21:21,039 - automation_pipeline - INFO - Output directory: terraform_output/20251118_092121
+2025-11-18 09:21:21,041 - automation_pipeline - INFO - Generated 18 Terraform files
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - m-basevm.tf (1,420 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - r-rg.tf (269 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - r-asg.tf (426 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - r-snet.tf (348 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - r-nsr.tf (1,552 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - r-kvlt.tf (1,630 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - r-umid.tf (686 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - r-dsk.tf (1,036 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - r-pe.tf (1,333 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - variables.tf (14,331 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - terraform.tfvars (4,698 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - outputs.tf (91 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - versions.tf (327 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - data.tf (246 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - locals.tf (231 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 09:21:21,041 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 09:21:21,042 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_092121
+2025-11-18 09:21:21,042 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 09:21:21,065 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 09:21:21,065 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 09:21:21,065 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_092121
+2025-11-18 09:21:21,071 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - Files generated: 19
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 09:21:21,071 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_092121/automation_results.json
+2025-11-18 09:21:21,072 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 09:43:00,997 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:43:00,997 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 09:43:00,998 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:43:00,998 - automation_pipeline - INFO - Started at: 2025-11-18 09:43:00.997667
+2025-11-18 09:43:00,998 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 09:43:00,998 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 09:43:00,998 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-11-18 09:43:00,998 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 09:43:00,998 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 09:43:00,998 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-11-18 09:43:00,998 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 09:43:00,998 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 09:43:00,998 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 09:43:00,999 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_094300
+2025-11-18 09:43:00,999 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 09:43:00,999 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 09:43:00,999 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 09:43:02,755 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 09:43:02,756 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 09:43:02,756 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 09:43:02,788 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:43:02,788 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 09:43:02,789 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:43:02,789 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 09:43:02,789 - automation_pipeline - INFO - Valid: True
+2025-11-18 09:43:02,789 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 09:43:02,789 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 09:43:02,789 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 09:43:02,789 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:43:02,789 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 09:43:02,789 - automation_pipeline - INFO - Output directory: terraform_output/20251118_094302
+2025-11-18 09:43:02,791 - automation_pipeline - INFO - Generated 20 Terraform files
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - m-basevm.tf (1,420 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-rg.tf (269 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-asg.tf (426 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-snet.tf (348 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-nsr.tf (1,552 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-kvlt.tf (1,630 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-umid.tf (686 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-dsk.tf (1,036 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-pe.tf (1,333 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-rnd.tf (259 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - r-dcra.tf (626 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - terraform.tfvars (4,722 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - outputs.tf (91 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - versions.tf (327 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - data.tf (2,478 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - locals.tf (576 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 09:43:02,791 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 09:43:02,792 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_094302
+2025-11-18 09:43:02,792 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 09:43:02,812 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 09:43:02,812 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 09:43:02,812 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_094302
+2025-11-18 09:43:02,817 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - ================================================================================
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - Files generated: 21
+2025-11-18 09:43:02,817 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 09:43:02,818 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 09:43:02,818 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_094302/automation_results.json
+2025-11-18 09:43:02,818 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 10:06:06,100 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:06:06,100 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 10:06:06,100 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:06:06,100 - automation_pipeline - INFO - Started at: 2025-11-18 10:06:06.100335
+2025-11-18 10:06:06,100 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 10:06:06,100 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 10:06:06,100 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-11-18 10:06:06,100 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 10:06:06,101 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 10:06:06,101 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-11-18 10:06:06,101 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 10:06:06,101 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 10:06:06,101 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 10:06:06,101 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_100606
+2025-11-18 10:06:06,101 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 10:06:06,101 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 10:06:06,101 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 10:06:07,843 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 10:06:07,844 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 10:06:07,844 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 10:06:07,876 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:06:07,876 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 10:06:07,876 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:06:07,876 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 10:06:07,876 - automation_pipeline - INFO - Valid: True
+2025-11-18 10:06:07,876 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 10:06:07,876 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 10:06:07,876 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 10:06:07,876 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:06:07,876 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 10:06:07,877 - automation_pipeline - INFO - Output directory: terraform_output/20251118_100607
+2025-11-18 10:06:07,878 - automation_pipeline - INFO - Generated 17 Terraform files
+2025-11-18 10:06:07,878 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 10:06:07,878 - automation_pipeline - INFO -   - main.tf (253 bytes)
+2025-11-18 10:06:07,878 - automation_pipeline - INFO -   - r-asg.tf (426 bytes)
+2025-11-18 10:06:07,878 - automation_pipeline - INFO -   - r-snet.tf (348 bytes)
+2025-11-18 10:06:07,878 - automation_pipeline - INFO -   - r-kvlt.tf (1,630 bytes)
+2025-11-18 10:06:07,878 - automation_pipeline - INFO -   - r-umid.tf (686 bytes)
+2025-11-18 10:06:07,878 - automation_pipeline - INFO -   - r-dsk.tf (1,036 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - r-rnd.tf (259 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - r-dcra.tf (626 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - terraform.tfvars (4,722 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - data.tf (2,478 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - locals.tf (576 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 10:06:07,879 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_100607
+2025-11-18 10:06:07,880 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 10:06:07,899 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 10:06:07,900 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 10:06:07,900 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_100607
+2025-11-18 10:06:07,904 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - Files generated: 18
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 10:06:07,904 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 10:06:07,905 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_100607/automation_results.json
+2025-11-18 10:06:07,905 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 10:19:16,199 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:19:16,199 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 10:19:16,199 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:19:16,199 - automation_pipeline - INFO - Started at: 2025-11-18 10:19:16.199043
+2025-11-18 10:19:16,199 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 10:19:16,199 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 10:19:16,199 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 10:19:16,199 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 10:19:16,199 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 10:19:16,200 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 10:19:16,200 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 10:19:16,200 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 10:19:16,200 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 10:19:16,200 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 10:19:16,200 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 10:19:16,200 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_101916
+2025-11-18 10:19:16,200 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 10:19:16,200 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 10:19:16,200 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 10:19:17,838 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 10:19:17,840 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 10:19:17,840 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 10:19:17,869 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:19:17,869 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 10:19:17,869 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:19:17,869 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 10:19:17,869 - automation_pipeline - INFO - Valid: True
+2025-11-18 10:19:17,869 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 10:19:17,869 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 10:19:17,869 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 10:19:17,869 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:19:17,870 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 10:19:17,870 - automation_pipeline - INFO - Output directory: terraform_output/20251118_101917
+2025-11-18 10:19:17,872 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 10:19:17,872 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 10:19:17,873 - automation_pipeline - INFO -   - terraform.tfvars (4,722 bytes)
+2025-11-18 10:19:17,873 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 10:19:17,873 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 10:19:17,873 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 10:19:17,873 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 10:19:17,873 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 10:19:17,873 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 10:19:17,873 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 10:19:17,874 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_101917
+2025-11-18 10:19:17,874 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 10:19:17,894 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 10:19:17,894 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 10:19:17,894 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_101917
+2025-11-18 10:19:17,898 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 10:19:17,898 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 10:19:17,898 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 10:19:17,898 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 10:19:17,898 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 10:19:17,898 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 10:19:17,899 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:19:17,899 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 10:19:17,899 - automation_pipeline - INFO - ================================================================================
+2025-11-18 10:19:17,899 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 10:19:17,899 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 10:19:17,899 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 10:19:17,899 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 10:19:17,899 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_101917/automation_results.json
+2025-11-18 10:19:17,899 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:03:16,706 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - Started at: 2025-11-18 11:03:16.706793
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:03:16,707 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:03:16,707 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:03:16,707 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:03:16,708 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110316
+2025-11-18 11:03:16,708 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:03:16,708 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:03:16,708 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:03:18,446 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:03:18,447 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:03:18,447 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:03:18,479 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:03:18,479 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:03:18,479 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:03:18,479 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:03:18,479 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:03:18,479 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:03:18,479 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:03:18,479 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:03:18,479 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:03:18,479 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:03:18,480 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110318
+2025-11-18 11:03:18,482 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - terraform.tfvars (4,702 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:03:18,482 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:03:18,483 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110318
+2025-11-18 11:03:18,483 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:03:18,502 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:03:18,502 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:03:18,502 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110318
+2025-11-18 11:03:18,510 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:03:18,510 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:03:18,510 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:03:18,510 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:03:18,510 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:03:18,510 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:03:18,511 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:03:18,511 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:03:18,511 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:03:18,511 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:03:18,511 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:03:18,511 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:03:18,511 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:03:18,511 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110318/automation_results.json
+2025-11-18 11:03:18,511 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:04:02,499 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:04:02,500 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:04:02,500 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:04:02,500 - automation_pipeline - INFO - Started at: 2025-11-18 11:04:02.499860
+2025-11-18 11:04:02,500 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:04:02,500 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:04:02,500 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:04:02,500 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:04:02,500 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:04:02,501 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:04:02,501 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:04:02,501 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:04:02,501 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:04:02,501 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:04:02,501 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:04:02,501 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110402
+2025-11-18 11:04:02,501 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:04:02,501 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:04:02,501 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:04:04,250 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:04:04,251 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:04:04,251 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:04:04,277 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:04:04,277 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:04:04,277 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:04:04,277 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:04:04,277 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:04:04,277 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:04:04,277 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:04:04,277 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:04:04,277 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:04:04,277 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:04:04,277 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110404
+2025-11-18 11:04:04,280 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - terraform.tfvars (4,702 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:04:04,280 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:04:04,281 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110404
+2025-11-18 11:04:04,281 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:04:04,301 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:04:04,301 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:04:04,301 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110404
+2025-11-18 11:04:04,305 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:04:04,305 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:04:04,306 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110404/automation_results.json
+2025-11-18 11:04:04,306 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:05:10,867 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:10,867 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:05:10,867 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:10,867 - automation_pipeline - INFO - Started at: 2025-11-18 11:05:10.867323
+2025-11-18 11:05:10,867 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:05:10,867 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:05:10,867 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:05:10,867 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:05:10,867 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:05:10,868 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:05:10,868 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:05:10,868 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:05:10,868 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:05:10,868 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:05:10,868 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:05:10,868 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110510
+2025-11-18 11:05:10,868 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:05:10,868 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:05:10,868 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:05:12,709 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:05:12,710 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:05:12,710 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:05:12,739 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:12,739 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:05:12,739 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:12,739 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:05:12,739 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:05:12,739 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:05:12,739 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:05:12,739 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:05:12,739 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:12,740 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:05:12,740 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110512
+2025-11-18 11:05:12,742 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:05:12,742 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:05:12,743 - automation_pipeline - INFO -   - terraform.tfvars (4,702 bytes)
+2025-11-18 11:05:12,743 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:05:12,743 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:05:12,743 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:05:12,743 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:05:12,743 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:05:12,743 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:05:12,743 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:05:12,744 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110512
+2025-11-18 11:05:12,744 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:05:12,764 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:05:12,764 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:05:12,764 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110512
+2025-11-18 11:05:12,768 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:05:12,768 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:05:12,768 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110512/automation_results.json
+2025-11-18 11:05:12,769 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - Started at: 2025-11-18 11:05:24.580128
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:05:24,580 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:05:24,580 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:05:24,581 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:05:24,581 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:05:24,581 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:05:24,581 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:05:24,581 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110524
+2025-11-18 11:05:24,581 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:05:24,581 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:05:24,581 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:05:26,295 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:05:26,296 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:05:26,296 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:05:26,321 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:26,321 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:05:26,321 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:26,321 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:05:26,321 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:05:26,321 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:05:26,321 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:05:26,321 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:05:26,321 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:26,322 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:05:26,322 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110526
+2025-11-18 11:05:26,324 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:05:26,324 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - terraform.tfvars (4,702 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:05:26,325 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:05:26,326 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110526
+2025-11-18 11:05:26,326 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:05:26,347 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:05:26,347 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:05:26,347 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110526
+2025-11-18 11:05:26,352 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:05:26,352 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:05:26,352 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110526/automation_results.json
+2025-11-18 11:05:26,353 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:05:31,303 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Started at: 2025-11-18 11:05:31.303967
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:05:31,304 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:05:31,304 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110531
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:05:31,304 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:05:33,042 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:05:33,043 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:05:33,043 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:05:33,066 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:33,066 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:05:33,066 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:33,066 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:05:33,066 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:05:33,066 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:05:33,066 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:05:33,066 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:05:33,066 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:33,066 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:05:33,066 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110533
+2025-11-18 11:05:33,069 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - terraform.tfvars (4,702 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:05:33,069 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:05:33,070 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110533
+2025-11-18 11:05:33,070 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:05:33,090 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:05:33,090 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:05:33,090 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110533
+2025-11-18 11:05:33,095 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:05:33,095 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110533/automation_results.json
+2025-11-18 11:05:33,096 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:05:54,428 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - Started at: 2025-11-18 11:05:54.428939
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:05:54,429 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:05:54,429 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:05:54,429 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:05:54,430 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:05:54,430 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110554
+2025-11-18 11:05:54,430 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:05:54,430 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:05:54,430 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:05:56,197 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:05:56,198 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:05:56,198 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:05:56,221 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:56,221 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:05:56,221 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:56,221 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:05:56,221 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:05:56,221 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:05:56,221 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:05:56,221 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:05:56,221 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:56,222 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:05:56,222 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110556
+2025-11-18 11:05:56,224 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:05:56,224 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:05:56,224 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:05:56,224 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:05:56,224 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:05:56,224 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:05:56,224 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:05:56,224 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:05:56,224 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:05:56,224 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - terraform.tfvars (4,702 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:05:56,225 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:05:56,226 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110556
+2025-11-18 11:05:56,226 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:05:56,247 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:05:56,247 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:05:56,247 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110556
+2025-11-18 11:05:56,252 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:05:56,252 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:05:56,253 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110556/automation_results.json
+2025-11-18 11:05:56,253 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - Started at: 2025-11-18 11:06:04.517139
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:06:04,517 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:06:04,517 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:06:04,517 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:06:04,518 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110604
+2025-11-18 11:06:04,518 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:06:04,518 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:06:04,518 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:06:06,251 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:06:06,252 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:06:06,252 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:06:06,275 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:06,275 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:06:06,275 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:06,275 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:06:06,275 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:06:06,275 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:06:06,275 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:06:06,275 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:06:06,275 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:06,276 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:06:06,276 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110606
+2025-11-18 11:06:06,278 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - terraform.tfvars (4,702 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:06:06,278 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:06:06,279 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:06:06,279 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:06:06,279 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:06:06,279 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:06:06,279 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:06:06,279 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110606
+2025-11-18 11:06:06,279 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:06:06,299 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:06:06,299 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:06:06,300 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110606
+2025-11-18 11:06:06,304 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:06:06,304 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110606/automation_results.json
+2025-11-18 11:06:06,305 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:06:55,035 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:55,035 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:06:55,035 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:55,035 - automation_pipeline - INFO - Started at: 2025-11-18 11:06:55.035137
+2025-11-18 11:06:55,035 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:06:55,035 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:06:55,035 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:06:55,035 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:06:55,036 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:06:55,036 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:06:55,036 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:06:55,037 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:06:55,037 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:06:55,037 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:06:55,037 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:06:55,037 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110655
+2025-11-18 11:06:55,037 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:06:55,037 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:06:55,037 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:06:56,911 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:06:56,912 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:06:56,912 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:06:56,936 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:56,936 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:06:56,936 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:56,936 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:06:56,936 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:06:56,936 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:06:56,936 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:06:56,936 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:06:56,936 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:56,936 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:06:56,936 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110656
+2025-11-18 11:06:56,939 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - terraform.tfvars (4,588 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:06:56,939 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:06:56,940 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110656
+2025-11-18 11:06:56,940 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:06:56,961 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:06:56,961 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:06:56,961 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110656
+2025-11-18 11:06:56,968 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:06:56,968 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:06:56,968 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:06:56,969 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110656/automation_results.json
+2025-11-18 11:06:56,970 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:07:16,169 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:16,169 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:07:16,169 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:16,169 - automation_pipeline - INFO - Started at: 2025-11-18 11:07:16.169314
+2025-11-18 11:07:16,169 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:07:16,169 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:07:16,169 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:07:16,169 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:07:16,169 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:07:16,170 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:07:16,170 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:07:16,170 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:07:16,170 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:07:16,170 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:07:16,170 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:07:16,170 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110716
+2025-11-18 11:07:16,170 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:07:16,170 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:07:16,170 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:07:17,912 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:07:17,913 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:07:17,913 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:07:17,938 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:17,938 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:07:17,938 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:17,938 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:07:17,938 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:07:17,938 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:07:17,938 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:07:17,938 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:07:17,938 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:17,938 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:07:17,938 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110717
+2025-11-18 11:07:17,940 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:07:17,940 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:07:17,940 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:07:17,940 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:07:17,940 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:07:17,940 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:07:17,940 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:07:17,940 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:07:17,940 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:07:17,940 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - terraform.tfvars (4,588 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:07:17,941 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:07:17,942 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110717
+2025-11-18 11:07:17,942 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:07:17,962 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:07:17,963 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:07:17,963 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110717
+2025-11-18 11:07:17,968 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:07:17,968 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:07:17,969 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:07:17,969 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110717/automation_results.json
+2025-11-18 11:07:17,969 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:07:23,932 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:23,932 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:07:23,932 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:23,932 - automation_pipeline - INFO - Started at: 2025-11-18 11:07:23.932525
+2025-11-18 11:07:23,932 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:07:23,932 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:07:23,932 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:07:23,932 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:07:23,932 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:07:23,933 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:07:23,933 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:07:23,933 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:07:23,933 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:07:23,933 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:07:23,933 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:07:23,933 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110723
+2025-11-18 11:07:23,933 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:07:23,933 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:07:23,933 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:07:25,653 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:07:25,654 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:07:25,654 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:07:25,676 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:25,676 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:07:25,676 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:25,676 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:07:25,676 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:07:25,677 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:07:25,677 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:07:25,677 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:07:25,677 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:25,677 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:07:25,677 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110725
+2025-11-18 11:07:25,680 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - terraform.tfvars (4,588 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - README.md (1,672 bytes)
+2025-11-18 11:07:25,680 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:07:25,681 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110725
+2025-11-18 11:07:25,681 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:07:25,703 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:07:25,703 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:07:25,703 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110725
+2025-11-18 11:07:25,708 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:07:25,708 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:07:25,709 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:07:25,709 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:07:25,709 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110725/automation_results.json
+2025-11-18 11:07:25,709 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:08:08,750 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - Started at: 2025-11-18 11:08:08.750733
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:08:08,751 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:08:08,751 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:08:08,751 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_110808
+2025-11-18 11:08:08,752 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:08:08,752 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:08:08,752 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:08:10,497 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:08:10,498 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:08:10,498 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:08:10,523 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:08:10,523 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:08:10,523 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:08:10,523 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:08:10,523 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:08:10,523 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:08:10,523 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:08:10,523 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:08:10,523 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:08:10,524 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:08:10,524 - automation_pipeline - INFO - Output directory: terraform_output/20251118_110810
+2025-11-18 11:08:10,526 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:08:10,526 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:08:10,527 - automation_pipeline - INFO -   - terraform.tfvars (4,728 bytes)
+2025-11-18 11:08:10,527 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:08:10,527 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:08:10,527 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:08:10,527 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:08:10,527 - automation_pipeline - INFO -   - scripts/validate.sh (1,180 bytes)
+2025-11-18 11:08:10,527 - automation_pipeline - INFO -   - README.md (1,694 bytes)
+2025-11-18 11:08:10,527 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:08:10,528 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_110810
+2025-11-18 11:08:10,528 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:08:10,548 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:08:10,548 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:08:10,548 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_110810
+2025-11-18 11:08:10,553 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:08:10,553 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:08:10,554 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_110810/automation_results.json
+2025-11-18 11:08:10,554 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:20:46,760 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:20:46,760 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:20:46,760 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:20:46,760 - automation_pipeline - INFO - Started at: 2025-11-18 11:20:46.760037
+2025-11-18 11:20:46,760 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:20:46,760 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:20:46,760 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:20:46,760 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:20:46,760 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:20:46,761 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:20:46,761 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:20:46,761 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:20:46,761 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:20:46,761 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:20:46,761 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:20:46,761 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_112046
+2025-11-18 11:20:46,761 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:20:46,761 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:20:46,761 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:20:48,510 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:20:48,511 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:20:48,511 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:20:48,543 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:20:48,543 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:20:48,543 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:20:48,543 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:20:48,543 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:20:48,543 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:20:48,544 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:20:48,544 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:20:48,544 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:20:48,544 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:20:48,544 - automation_pipeline - INFO - Output directory: terraform_output/20251118_112048
+2025-11-18 11:20:48,547 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - terraform.tfvars (4,571 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - scripts/validate.sh (1,180 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - README.md (1,694 bytes)
+2025-11-18 11:20:48,547 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:20:48,549 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_112048
+2025-11-18 11:20:48,549 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:20:48,569 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:20:48,569 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:20:48,570 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_112048
+2025-11-18 11:20:48,575 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:20:48,575 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:20:48,576 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_112048/automation_results.json
+2025-11-18 11:20:48,576 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-11-18 11:21:46,156 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:21:46,156 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-11-18 11:21:46,156 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:21:46,156 - automation_pipeline - INFO - Started at: 2025-11-18 11:21:46.156436
+2025-11-18 11:21:46,156 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-11-18 11:21:46,156 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-11-18 11:21:46,156 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:21:46,156 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:21:46,157 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:21:46,157 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-11-18 11:21:46,157 - automation_pipeline - INFO - No specific file provided, searching sourcefiles directory for Excel files...
+2025-11-18 11:21:46,157 - automation_pipeline - INFO - Found 1 Excel file(s) in sourcefiles directory
+2025-11-18 11:21:46,157 - automation_pipeline - INFO -   - test_data.xlsm
+2025-11-18 11:21:46,157 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-11-18 11:21:46,157 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-11-18 11:21:46,157 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251118_112146
+2025-11-18 11:21:46,157 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-11-18 11:21:46,157 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-11-18 11:21:46,157 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-11-18 11:21:47,803 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-11-18 11:21:47,804 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-11-18 11:21:47,804 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-11-18 11:21:47,834 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:21:47,835 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-11-18 11:21:47,835 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:21:47,835 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-11-18 11:21:47,835 - automation_pipeline - INFO - Valid: True
+2025-11-18 11:21:47,835 - automation_pipeline - WARNING - WARNINGS (1):
+2025-11-18 11:21:47,835 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-11-18 11:21:47,835 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-11-18 11:21:47,835 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:21:47,835 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-11-18 11:21:47,835 - automation_pipeline - INFO - Output directory: terraform_output/20251118_112147
+2025-11-18 11:21:47,837 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-11-18 11:21:47,837 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-11-18 11:21:47,838 - automation_pipeline - INFO -   - terraform.tfvars (4,266 bytes)
+2025-11-18 11:21:47,838 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-11-18 11:21:47,838 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-11-18 11:21:47,838 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-11-18 11:21:47,838 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-11-18 11:21:47,838 - automation_pipeline - INFO -   - scripts/validate.sh (1,180 bytes)
+2025-11-18 11:21:47,838 - automation_pipeline - INFO -   - README.md (1,694 bytes)
+2025-11-18 11:21:47,838 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-11-18 11:21:47,839 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251118_112147
+2025-11-18 11:21:47,839 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-11-18 11:21:47,859 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-11-18 11:21:47,859 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-11-18 11:21:47,859 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251118_112147
+2025-11-18 11:21:47,863 - automation_pipeline - WARNING - Terraform not available: [Errno 2] No such file or directory: 'terraform'
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - ================================================================================
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - Files processed: 1
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - Files generated: 23
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - Steps completed: 8
+2025-11-18 11:21:47,863 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-11-18 11:21:47,864 - automation_pipeline - INFO - Results saved to: terraform_output/20251118_112147/automation_results.json
+2025-11-18 11:21:47,864 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent

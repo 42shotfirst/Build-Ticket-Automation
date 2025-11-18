@@ -1421,8 +1421,13 @@ class ExcelDataAccessor:
             'env': 'environment',
             'location': 'location',
             'region': 'location',
+            'azure region': 'location',
+            'subscription name': 'subscription',
             'subscription': 'subscription',
+            'sub': 'subscription',
+            'resource group name': 'resource_group_name',
             'resource group': 'resource_group_name',
+            'rg name': 'resource_group_name',
             'vnet resource group': 'vnet_resource_group',  # Add VNET RG
         }
 
@@ -1478,6 +1483,17 @@ class ExcelDataAccessor:
             detected_subscription = self._auto_detect_subscription(terraform_data)
             if detected_subscription:
                 terraform_data['project_info']['subscription'] = detected_subscription
+
+        # Generate SPN name from subscription name
+        subscription_name = terraform_data['project_info'].get('subscription', '')
+        if subscription_name and not terraform_data['project_info'].get('spn_name'):
+            # Remove 'sub-' prefix if present and add 'spn-terraform-' prefix
+            if subscription_name.lower().startswith('sub-'):
+                spn_name = 'spn-terraform-' + subscription_name[4:]
+            else:
+                spn_name = 'spn-terraform-' + subscription_name
+            terraform_data['project_info']['spn_name'] = spn_name
+            print(f"  Generated SPN name from subscription: {spn_name}")
 
         # SET INTELLIGENT DEFAULTS FOR MISSING CRITICAL FIELDS
         print("APPLYING INTELLIGENT DEFAULTS")

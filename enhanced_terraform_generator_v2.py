@@ -903,11 +903,23 @@ variable "resource_specific_tags" {{
         # Generate network security rules
         network_security_rules = self._generate_nsg_rules_for_tfvars()
 
-        # Extract SPN name from Excel - construct only if resource_prefix exists
+        # Extract SPN name from Excel or project_info, or construct from subscription
         spn_name = (build_env.get('key_value_pairs', {}).get('SPN') or
-                   build_env.get('key_value_pairs', {}).get('Service Principal'))
-        if not spn_name and resource_prefix:
-            spn_name = f"spn-terraform-{resource_prefix}"
+                   build_env.get('key_value_pairs', {}).get('Service Principal') or
+                   project_info.get('spn_name'))
+
+        # If still not found, construct from subscription name
+        if not spn_name:
+            subscription_name = project_info.get('subscription', '')
+            if subscription_name:
+                # Remove 'sub-' prefix if present and add 'spn-terraform-' prefix
+                if subscription_name.lower().startswith('sub-'):
+                    spn_name = 'spn-terraform-' + subscription_name[4:]
+                else:
+                    spn_name = 'spn-terraform-' + subscription_name
+            elif resource_prefix:
+                # Last fallback: use resource_prefix
+                spn_name = f"spn-terraform-{resource_prefix}"
 
         # Extract key vault settings from raw_data (from Excel source) - no defaults
         kvlt_sku = self._get_raw_value('sku_name', 'Build_ENV')

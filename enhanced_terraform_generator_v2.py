@@ -138,17 +138,102 @@ class EnhancedTerraformGeneratorV2:
 
     def _get_raw_value(self, var_name: str, sheet_name: str = 'Build_ENV', default: Any = None) -> Any:
         """Get a value from raw_data cache.
-        
+
         Args:
-            var_name: The variable name to look up (from column "1")
+            var_name: The variable name to look up (from column "0" - label)
             sheet_name: The sheet to search in
             default: Default value if not found
-            
+
         Returns:
             The value from column "2" or default if not found
         """
         return self.raw_data_cache.get(sheet_name, {}).get(var_name, default)
-        
+
+    def _get_value_by_terraform_var(self, terraform_var_name: str, sheet_name: str = 'Build_ENV', default: Any = None) -> Any:
+        """Get value by looking up the terraform variable name in column 1.
+
+        This is the PRIMARY method for getting values from Excel since column 1
+        contains the unique terraform variable names like 'resource_group_name',
+        'disk_encryption_set_name', etc.
+
+        Args:
+            terraform_var_name: The terraform variable name from column 1
+            sheet_name: Sheet to search
+            default: Default value if not found
+
+        Returns:
+            Value from column 2
+        """
+        sheets = self.terraform_data.get('sheets', {})
+        if not sheets:
+            sheets = self.terraform_data.get('comprehensive_data', {})
+
+        sheet = sheets.get(sheet_name, {})
+        raw_data = sheet.get('raw_data', [])
+
+        for row in raw_data:
+            if isinstance(row, dict):
+                col1 = str(row.get('1', '')).strip()
+                if col1 == terraform_var_name:
+                    value = row.get('2')
+                    # Skip header rows with 'Value' placeholder
+                    if value and str(value).strip() and str(value).strip() != 'Value':
+                        return value
+
+        return default
+
+    def _get_section_value(self, section_header: str, field_label: str, sheet_name: str = 'Build_ENV', key_value: str = None) -> Any:
+        """Get value from a specific section in the Excel sheet.
+
+        Args:
+            section_header: The section header to look for (e.g., 'Application Security Group', 'Subnet')
+            field_label: The field label to get (e.g., 'Name', 'Key')
+            sheet_name: Sheet to search
+            key_value: Optional key value to match (e.g., 'asg_ad' to find specific ASG)
+
+        Returns:
+            Value from column 2, or None if not found
+        """
+        sheets = self.terraform_data.get('sheets', {})
+        if not sheets:
+            sheets = self.terraform_data.get('comprehensive_data', {})
+
+        sheet = sheets.get(sheet_name, {})
+        raw_data = sheet.get('raw_data', [])
+
+        # Find the section
+        in_section = False
+        section_matches = False
+
+        for i, row in enumerate(raw_data):
+            if isinstance(row, dict):
+                label = str(row.get('0', '')).strip()
+                col1 = str(row.get('1', '')).strip()
+                col2 = str(row.get('2', '')).strip()
+
+                # Check if we're entering the target section
+                if label == section_header and col1 == 'Terraform Variable':
+                    in_section = True
+                    section_matches = True if not key_value else False
+                    continue
+
+                # If we're in the right section type and need to match by key
+                if in_section and key_value and label == 'Key' and col2 == key_value:
+                    section_matches = True
+                    continue
+
+                # If we're in a matching section, look for the field
+                if in_section and section_matches and label == field_label:
+                    if col2 and col2 != 'Value':
+                        return col2
+
+                # Check if we've entered a new section (reset)
+                if in_section and label and col1 == 'Terraform Variable' and label != section_header:
+                    in_section = False
+                    section_matches = False
+
+        return None
+
     def generate_terraform_files(self, output_dir: str = "output_package") -> Dict[str, str]:
         """Generate complete deployment package following module.md patterns."""
         
@@ -946,13 +1031,14 @@ variable "resource_specific_tags" {{
                 return "null"
             return f'"{val}"' if quote else str(val)
 
-        # Build resource names only if we have the necessary data
-        env_lower = environment.lower() if environment else None
-        rg_name = f"rg-{resource_prefix}-{env_lower}" if resource_prefix and env_lower else None
-        dsk_name = f"dsk-{resource_prefix}-{env_lower}" if resource_prefix and env_lower else None
-        umid_name = f"umid-{resource_prefix}-{env_lower}" if resource_prefix and env_lower else None
-        kvlt_name = f"kvlt-{resource_prefix}-{env_lower}" if resource_prefix and env_lower else None
-        key_name = f"key-{resource_prefix}-{env_lower}" if resource_prefix and env_lower else None
+        # Get ALL resource names from Excel using terraform variable names (column 1)
+        # This ensures we use the ACTUAL values from the sheet, not calculated values
+        rg_name = self._get_value_by_terraform_var('resource_group_name', 'Build_ENV')
+        location = self._get_value_by_terraform_var('location', 'Build_ENV')
+        dsk_name = self._get_value_by_terraform_var('disk_encryption_set_name', 'Build_ENV')
+        umid_name = self._get_value_by_terraform_var('user_assigned_identity_name', 'Build_ENV')
+        kvlt_name = self._get_value_by_terraform_var('key_vault_name', 'Build_ENV')
+        key_name = self._get_value_by_terraform_var('key_vault_key_name', 'Build_ENV')
 
         tfvars = f'''# Begin terraform.tfvars
 
@@ -1134,49 +1220,29 @@ common_tags = {{
 }}'''
     
     def _generate_subnets_for_tfvars(self) -> str:
-        """Generate subnets configuration for tfvars from Excel or project data."""
+        """Generate subnets configuration for tfvars from Excel data.
 
-        project_info = self.terraform_data.get('project_info', {})
-        build_env = self.terraform_data.get('build_environment', {})
+        Reads subnet configuration from Excel Build_ENV sheet.
+        Excel structure (rows 46-54):
+        - Row 48: Name = snet-active_directory-dr
+        - Row 49: VNET Resource Group = rg-core_services_platform_networking-dr
+        - Row 50: VNet Name = vnet-core_services_platform_networking_dr
+        - Row 51: NSG Name = nsg-core_services_platform_networking_dr
+        - Row 52: Route Table Name = rt-core_services_platform_networking-dr
+        - Row 53: Address Prefixes = 10.187.7.32/27
+        - Row 54: Service Endpoints = Microsoft.KeyVault
 
-        # Extract project/app name for resource naming - no defaults
-        app_name = project_info.get('application_name')
-        project_name = project_info.get('project_name')
-        full_project_name = project_info.get('project_name')
-        environment = project_info.get('environment')
-        subscription = build_env.get('key_value_pairs', {}).get('Subscription')
+        ALL values come from Excel except SPN (which is calculated from Subscription).
+        """
 
-        # Try to extract actual VNET resource group from Excel (now in project_info)
-        vnet_rg_from_excel = project_info.get('vnet_resource_group', None)
-        if not vnet_rg_from_excel:
-            vnet_rg_from_excel = build_env.get('key_value_pairs', {}).get('VNET Resource Group', None)
-        if not vnet_rg_from_excel:
-            vnet_rg_from_excel = build_env.get('key_value_pairs', {}).get('Vnet Resource Group', None)
-
-        # Construct resource names only if we have the data - don't make up defaults
-        network_rg = vnet_rg_from_excel
-        if not network_rg and project_name:
-            network_rg = f"rg-{project_name.lower().replace(' ', '-')}-networking"
-
-        vnet_name = f"vnet-{project_name.lower().replace(' ', '-')}-{environment.lower()}" if project_name and environment else None
-        nsg_name = f"nsg-{project_name.lower().replace(' ', '-')}-{environment.lower()}" if project_name and environment else None
-        route_table_name = f"rt-{project_name.lower().replace(' ', '-')}-{environment.lower()}" if project_name and environment else None
-
-        # Use full project name for subnet (matching pattern where it appears)
-        subnet_name = f"snet-{full_project_name.lower()}-{environment.lower()}" if full_project_name and environment else None
-
-        # Try to extract or construct subscription ID - only use placeholder if it's not a GUID
-        subscription_id = subscription
-        if subscription and len(subscription) != 36:
-            # subscription is a name, not a GUID - use placeholder
-            subscription_id = "SUBSCRIPTION_ID_PLACEHOLDER"
-
-        # Try to extract subnet CIDR from Excel - don't make up default
-        subnet_cidr = (build_env.get('key_value_pairs', {}).get('Subnet CIDR') or
-                      build_env.get('key_value_pairs', {}).get('Subnet Prefix') or
-                      build_env.get('key_value_pairs', {}).get('Address Space'))
-
-        subnet_prefix = subnet_cidr  # Don't use default if not in Excel
+        # Read subnet values from Excel using section-aware lookup
+        subnet_name = self._get_section_value('Subnet', 'Name', 'Build_ENV')
+        network_rg = self._get_section_value('Subnet', 'VNET Resource Group', 'Build_ENV')
+        vnet_name = self._get_section_value('Subnet', 'VNet Name', 'Build_ENV')
+        nsg_name = self._get_section_value('Subnet', 'NSG Name', 'Build_ENV')
+        route_table_name = self._get_section_value('Subnet', 'Route Table Name', 'Build_ENV')
+        address_prefixes = self._get_section_value('Subnet', 'Address Prefixes', 'Build_ENV')
+        service_endpoints = self._get_section_value('Subnet', 'Service Endpoints', 'Build_ENV')
 
         # Helper to format values properly
         def fmt_val(val):
@@ -1184,69 +1250,143 @@ common_tags = {{
                 return "null"
             return f'"{val}"'
 
-        # Build resource IDs only if subscription_id is available
-        if subscription_id and network_rg and nsg_name:
-            nsg_id = f'"/subscriptions/{subscription_id}/resourceGroups/{network_rg}/providers/Microsoft.Network/networkSecurityGroups/{nsg_name}"'
-        else:
-            nsg_id = "null"
-
-        if subscription_id and network_rg and route_table_name:
-            rt_id = f'"/subscriptions/{subscription_id}/resourceGroups/{network_rg}/providers/Microsoft.Network/routeTables/{route_table_name}"'
-        else:
-            rt_id = "null"
-
         # Format prefix array properly
-        if subnet_prefix:
-            prefix_array = f'["{subnet_prefix}"]'
+        if address_prefixes:
+            # Handle comma-separated values
+            if ',' in address_prefixes:
+                prefixes = [p.strip() for p in address_prefixes.split(',')]
+                prefix_array = '[' + ', '.join([f'"{p}"' for p in prefixes]) + ']'
+            else:
+                prefix_array = f'["{address_prefixes}"]'
         else:
             prefix_array = "[]"
 
+        # Format service endpoints array
+        if service_endpoints:
+            # Handle comma-separated values
+            if ',' in service_endpoints:
+                endpoints = [e.strip() for e in service_endpoints.split(',')]
+                endpoints_array = '[' + ', '.join([f'"{e}"' for e in endpoints]) + ']'
+            else:
+                endpoints_array = f'["{service_endpoints}"]'
+        else:
+            endpoints_array = '["Microsoft.KeyVault"]'  # Default fallback
+
+        # Note: We're not using resource IDs for NSG and route table
+        # The terraform.tfvars from the actual output shows null for these
         return f'''{{
   snet1 = {{
     resource_group_name  = {fmt_val(network_rg)}
     virtual_network_name = {fmt_val(vnet_name)}
-    network_security_group_id   = {nsg_id}
-    route_table_id              = {rt_id}
+    network_security_group_id   = null
+    route_table_id              = null
     name              = {fmt_val(subnet_name)}
     prefixes          = {prefix_array}
-    service_endpoints = ["Microsoft.KeyVault"]
+    service_endpoints = {endpoints_array}
   }}
 }}'''
     
     def _generate_asg_for_tfvars(self) -> str:
-        """Generate application security groups for tfvars from project data."""
+        """Generate application security groups for tfvars from Excel data.
 
-        project_info = self.terraform_data.get('project_info', {})
-        # Use full project name for ASG (matching pattern) - no defaults
-        full_project_name = project_info.get('project_name')
-        environment = project_info.get('environment')
+        Reads ASG names from Excel Build_ENV sheet. Excel structure:
+        - Row 38-40: First ASG (key: asg_ad, name from row 40)
+        - Row 42-44: Second ASG (key: asg_kvlt, name from row 44)
 
-        # Use full project name in lowercase with spaces
+        ALL values come from Excel except SPN (which is calculated from Subscription).
+        """
+
+        # Read ASG names from Excel using section-aware lookup
+        # First ASG - typically for NIC
+        asg_nic_name = self._get_section_value('Application Security Group', 'Name', 'Build_ENV')
+
+        # Second ASG - typically for private endpoints
+        # We need to find the second ASG section - look for sections with different keys
+        sheets = self.terraform_data.get('sheets', {})
+        if not sheets:
+            sheets = self.terraform_data.get('comprehensive_data', {})
+
+        sheet = sheets.get('Build_ENV', {})
+        raw_data = sheet.get('raw_data', [])
+
+        asg_pe_name = None
+        found_first_asg = False
+
+        for i, row in enumerate(raw_data):
+            if isinstance(row, dict):
+                label = str(row.get('0', '')).strip()
+                col1 = str(row.get('1', '')).strip()
+                col2 = str(row.get('2', '')).strip()
+
+                # Track if we've seen first ASG
+                if label == 'Application Security Group' and col1 == 'Terraform Variable':
+                    if not found_first_asg:
+                        found_first_asg = True
+                    else:
+                        # This is the second ASG section - get its name
+                        for j in range(i, min(i + 5, len(raw_data))):
+                            next_row = raw_data[j]
+                            if isinstance(next_row, dict):
+                                next_label = str(next_row.get('0', '')).strip()
+                                next_col2 = str(next_row.get('2', '')).strip()
+                                if next_label == 'Name' and next_col2 and next_col2 != 'Value':
+                                    asg_pe_name = next_col2
+                                    break
+                        break
+
+        # Format with proper null handling
+        def fmt_val(val):
+            if val is None or val == "None":
+                return "null"
+            return f'"{val}"'
+
         return f'''{{
   asg_nic = {{
-    name = "asg-{full_project_name.lower()}-nic-{environment.lower()}"
+    name = {fmt_val(asg_nic_name)}
   }},
   asg_pe = {{
-    name = "asg-{full_project_name.lower()}-pe-{environment.lower()}"
+    name = {fmt_val(asg_pe_name)}
   }}
 }}'''
     
     def _generate_private_endpoints_for_tfvars(self) -> str:
-        """Generate private endpoints for tfvars from project data."""
+        """Generate private endpoints for tfvars from Excel data.
 
-        project_info = self.terraform_data.get('project_info', {})
-        # Use full project name for private endpoints (matching pattern) - no defaults
-        full_project_name = project_info.get('project_name')
-        environment = project_info.get('environment')
+        Reads private endpoint configuration from Excel Build_ENV sheet.
+        Excel structure (rows 61-68):
+        - Row 62: Key = pe1
+        - Row 64: Name = pvep-active-directory-kvlt-dr
+        - Row 65: Subresource Names = vault
+        - Row 67: Subnet Key = snet1
+        - Row 68: ASG Key = asg_kvlt
 
-        # Use full project name in lowercase with spaces
-        # Note: Only one private endpoint in this example, but comma would be needed if more are added
+        ALL values come from Excel except SPN (which is calculated from Subscription).
+        """
+
+        # Read private endpoint values from Excel using section-aware lookup
+        pe_name = self._get_section_value('Private Endpoint', 'Name', 'Build_ENV')
+        subresource_names = self._get_section_value('Private Endpoint', 'Subresource Names', 'Build_ENV')
+        snet_key = self._get_section_value('Private Endpoint', 'Subnet Key', 'Build_ENV')
+        asg_key = self._get_section_value('Private Endpoint', 'ASG Key', 'Build_ENV')
+
+        # Format with proper null handling
+        def fmt_val(val):
+            if val is None or val == "None":
+                return "null"
+            return f'"{val}"'
+
+        # Format subresource_names as array
+        if subresource_names:
+            subresource_array = f'["{subresource_names}"]'
+        else:
+            subresource_array = '["vault"]'  # Default fallback
+
         return f'''{{
   pe_kvlt = {{
-    name                           = "pvep-kvlt-{full_project_name.lower()}-{environment.lower()}"
-    subresource_names              = ["vault"]
-    snet_key                       = "snet1"
-    asg_key                        = "asg_pe"
+    name                           = {fmt_val(pe_name)}
+    subresource_names              = {subresource_array}
+    snet_key                       = {fmt_val(snet_key)}
+    asg_key                        = {fmt_val(asg_key)}
   }}
 }}'''
     

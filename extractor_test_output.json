@@ -1,0 +1,396 @@
+{
+  "build_env": {
+    "metadata": {
+      "project_name": "Microsoft Active Directory",
+      "abbreviated_app_name": "AD",
+      "application_description": "A directory is a hierarchical structure that stores information about objects on the network. A directory service, such as Active Directory Domain Services (AD DS), provides the methods for storing directory data and making this data available to network users and administrators. For example, AD DS stores information about user accounts, such as names, passwords, phone numbers, and so on, and enables other authorized users on the same network to access this information.",
+      "cag_architect": "Gary Waltman",
+      "server_owner": "Hisham Alhindawi",
+      "application_owner": "Hisham Alhindawi",
+      "business_owner": "Hisham Alhindawi",
+      "trb_approval_link": "No TRB required, deploying additional DR site",
+      "diagram": "Active Directory v2: Lucidchart",
+      "built_in": "Server 2025",
+      "dr_setup": "NA",
+      "recovery_type": "NA",
+      "will_it_house_personally_identifiable_information_(pii)": "NA",
+      "is_remote_desktop_or_ssh_access_required": "Yes",
+      "comments": "NA",
+      "application_name": "Microsoft Active Directory"
+    },
+    "tags": {
+      "wab:app-name": "Microsoft Active Directory",
+      "wab:snow-item": "RITM0158791",
+      "wab:environment": "DR",
+      "wab:app-tier": "Platinum",
+      "wab:shared-service-name": "NA",
+      "wab:it-cost-center": "55410",
+      "wab:it-domain": "Identity and Access Management",
+      "wab:notes": "NA",
+      "wab:segment": "NA",
+      "wab:lineofbusiness": "NA",
+      "wab:department": "NA",
+      "wab:cost-center": "NA",
+      "wab:terraform": "True"
+    },
+    "subscription": "sub-core_services_platform_networking_prod",
+    "resource_group": {
+      "key": "asg_ad",
+      "resource_group_name": "rg-active_directory-dr",
+      "subscription": "sub-core_services_platform_networking_prod",
+      "location": "East US",
+      "name": "asg-active_driectory-dr"
+    },
+    "location": "East US",
+    "application_security_groups": [
+      {
+        "key": "asg_kvlt",
+        "name": "asg-active_driectory-dr"
+      },
+      {
+        "key": "snet1",
+        "name": "asg-active_driectory-kvlt-dr"
+      }
+    ],
+    "subnets": [
+      {
+        "key": "snet1",
+        "name": "snet-active_directory-dr",
+        "resource_group_name": "rg-core_services_platform_networking-dr",
+        "virtual_network_name": "vnet-core_services_platform_networking_dr",
+        "network_security_group_name": "nsg-core_services_platform_networking_dr",
+        "route_table_name": "rt-core_services_platform_networking-dr",
+        "prefixes": "10.187.7.32/27",
+        "service_endpoints": "Microsoft.KeyVault",
+        "rsg_key": "rsg1",
+        "user_assigned_identity_name": "umid-active_directory-dr"
+      }
+    ],
+    "private_endpoints": [
+      {
+        "key": "kvlt1",
+        "rsg_key": "rsg1",
+        "name": "pvep-active-directory-kvlt-dr",
+        "subresource_names": "vault",
+        "private_connection_resource_id": "kvlt_id",
+        "snet_key": "snet1",
+        "asg_key": "asg_kvlt",
+        "key_vault_name": "kvlt-active-directory-dr",
+        "sku_name": "Standard"
+      }
+    ],
+    "user_assigned_identity": {
+      "rsg_key": "rsg1",
+      "user_assigned_identity_name": "umid-active_directory-dr",
+      "key": "pe1",
+      "name": "pvep-active-directory-kvlt-dr",
+      "subresource_names": "vault"
+    },
+    "key_vault": {
+      "key": "kvlt1",
+      "rsg_key": "rsg1",
+      "key_vault_name": "kvlt-active-directory-dr",
+      "sku_name": "Standard",
+      "snet_key": "snet1",
+      "soft_delete_retention_days": "90",
+      "public_network_access": "True",
+      "enable_rbac_authorization": "True",
+      "enabled_for_deployment": "True",
+      "enabled_for_disk_encryption": "True",
+      "enabled_for_template_deployment": "True",
+      "purge_protection_enabled": "True",
+      "key_vault_key_name": "key-active-directory-dr",
+      "key_type": "RSA",
+      "key_size": "2048",
+      "key_opts": "[\"encrypt\", \"decrypt\", \"sign\", \"verify\", \"wrapKey\", \"unwrapKey\"]",
+      "disk_encryption_set_name": "dsk-active_directory-dr",
+      "identity.type": "UserAssigned"
+    },
+    "disk_encryption_set": {
+      "rsg_key": "rsg1",
+      "disk_encryption_set_name": "dsk-active_directory-dr",
+      "identity.type": "UserAssigned",
+      "vm_list.key": "vm1",
+      "vm_list.vm1.name": "aze-adspw03",
+      "vm_list.vm1.image_os": "windows"
+    },
+    "virtual_machines": [
+      {
+        "vm_list.key": "vm1",
+        "rsg_key": "rsg1",
+        "vm_list.vm1.name": "aze-adspw03",
+        "vm_list.vm1.image_os": "windows",
+        "vm_list.rsg1.source_image_id": "windows-server-2025-cis-L1",
+        "vm_list.vm1.size": "Standard_D8as_v5",
+        "vm_list.vm1.os_disk_size": "128",
+        "vm_list.vm1.os_disk_type": "Premium_LRS",
+        "vm_list.vm1.ip_allocation": "Static",
+        "vm_list.vm1.snet_key": "snet1",
+        "vm_list.vm1.asg_key": "asg_ad",
+        "vm_list.vm1.tags.wab:role": "App",
+        "vm_list.vm1.tags.wab:patch-optin": "YES",
+        "admin_username": "cisadmin"
+      }
+    ]
+  },
+  "resources": {
+    "terraform_variables": {
+      "key": "kvlt1",
+      "service_endpoints": "Microsoft.KeyVault",
+      "rules": "Continue_here",
+      "rsg_key": "rsg1",
+      "subresource_names": "vault",
+      "private_connection_resource_id": "kvlt_id",
+      "snet_key": "snet_apgw",
+      "asg_key": "asg_kvlt",
+      "sku_name": "standard",
+      "soft_delete_retention_days": "90",
+      "public_network_access": "True",
+      "enable_rbac_authorization": "True",
+      "enabled_for_deployment": "True",
+      "enabled_for_disk_encryption": "True",
+      "enabled_for_template_deployment": "True",
+      "purge_protection_enabled": "True",
+      "key_type": "RSA",
+      "key_size": "2048",
+      "key_opts": "[\"encrypt\", \"decrypt\", \"sign\", \"verify\", \"wrapKey\", \"unwrapKey\"]",
+      "identity.type": "UserAssigned",
+      "vm_list.key": "vm1",
+      "vm_list.vm1.name": "Default",
+      "vm_list.vm1.ip_allocation": "Static",
+      "vm_list.vm1.snet_key": "snet1",
+      "vm_list.vm1.asg_key": "asg_nic",
+      "admin_username": "cisadmin",
+      "vm_key": "vm1",
+      "vm_list.vm1.Disks.name": "Default",
+      "vm_list.vm1.Disks.data_disk_sizes": "[]",
+      "maintenance_window.allowed.day": "Sunday",
+      "maintenance_window.allowed.hours": "[]",
+      "automatic_channel_upgrade": "patch",
+      "maintenance_window_auto_upgrade.frequency": "AbsoluteMonthly",
+      "maintenance_window_auto_upgrade.interval": "Once a Month and weekofindex Third",
+      "maintenance_window_auto_upgrade.duration": "12 hours",
+      "maintenance_window_auto_upgrade.day_of_week": "Friday",
+      "node_os_channel_upgrade": "NodeImage",
+      "maintenance_window_node_os.frequency": "Monthly - Repeats every month on second Friday.",
+      "maintenance_window_node_os.day_of_week": "Sunday",
+      "azure_rbac_enabled": "Azure AD Authentication with Azure RBAC",
+      "mode": "System",
+      "network_rule_set": "Continue here",
+      "internal_load_balancing_mode": "None",
+      "allow_new_private_endpoint_connections": "True"
+    },
+    "vm_configurations": [
+      {
+        "key": "vm1",
+        "name": "Default",
+        "ip_allocation": "Static",
+        "snet_key": "snet1",
+        "asg_key": "asg_nic",
+        "Disks": {
+          "name": "Default",
+          "data_disk_sizes": "[]"
+        }
+      }
+    ],
+    "tags": {}
+  },
+  "nsg": {
+    "rules": [
+      {
+        "direction": "Inbound",
+        "access": "Allow",
+        "protocol": "Tcp",
+        "source_port_range": "*"
+      },
+      {
+        "direction": "Inbound",
+        "access": "Allow",
+        "protocol": "Tcp",
+        "source_port_range": "*"
+      },
+      {
+        "direction": "Outbound",
+        "access": "Allow",
+        "protocol": "Tcp",
+        "source_port_range": "*"
+      },
+      {
+        "direction": "Outbound",
+        "access": "Allow",
+        "protocol": "Tcp",
+        "source_port_range": "*"
+      },
+      {
+        "priority": "Outbound",
+        "direction": "Allow",
+        "access": "Tcp"
+      },
+      {
+        "priority": "Inbound",
+        "direction": "Deny",
+        "access": "Udp"
+      },
+      {
+        "access": "Icmp"
+      },
+      {
+        "access": "Esp"
+      },
+      {
+        "access": "Ah"
+      },
+      {
+        "access": "*"
+      }
+    ],
+    "headers": [
+      "name",
+      "priority",
+      "direction",
+      "access",
+      "protocol",
+      "source_port_range",
+      "destination_port_ranges",
+      "source_asg",
+      "destination_asg",
+      "source_address_prefixes",
+      "destination_address_prefixes",
+      "description"
+    ]
+  },
+  "apgw": {
+    "backend_address_pools": [
+      {
+        "name": "defaultaddresspool",
+        "fqdns": []
+      }
+    ],
+    "backend_http_settings": [
+      {
+        "affinity_cookie_name": null,
+        "cookie_based_affinity": false,
+        "host_name": null,
+        "name": "defaulthttpsetting",
+        "path": null,
+        "port": 80,
+        "probe_name": "defaultprobe-Http",
+        "protocol": "Http",
+        "request_timeout": 30,
+        "trusted_root_certificate_names": []
+      }
+    ],
+    "frontend_ip_configurations": [
+      {
+        "name": "appGwPublicFrontendIpIPv4",
+        "private_ip_address_allocation": "Dynamic",
+        "private_ip_address": null,
+        "private_link_configuration_name": null,
+        "public_ip_address_id": null,
+        "subnet_id": null
+      },
+      {
+        "name": "appGwPrivateFrontendIpIPv4",
+        "private_ip_address_allocation": "Static",
+        "private_link_configuration_name": null,
+        "public_ip_address_id": null,
+        "snet_key": "snet-apgw"
+      }
+    ],
+    "frontend_ports": [
+      {
+        "name": "fp-443",
+        "port": 443
+      },
+      {
+        "name": "fp-80",
+        "port": 80
+      }
+    ],
+    "http_listeners": [
+      {
+        "firewall_policy_id": null,
+        "frontend_ip_configuration_name": "appGwPrivateFrontendIpIPv4",
+        "frontend_port_name": "fp-80",
+        "host_name": null,
+        "protocol": "Http",
+        "ssl_profile_name": null
+      }
+    ],
+    "request_routing_rules": [
+      {
+        "backend_address_pool_name": "defaultaddresspool",
+        "backend_http_settings_name": "defaulthttpsetting",
+        "http_listener_name": "fl-default",
+        "name": "rr-default",
+        "priority": 19000,
+        "redirect_configuration_name": null,
+        "rewrite_rule_set_name": null,
+        "rule_type": "Basic"
+      }
+    ],
+    "probes": [
+      {
+        "host": "localhost",
+        "interval": 30,
+        "name": "defaultprobe-Http",
+        "path": "/",
+        "protocol": "Http",
+        "timeout": 30,
+        "unhealthy_threshold": 3,
+        "match body": null,
+        "match status_code": [
+          "\"200-399\""
+        ]
+      }
+    ],
+    "all_variables": {
+      "name": "pr-",
+      "fqdns": "[]",
+      "affinity_cookie_name": "null",
+      "cookie_based_affinity": "Disabled",
+      "host_name": "null",
+      "path": "/",
+      "port": "80",
+      "probe_name": "defaultprobe-Http",
+      "protocol": "Http",
+      "request_timeout": "30",
+      "trusted_root_certificate_names": "[]",
+      "private_ip_address_allocation": "Static",
+      "private_ip_address": "null",
+      "private_link_configuration_name": "null",
+      "public_ip_address_id": "null",
+      "subnet_id": "null",
+      "snet_key": "snet-apgw",
+      "firewall_policy_id": "null",
+      "frontend_ip_configuration_name": "appGwPrivateFrontendIpIPv4",
+      "frontend_port_name": "fp-80",
+      "ssl_profile_name": "null",
+      "host": "localhost",
+      "interval": "30",
+      "timeout": "30",
+      "unhealthy_threshold": "3",
+      "match body": "null",
+      "match status_code": "[\"200-399\"]",
+      "backend_address_pool_name": "pool-",
+      "backend_http_settings_name": "bp-",
+      "http_listener_name": "fl-default",
+      "priority": "19000",
+      "redirect_configuration_name": "null",
+      "rewrite_rule_set_name": "app-env-rewrite",
+      "rule_type": "Basic",
+      "default_backend_address_pool_name": "pool-",
+      "default_backend_http_settings_name": "bp-",
+      "default_redirect_configuration_name": "null",
+      "default_rewrite_rule_set_name": "app-env-rewrite",
+      "paths": "[\"/oauth2*\"]"
+    }
+  },
+  "acr": {
+    "network_rules": [],
+    "headers": [
+      "action",
+      "ip_range"
+    ]
+  }
+}

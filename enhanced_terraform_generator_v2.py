@@ -1010,10 +1010,11 @@ variable "resource_specific_tags" {{
                 # Last fallback: use resource_prefix
                 spn_name = f"spn-terraform-{resource_prefix}"
 
-        # Extract key vault settings from raw_data (from Excel source) - no defaults
-        kvlt_sku = self._get_raw_value('sku_name', 'Build_ENV')
-        kvlt_retention = self._get_raw_value('soft_delete_retention_days', 'Build_ENV')
-        kvlt_public_access_raw = self._get_raw_value('public_network_access', 'Build_ENV')
+        # Extract key vault settings from Excel using terraform variable names
+        # ALL values come from Excel except SPN (which is calculated from Subscription)
+        kvlt_sku = self._get_value_by_terraform_var('sku_name', 'Build_ENV')
+        kvlt_retention = self._get_value_by_terraform_var('soft_delete_retention_days', 'Build_ENV')
+        kvlt_public_access_raw = self._get_value_by_terraform_var('public_network_access', 'Build_ENV')
         
         # Convert public_network_access from numeric (1/0) to boolean string
         if kvlt_public_access_raw == 1:
@@ -1087,99 +1088,116 @@ common_tags = {{
         return tfvars
     
     def _generate_vm_list_for_tfvars(self) -> str:
-        """Generate VM list for tfvars file with actual values from Excel."""
-        
-        vm_instances = self.terraform_data.get('vm_instances', [])
-        project_info = self.terraform_data.get('project_info', {})
-        
-        if not vm_instances:
-            return "{}"
-        
-        vm_entries = []
-        for i, vm in enumerate(vm_instances):  # Process all VMs
-            vm_key = f"vm{i+1}"
-            
-            # Extract VM fields using the correct mapping structure
-            # Mapping: vm_list.vmX.name -> vm_list.vm1.name (Target Excel)
-            vm_name = (self._get_raw_value(f'vm_list.{vm_key}.name', 'Resources') or
-                      self._get_raw_value('vm_list.vm1.name', 'Resources') or
-                      self._extract_vm_name(vm, i))
-            
-            # Mapping: vm_list.vmX.size -> vm_list.vm1.size (Target Excel)
-            vm_size = (self._get_raw_value(f'vm_list.{vm_key}.size', 'Resources') or
-                      self._get_raw_value('vm_list.vm1.size', 'Resources'))
-            if not vm_size:
-                vm_size = self._extract_vm_size(vm)
+        """Generate VM list for tfvars file with actual values from Excel.
 
-            # Mapping: vm_list.vmX.image_os -> vm_list.vm1.image_os (Target Excel)
-            os_type = (self._get_raw_value(f'vm_list.{vm_key}.image_os', 'Resources') or
-                      self._get_raw_value('vm_list.vm1.image_os', 'Resources'))
-            if not os_type:
-                os_type = self._extract_os_type(vm)
+        Reads VM configuration from Excel Build_ENV sheet.
+        ALL values come from Excel except SPN (which is calculated from Subscription).
+
+        Discovers all VMs by looking for vm_list.vmX.name entries in the sheet.
+        """
+
+        project_info = self.terraform_data.get('project_info', {})
+
+        # Discover all VM keys from Build_ENV sheet by looking for vm_list.vmX.name entries
+        sheets = self.terraform_data.get('sheets', {})
+        if not sheets:
+            sheets = self.terraform_data.get('comprehensive_data', {})
+
+        build_env = sheets.get('Build_ENV', {})
+        raw_data = build_env.get('raw_data', [])
+
+        # Find all unique VM keys (vm1, vm2, vm3, etc.)
+        vm_keys = set()
+        for row in raw_data:
+            if isinstance(row, dict):
+                col1 = str(row.get('1', '')).strip()
+                # Look for vm_list.vmX.name pattern
+                if col1.startswith('vm_list.vm') and '.name' in col1:
+                    parts = col1.split('.')
+                    if len(parts) >= 2:
+                        vm_key = parts[1]  # Extract vm1, vm2, etc.
+                        vm_keys.add(vm_key)
+
+        if not vm_keys:
+            return "{}"
+
+        vm_entries = []
+        for vm_key in sorted(vm_keys):  # Process all discovered VMs
             
-            # Mapping: vm_list.vmX.image_urn -> vm_list.vm1.image_urn (Target Excel)
-            image_urn = (self._get_raw_value(f'vm_list.{vm_key}.image_urn', 'Resources') or
-                        self._get_raw_value('vm_list.vm1.image_urn', 'Resources'))
-            # Don't make up image_urn if not in Excel
-            
-            # Mapping: vm_list.vmX.os_disk_size -> vm_list.vm1.os_disk_size (Target Excel)
-            os_disk_size = (self._get_raw_value(f'vm_list.{vm_key}.os_disk_size', 'Resources') or
-                           self._get_raw_value('vm_list.vm1.os_disk_size', 'Resources'))
+            # Extract VM fields from Excel (Build_ENV or Resources sheet)
+            # ALL values come from Excel - check Build_ENV first, then Resources
+            vm_name = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.name', 'Build_ENV') or
+                      self._get_raw_value(f'vm_list.{vm_key}.name', 'Resources'))
+
+            vm_size = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.size', 'Build_ENV') or
+                      self._get_raw_value(f'vm_list.{vm_key}.size', 'Resources'))
+
+            os_type = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.image_os', 'Build_ENV') or
+                      self._get_raw_value(f'vm_list.{vm_key}.image_os', 'Resources'))
+
+            image_urn = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.image_urn', 'Build_ENV') or
+                        self._get_raw_value(f'vm_list.{vm_key}.image_urn', 'Resources'))
+
+            os_disk_size = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.os_disk_size', 'Build_ENV') or
+                           self._get_raw_value(f'vm_list.{vm_key}.os_disk_size', 'Resources'))
             if os_disk_size:
                 try:
                     os_disk_size = int(os_disk_size)
                 except (ValueError, TypeError):
-                    os_disk_size = self._extract_vm_disk_size(vm)
+                    os_disk_size = None
+
+            os_disk_type = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.os_disk_type', 'Build_ENV') or
+                           self._get_raw_value(f'vm_list.{vm_key}.os_disk_type', 'Resources'))
+
+            ip_allocation = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.ip_allocation', 'Build_ENV') or
+                            self._get_raw_value(f'vm_list.{vm_key}.ip_allocation', 'Resources'))
+
+            ip_address = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.ip_address', 'Build_ENV') or
+                         self._get_raw_value(f'vm_list.{vm_key}.ip_address', 'Resources'))
+
+            snet_key = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.snet_key', 'Build_ENV') or
+                       self._get_raw_value(f'vm_list.{vm_key}.snet_key', 'Resources'))
+
+            asg_key = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.asg_key', 'Build_ENV') or
+                      self._get_raw_value(f'vm_list.{vm_key}.asg_key', 'Resources'))
+
+            # Tags: Check Build_ENV for wab:role and wab:patch-optin
+            role = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.tags.wab:role', 'Build_ENV') or
+                   self._get_raw_value(f'vm_list.{vm_key}.tags.wab:role', 'Resources') or
+                   self._get_raw_value(f'vm_list.{vm_key}.tags.role', 'Resources'))
+
+            patch_optin = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.tags.wab:patch-optin', 'Build_ENV') or
+                          self._get_raw_value(f'vm_list.{vm_key}.tags.wab:patch-optin', 'Resources') or
+                          self._get_raw_value(f'vm_list.{vm_key}.tags.patch-optin', 'Resources'))
+
+            snow_item = project_info.get('service_now_ticket')
+
+            # Read data disk configuration from Excel
+            data_disk_sizes_raw = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.Disks.data_disk_sizes', 'Build_ENV') or
+                                   self._get_raw_value(f'vm_list.{vm_key}.Disks.data_disk_sizes', 'Resources'))
+            data_disk_type = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.Disks.data_disk_type', 'Build_ENV') or
+                             self._get_raw_value(f'vm_list.{vm_key}.Disks.data_disk_type', 'Resources'))
+
+            # Parse data_disk_sizes from string like "[64]" or "[50, 50]"
+            if data_disk_sizes_raw:
+                import ast
+                try:
+                    if isinstance(data_disk_sizes_raw, str):
+                        data_disk_sizes = ast.literal_eval(data_disk_sizes_raw)
+                    else:
+                        data_disk_sizes = data_disk_sizes_raw
+                except (ValueError, SyntaxError):
+                    data_disk_sizes = [50, 50]  # Fallback
             else:
-                os_disk_size = self._extract_vm_disk_size(vm)
-            
-            # Mapping: vm_list.vmX.os_disk_type -> vm_list.vm1.os_disk_type (Target Excel)
-            os_disk_type = (self._get_raw_value(f'vm_list.{vm_key}.os_disk_type', 'Resources') or
-                           self._get_raw_value('vm_list.vm1.os_disk_type', 'Resources'))
-            if not os_disk_type:
-                os_disk_type = self._extract_vm_disk_type(vm)
+                data_disk_sizes = [50, 50]  # Fallback
 
-            # Mapping: vm_list.vmX.ip_allocation -> vm_list.vm1.ip_allocation (Target Excel)
-            ip_allocation = (self._get_raw_value(f'vm_list.{vm_key}.ip_allocation', 'Resources') or
-                            self._get_raw_value('vm_list.vm1.ip_allocation', 'Resources'))
-            # Don't make up ip_allocation if not in Excel
-            
-            # Mapping: vm_list.vmX.ip_address -> vm_list.vm1.ip_address (Target Excel)
-            ip_address = (self._get_raw_value(f'vm_list.{vm_key}.ip_address', 'Resources') or
-                         self._get_raw_value('vm_list.vm1.ip_address', 'Resources'))
-            # Don't make up ip_address if not in Excel
+            # Format data_disk_sizes as Terraform array
+            data_disk_sizes_str = '[' + ', '.join([str(s) for s in data_disk_sizes]) + ']'
 
-            # Mapping: vm_list.vmX.snet_key -> vm_list.vm1.snet_key (Target Excel)
-            snet_key = (self._get_raw_value(f'vm_list.{vm_key}.snet_key', 'Resources') or
-                       self._get_raw_value('vm_list.vm1.snet_key', 'Resources'))
-            # Don't make up snet_key if not in Excel
+            # Use data_disk_type from Excel, fallback to Standard_LRS
+            if not data_disk_type:
+                data_disk_type = "Standard_LRS"
 
-            # Mapping: vm_list.vmX.asg_key -> vm_list.vm1.asg_key (Target Excel)
-            asg_key = (self._get_raw_value(f'vm_list.{vm_key}.asg_key', 'Resources') or
-                      self._get_raw_value('vm_list.vm1.asg_key', 'Resources'))
-            # Don't make up asg_key if not in Excel
-            
-            # Mapping: vm_list.vmX.tags.role -> vm_list.vm1.tags.wab:role (Target Excel)
-            # Note: Excel uses "wab:role" but Terraform uses "role"
-            role = (self._get_raw_value(f'vm_list.{vm_key}.tags.wab:role', 'Resources') or
-                   self._get_raw_value(f'vm_list.{vm_key}.tags.role', 'Resources') or
-                   self._get_raw_value('vm_list.vm1.tags.wab:role', 'Resources') or
-                   vm.get('Role') or
-                   project_info.get('role'))
-            # Don't make up role if not in Excel
-
-            # Mapping: vm_list.vmX.tags.patch-optin -> vm_list.vm1.tags.wab:patch-optin (Target Excel)
-            # Note: Excel uses "wab:patch-optin" but Terraform uses "patch-optin"
-            patch_optin = (self._get_raw_value(f'vm_list.{vm_key}.tags.wab:patch-optin', 'Resources') or
-                          self._get_raw_value(f'vm_list.{vm_key}.tags.patch-optin', 'Resources') or
-                          self._get_raw_value('vm_list.vm1.tags.wab:patch-optin', 'Resources') or
-                          vm.get('Patch Optin') or
-                          project_info.get('patch_optin'))
-            # Don't make up patch_optin if not in Excel
-
-            snow_item = vm.get('Service Now Ticket') or project_info.get('service_now_ticket')
-            # Don't make up snow_item if not in Excel
-            
             # Build VM entry with proper null handling for missing data
             # Helper function to format value - use null if None or empty string
             def fmt_val(val, is_string=True):
@@ -1201,8 +1219,8 @@ common_tags = {{
     os_disk_size      = {fmt_val(os_disk_size, is_string=False)}
     os_disk_type      = {fmt_val(os_disk_type)}
     os_disk_tier      = null
-    data_disk_sizes   = [50, 50]
-    data_disk_type    = "Standard_LRS"
+    data_disk_sizes   = {data_disk_sizes_str}
+    data_disk_type    = {fmt_val(data_disk_type)}
     snet_key          = {fmt_val(snet_key)}
     asg_key           = {fmt_val(asg_key)}
     tags = {{

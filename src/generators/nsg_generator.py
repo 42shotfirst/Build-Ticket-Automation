@@ -35,8 +35,8 @@ class NSGGenerator:
             return tfvars
 
         # Get resource group and NSG names from build_env
-        # These might come from metadata or need to be calculated
-        rg_name = self.build_env.get('resource_group', {}).get('name')
+        rg = self.build_env.get('resource_group', {})
+        rg_name = rg.get('resource_group_name') or rg.get('name')
 
         # Try to find NSG name from subnets
         nsg_name = None

@@ -359,69 +359,105 @@ resource "azurerm_key_vault_key" "kvkey" {
         vms = self.build_env.get('virtual_machines', [])
         if vms:
             vm_map = {}
-            for idx, vm in enumerate(vms, 1):
-                key = f'vm{idx}'
+            for idx, vm_raw in enumerate(vms, 1):
+                # Parse VM data - keys are like "vm_list.vm1.name"
+                vm_data = self._parse_vm_data(vm_raw)
 
-                vm_config = {
-                    'name': vm.get('name', 'Default'),
-                    'size': vm.get('size'),
-                    'image_os': vm.get('image_os'),
-                    'image_urn': vm.get('image_urn'),
-                    'ip_allocation': vm.get('ip_allocation'),
-                    'os_disk_size': self._to_int(vm.get('os_disk_size')),
-                    'snet_key': vm.get('snet_key', 'snet1'),
-                    'asg_key': vm.get('asg_key', 'asg_nic'),
-                    'tags': {
-                        'role': vm.get('role'),
-                        'patch-optin': vm.get('patch-optin'),
-                    }
-                }
+                # Determine VM key from data
+                key = vm_data.get('key', f'vm{idx}')
 
-                # Optional fields
-                zone = vm.get('zone')
-                if zone:
-                    vm_config['zone'] = self._to_int(zone)
+                # Build VM configuration, omitting null values
+                vm_config = {}
 
-                source_image_id = vm.get('source_image_id')
-                if source_image_id:
+                # Required fields
+                if vm_data.get('name'):
+                    vm_config['name'] = vm_data['name']
+                else:
+                    vm_config['name'] = 'Default'
+
+                # Add non-null fields
+                if vm_data.get('size'):
+                    vm_config['size'] = vm_data['size']
+
+                if vm_data.get('image_os'):
+                    vm_config['image_os'] = vm_data['image_os']
+
+                if vm_data.get('image_urn'):
+                    vm_config['image_urn'] = vm_data['image_urn']
+
+                if vm_data.get('ip_allocation'):
+                    vm_config['ip_allocation'] = vm_data['ip_allocation']
+
+                os_disk_size = self._to_int(vm_data.get('os_disk_size'))
+                if os_disk_size is not None:
+                    vm_config['os_disk_size'] = os_disk_size
+
+                if vm_data.get('snet_key'):
+                    vm_config['snet_key'] = vm_data['snet_key']
+                else:
+                    vm_config['snet_key'] = 'snet1'
+
+                if vm_data.get('asg_key'):
+                    vm_config['asg_key'] = vm_data['asg_key']
+                else:
+                    vm_config['asg_key'] = 'asg_nic'
+
+                # Tags - only add non-null values
+                tags = {}
+                if vm_data.get('role'):
+                    tags['role'] = vm_data['role']
+                if vm_data.get('patch-optin'):
+                    tags['patch-optin'] = vm_data['patch-optin']
+                if tags:
+                    vm_config['tags'] = tags
+
+                # Optional fields - only add if not null
+                zone = self._to_int(vm_data.get('zone'))
+                if zone is not None:
+                    vm_config['zone'] = zone
+
+                source_image_id = vm_data.get('source_image_id')
+                if source_image_id and source_image_id != 'None':
                     vm_config['source_image_id'] = source_image_id
 
-                marketplace = vm.get('marketplace_image')
-                if marketplace is not None:
+                marketplace = vm_data.get('marketplace_image')
+                if marketplace is not None and marketplace != 'None':
                     vm_config['marketplace_image'] = bool(marketplace)
 
-                ip_address = vm.get('ip_address')
-                if ip_address:
+                ip_address = vm_data.get('ip_address')
+                if ip_address and ip_address != 'None':
                     vm_config['ip_address'] = ip_address
 
-                identity_type = vm.get('identity_type')
-                if identity_type:
+                identity_type = vm_data.get('identity_type')
+                if identity_type and identity_type != 'None':
                     vm_config['identity_type'] = identity_type
 
-                os_disk_name = vm.get('os_disk_name')
-                if os_disk_name:
+                os_disk_name = vm_data.get('os_disk_name')
+                if os_disk_name and os_disk_name != 'None':
                     vm_config['os_disk_name'] = os_disk_name
 
-                os_disk_type = vm.get('os_disk_type')
-                if os_disk_type:
+                os_disk_type = vm_data.get('os_disk_type')
+                if os_disk_type and os_disk_type != 'None':
                     vm_config['os_disk_type'] = os_disk_type
 
-                os_disk_tier = vm.get('os_disk_tier')
-                if os_disk_tier:
+                os_disk_tier = vm_data.get('os_disk_tier')
+                if os_disk_tier and os_disk_tier != 'None':
                     vm_config['os_disk_tier'] = os_disk_tier
 
-                data_disk_sizes = vm.get('data_disk_sizes')
+                data_disk_sizes = vm_data.get('data_disk_sizes')
                 if data_disk_sizes:
                     if not isinstance(data_disk_sizes, list):
                         data_disk_sizes = [data_disk_sizes]
-                    vm_config['data_disk_sizes'] = [self._to_int(s) for s in data_disk_sizes]
+                    vm_config['data_disk_sizes'] = [self._to_int(s) for s in data_disk_sizes if s and s != 'None']
 
-                data_disk_type = vm.get('data_disk_type')
-                if data_disk_type:
+                data_disk_type = vm_data.get('data_disk_type')
+                if data_disk_type and data_disk_type != 'None':
                     vm_config['data_disk_type'] = data_disk_type
 
-                snow_item = vm.get('snow-item') or vm.get('snow_item')
-                if snow_item:
+                snow_item = vm_data.get('snow-item') or vm_data.get('snow_item')
+                if snow_item and snow_item != 'None':
+                    if 'tags' not in vm_config:
+                        vm_config['tags'] = {}
                     vm_config['tags']['snow-item'] = snow_item
 
                 vm_map[key] = vm_config
@@ -430,6 +466,69 @@ resource "azurerm_key_vault_key" "kvkey" {
                 tfvars['vm_list'] = vm_map
 
         return tfvars
+
+    def _parse_vm_data(self, vm_raw: Dict[str, str]) -> Dict[str, str]:
+        """
+        Parse VM data from extractor format to simple key-value format.
+
+        Extractor returns keys like "vm_list.vm1.name", we want just "name".
+
+        Args:
+            vm_raw: Raw VM data from extractor with prefixed keys
+
+        Returns:
+            Parsed VM data with simple keys
+        """
+        parsed = {}
+
+        for key, value in vm_raw.items():
+            # Handle keys like "vm_list.vm1.name" -> "name"
+            if '.vm' in key and '.' in key:
+                # Split and get the last part
+                parts = key.split('.')
+                if len(parts) >= 3:
+                    # vm_list.vm1.name -> name
+                    field_name = '.'.join(parts[2:])
+                    # Handle tags: vm_list.vm1.tags.wab:role -> role
+                    if 'tags' in field_name:
+                        if 'wab:' in field_name:
+                            tag_name = field_name.split('wab:')[1]
+                            parsed[tag_name] = value
+                        else:
+                            tag_parts = field_name.split('tags.')
+                            if len(tag_parts) > 1:
+                                parsed[tag_parts[1]] = value
+                    else:
+                        parsed[field_name] = value
+                continue
+
+            # Handle keys like "vm_list.rsg1.source_image_id" -> "source_image_id"
+            if 'source_image_id' in key:
+                parsed['source_image_id'] = value
+                continue
+
+            # Handle keys like "vm_list.key" -> "key"
+            if key.startswith('vm_list.') and '.' in key:
+                parts = key.split('.')
+                if len(parts) == 2:
+                    # vm_list.key -> key
+                    field_name = parts[1]
+                    parsed[field_name] = value
+                elif len(parts) == 3:
+                    # vm_list.rsg1.something -> something
+                    field_name = parts[2]
+                    parsed[field_name] = value
+                continue
+
+            # Handle direct keys
+            if key == 'zone':
+                parsed['zone'] = value
+                continue
+
+            # Other keys - add as-is
+            parsed[key] = value
+
+        return parsed
 
     def _to_int(self, value: Any) -> Optional[int]:
         """Convert value to int, handling strings and None."""

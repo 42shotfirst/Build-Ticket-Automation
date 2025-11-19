@@ -362,7 +362,19 @@ class BuildEnvExtractor:
                     if label and tf_var == 'Terraform Variable' and 'Virtual Machine' not in str(label):
                         break
 
-                    if tf_var and value and str(value).strip() not in ['Value', '']:
+                    # Handle special case: Availability Zone (Column A label, Column C value, Column B might be None)
+                    if label and str(label).strip() == 'Availability Zone' and value:
+                        value_str = str(value).strip()
+                        if value_str and value_str not in ['Value', 'None', '']:
+                            # Map Zone1, Zone2, Zone3 to 1, 2, 3
+                            if value_str.lower().startswith('zone'):
+                                zone_num = value_str.lower().replace('zone', '')
+                                vm_data['zone'] = zone_num
+                            else:
+                                vm_data['zone'] = value_str
+                        continue
+
+                    if tf_var and value and str(value).strip() not in ['Value', 'None', '']:
                         vm_data[str(tf_var).strip()] = str(value).strip()
 
                 if vm_data:

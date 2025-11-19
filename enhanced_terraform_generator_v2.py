@@ -41,16 +41,19 @@ class EnhancedTerraformGeneratorV2:
     
     def _build_raw_data_cache(self):
         """Build a cache of raw_data values for quick lookup."""
-        comprehensive_data = self.terraform_data.get('comprehensive_data', {})
-        
+        # Try both 'comprehensive_data' and 'sheets' structures
+        comprehensive_data = (self.terraform_data.get('comprehensive_data', {}) or
+                            self.terraform_data.get('sheets', {}))
+
         for sheet_name, sheet_data in comprehensive_data.items():
             raw_data = sheet_data.get('raw_data', [])
             if sheet_name not in self.raw_data_cache:
                 self.raw_data_cache[sheet_name] = {}
-            
+
             for row in raw_data:
                 if isinstance(row, dict):
-                    var_name = row.get('1')
+                    # Column 0 has the label/key, column 2 has the value
+                    var_name = row.get('0')  # Changed from '1' to '0'
                     value = row.get('2')
                     if var_name:
                         self.raw_data_cache[sheet_name][var_name] = value
@@ -903,14 +906,15 @@ variable "resource_specific_tags" {{
         # Generate network security rules
         network_security_rules = self._generate_nsg_rules_for_tfvars()
 
-        # Extract SPN name from Excel or project_info, or construct from subscription
-        spn_name = (build_env.get('key_value_pairs', {}).get('SPN') or
-                   build_env.get('key_value_pairs', {}).get('Service Principal') or
-                   project_info.get('spn_name'))
+        # Extract SPN name from Excel - MUST use raw_value to get actual value
+        # First try explicit SPN field
+        spn_name = (self._get_raw_value('SPN', 'Build_ENV') or
+                   self._get_raw_value('Service Principal', 'Build_ENV'))
 
         # If still not found, construct from subscription name
         if not spn_name:
-            subscription_name = project_info.get('subscription', '')
+            # Get subscription from raw_data (not key_value_pairs which has variable names)
+            subscription_name = self._get_raw_value('Subscription', 'Build_ENV', '')
             if subscription_name:
                 # Remove 'sub-' prefix if present and add 'spn-terraform-' prefix
                 if subscription_name.lower().startswith('sub-'):

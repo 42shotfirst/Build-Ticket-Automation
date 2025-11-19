@@ -209,19 +209,23 @@ resource "azurerm_private_endpoint" "pe" {
                 }
 
                 # Optional fields
+                # Note: network_security_group_id is the same as network_security_group_name for this program
+                # Note: route_table_id is the same as route_table_name for this program
                 nsg_name = subnet.get('network_security_group_name')
                 nsg_id = subnet.get('network_security_group_id')
                 rt_name = subnet.get('route_table_name')
                 rt_id = subnet.get('route_table_id')
 
-                if nsg_name:
-                    subnet_config['network_security_group_name'] = nsg_name
-                if nsg_id:
-                    subnet_config['network_security_group_id'] = nsg_id
-                if rt_name:
-                    subnet_config['route_table_name'] = rt_name
-                if rt_id:
-                    subnet_config['route_table_id'] = rt_id
+                # Use the name value for both _name and _id fields
+                nsg_value = nsg_name or nsg_id
+                if nsg_value:
+                    subnet_config['network_security_group_name'] = nsg_value
+                    subnet_config['network_security_group_id'] = nsg_value
+
+                rt_value = rt_name or rt_id
+                if rt_value:
+                    subnet_config['route_table_name'] = rt_value
+                    subnet_config['route_table_id'] = rt_value
 
                 subnet_map[key] = subnet_config
 

@@ -143,6 +143,11 @@ class TerraformOrchestrator:
         print(f"   ✓ Generated: outputs.tf")
 
         print(f"\n✅ Successfully generated {len(all_files)} terraform files!")
+
+        # 6. Run terraform fmt to format all files
+        print("\n6. Formatting with terraform fmt...")
+        self._run_terraform_fmt(output_dir)
+
         return all_files
 
     def _generate_tfvars(
@@ -191,7 +196,7 @@ class TerraformOrchestrator:
         Returns:
             HCL-formatted string
         """
-        lines = ["# Begin terraform.tfvars\n"]
+        lines = []
 
         # Order of variables
         var_order = [
@@ -202,7 +207,7 @@ class TerraformOrchestrator:
             'disk_encryption_set_name',
             'user_assigned_identity_name',
             'key_vault',
-            'subnets',
+            'existing_subnets',  # Changed from 'subnets'
             'private_endpoints',
             'network_security_rules',
             'vm_list',
@@ -214,7 +219,7 @@ class TerraformOrchestrator:
             if var_name in data:
                 value = data[var_name]
                 lines.append(self._format_variable(var_name, value))
-                lines.append("")
+                lines.append("")  # Blank line between sections
 
         # Add any remaining variables not in the order list
         for var_name, value in data.items():
@@ -381,3 +386,52 @@ output "asg_ids" {
             json.dump(data, f, indent=2, default=str)
 
         print(f"✅ Saved extracted data to: {output_path}")
+
+    def _run_terraform_fmt(self, directory: str) -> None:
+        """
+        Run terraform fmt on all .tf and .tfvars files in the directory.
+
+        Args:
+            directory: Path to the directory containing terraform files
+        """
+        import subprocess
+
+        try:
+            # Check if terraform is installed
+            result = subprocess.run(
+                ['terraform', 'version'],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+
+            if result.returncode != 0:
+                print("   ⚠️  terraform command not found - skipping formatting")
+                print("   Install terraform from: https://www.terraform.io/downloads")
+                return
+
+            # Run terraform fmt
+            result = subprocess.run(
+                ['terraform', 'fmt', directory],
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+
+            if result.returncode == 0:
+                if result.stdout.strip():
+                    formatted_files = result.stdout.strip().split('\n')
+                    for file in formatted_files:
+                        print(f"   ✓ Formatted: {file}")
+                else:
+                    print("   ✓ All files already properly formatted")
+            else:
+                print(f"   ⚠️  terraform fmt failed: {result.stderr}")
+
+        except FileNotFoundError:
+            print("   ⚠️  terraform command not found - skipping formatting")
+            print("   Install terraform from: https://www.terraform.io/downloads")
+        except subprocess.TimeoutExpired:
+            print("   ⚠️  terraform fmt timed out")
+        except Exception as e:
+            print(f"   ⚠️  Error running terraform fmt: {e}")

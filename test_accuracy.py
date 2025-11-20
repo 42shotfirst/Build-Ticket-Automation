@@ -259,9 +259,11 @@ def test_accuracy():
             failed += 1
 
     # Check zone (should be integer, not "Zone1")
+    # Note: terraform fmt may add variable spacing, so use regex
     if excel['vm'].get('zone'):
-        expected_zone = f"zone = {excel['vm']['zone']}"
-        if expected_zone in tfvars:
+        import re
+        zone_pattern = rf"zone\s*=\s*{excel['vm']['zone']}"
+        if re.search(zone_pattern, tfvars):
             print(f"  ✅ zone: {excel['vm']['zone']} (converted from Zone{excel['vm']['zone']})")
             passed += 1
         else:

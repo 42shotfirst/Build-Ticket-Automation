@@ -1207,56 +1207,100 @@ common_tags = {{
                     return "null"
                 return f'"{val}"' if is_string else str(val)
 
-            # Build VM entry dynamically - only include non-null fields
+            # Build VM entry dynamically - following template order
             vm_lines = []
             vm_lines.append(f'  {vm_key} = {{')
 
-            # Required fields (always present)
+            # 1. name (required)
             vm_lines.append(f'    name          = {fmt_val(vm_name)}')
+
+            # 2. size (required)
             vm_lines.append(f'    size          = {fmt_val(vm_size)}')
+
+            # 3. zone (optional) - Extract from "Availability Zone" field
+            # Excel has "Zone1" or "Zone2" - need to extract the number
+            zone = None
+            for i, row in enumerate(raw_data):
+                if isinstance(row, dict):
+                    col_b = str(row.get('1', '')).strip()
+                    # Check if we're in the right VM section
+                    if f'vm_list.{vm_key}.name' in col_b:
+                        # Scan ahead for Availability Zone
+                        for j in range(i, min(i + 20, len(raw_data))):
+                            scan_row = raw_data[j]
+                            if isinstance(scan_row, dict):
+                                scan_label = str(scan_row.get('0', '')).strip()
+                                scan_val = str(scan_row.get('2', '')).strip()
+                                if 'Availability Zone' in scan_label and scan_val and scan_val != 'NA':
+                                    if scan_val.lower().startswith('zone'):
+                                        try:
+                                            zone = int(scan_val.lower().replace('zone', ''))
+                                        except (ValueError, TypeError):
+                                            pass
+                                    break
+                        break
+            if zone:
+                vm_lines.append(f'    zone          = {zone}')
+
+            # 4. image_os (required)
             vm_lines.append(f'    image_os      = {fmt_val(os_type)}')
+
+            # 5. marketplace_image (optional) - Not found in Excel, default to false if needed
+            # Template shows: marketplace_image = false
+            # Since not in Excel, we'll add it with default value
+            vm_lines.append(f'    marketplace_image = false')
+
+            # 6. source_image_id (optional) - Extract from "Packer Image ID" field
+            source_image_id_raw = (self._get_value_by_terraform_var(f'vm_list.rsg1.source_image_id', 'Build_ENV') or
+                                   self._get_raw_value(f'vm_list.rsg1.source_image_id', 'Resources'))
+            if source_image_id_raw:
+                # Note: Excel only has short name like "windows-server-2025-cis-L1"
+                # Template needs full path, but we'll use what's in Excel
+                vm_lines.append(f'    source_image_id = {fmt_val(source_image_id_raw)}')
+
+            # 7. ip_allocation (required)
             vm_lines.append(f'    ip_allocation = {fmt_val(ip_allocation)}')
+
+            # 8. os_disk_size (required)
             vm_lines.append(f'    os_disk_size  = {fmt_val(os_disk_size, is_string=False)}')
-            vm_lines.append(f'    snet_key      = {fmt_val(snet_key)}')
-            vm_lines.append(f'    asg_key       = {fmt_val(asg_key)}')
 
-            # Optional fields (only if present in Excel)
-            # Tags (must come before other fields to match correct output)
-            if role or patch_optin or snow_item:
-                vm_lines.append('    tags = {')
-                if role:
-                    vm_lines.append(f'      role        = {fmt_val(role)}')
-                if patch_optin:
-                    vm_lines.append(f'      patch-optin = {fmt_val(patch_optin)}')
-                if snow_item:
-                    vm_lines.append(f'      snow-item   = {fmt_val(snow_item)}')
-                vm_lines.append('    }')
-
-            # Zone (if specified in Excel)
-            # Extract zone if available - not yet found in current Excel data
-
-            # source_image_id (if specified)
-            # Not yet found in current Excel data
-
-            # image_urn (if specified)
-            if image_urn:
-                vm_lines.append(f'    image_urn       = {fmt_val(image_urn)}')
-
-            # ip_address (if specified)
-            if ip_address:
-                vm_lines.append(f'    ip_address      = {fmt_val(ip_address)}')
-
-            # os_disk_type (if specified)
+            # 9. os_disk_type (optional)
             if os_disk_type:
                 vm_lines.append(f'    os_disk_type    = {fmt_val(os_disk_type)}')
 
-            # data_disk_sizes (if specified)
+            # 10. data_disk_sizes (optional)
             if data_disk_sizes_str:
                 vm_lines.append(f'    data_disk_sizes = {data_disk_sizes_str}')
 
-            # data_disk_type (if specified)
+            # 11. data_disk_type (optional)
             if data_disk_type:
                 vm_lines.append(f'    data_disk_type  = {fmt_val(data_disk_type)}')
+
+            # 12. snet_key (required)
+            vm_lines.append(f'    snet_key      = {fmt_val(snet_key)}')
+
+            # 13. vtpm_enabled (optional) - Not found in Excel, default to true per template
+            vm_lines.append(f'    vtpm_enabled = true')
+
+            # 14. asg_key (required)
+            vm_lines.append(f'    asg_key       = {fmt_val(asg_key)}')
+
+            # 15. tags (optional) - with quoted keys and trailing commas per template
+            if role or patch_optin or snow_item:
+                vm_lines.append('    tags = {')
+                if role:
+                    vm_lines.append(f'      "role"        = {fmt_val(role)},')
+                if patch_optin:
+                    vm_lines.append(f'      "patch-optin" = {fmt_val(patch_optin)},')
+                if snow_item:
+                    # No trailing comma on last item
+                    vm_lines.append(f'      "snow-item"   = {fmt_val(snow_item)}')
+                vm_lines.append('    }')
+
+            # Optional fields that may not be needed for template match
+            # ip_address (if specified)
+            if ip_address and ip_address != "None":
+                vm_lines.append(f'    ip_address      = {fmt_val(ip_address)}')
 
             vm_lines.append('  }')
             vm_entry = '\n'.join(vm_lines)
@@ -1437,6 +1481,7 @@ common_tags = {{
   pe1 = {{
     name                           = {fmt_val(pe_name)}
     subresource_names              = {subresource_array}
+    private_connection_resource_id = null
     is_manual_connection           = "false"
     private_dns_zone_group_name    = "default"
     snet_key                       = {fmt_val(snet_key)}

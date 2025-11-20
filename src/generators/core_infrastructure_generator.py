@@ -421,10 +421,25 @@ data "azurerm_application_security_group" "asg" {
         """
         tfvars = {}
 
-        # SPN - calculated from subscription
-        subscription = self.build_env.get('subscription', '')
-        if subscription and subscription.startswith('sub-'):
-            spn = 'spn-terraform-' + subscription[4:]
+        # SPN - First try to get directly from Excel, then calculate from subscription
+        # This matches the original enhanced_terraform_generator_v2.py pattern
+        spn = None
+
+        # Check if SPN is provided directly in Excel (highest priority)
+        if 'spn' in self.build_env:
+            spn = self.build_env.get('spn')
+
+        # If not provided, calculate from subscription
+        if not spn:
+            subscription = self.build_env.get('subscription', '')
+            if subscription:
+                # Remove 'sub-' prefix if present and add 'spn-terraform-' prefix
+                if subscription.lower().startswith('sub-'):
+                    spn = 'spn-terraform-' + subscription[4:]
+                else:
+                    spn = 'spn-terraform-' + subscription
+
+        if spn:
             tfvars['spn'] = spn
 
         # Location

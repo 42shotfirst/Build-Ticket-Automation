@@ -299,11 +299,11 @@ def test_accuracy():
         passed += 1
 
     # Should have other PE fields
-    if 'pe_kvlt' in tfvars:
-        print("  + Private endpoint key 'pe_kvlt' found")
+    if 'pe1' in tfvars:
+        print("  + Private endpoint key 'pe1' found")
         passed += 1
     else:
-        print("  - Private endpoint key 'pe_kvlt' NOT found")
+        print("  - Private endpoint key 'pe1' NOT found")
         failed += 1
     print()
 

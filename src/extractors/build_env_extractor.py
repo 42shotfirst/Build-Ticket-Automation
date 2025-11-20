@@ -355,9 +355,10 @@ class BuildEnvExtractor:
             if col_a and 'Virtual Machine' in str(col_a) and col_b == 'Terraform Variable':
                 # Found a VM section
                 vm_data = {}
+                last_data_row = row_idx
 
-                # Read VM data (next ~30 rows to capture VM and Disks sections)
-                for offset in range(1, 35):
+                # Read VM data until we hit another section or VM
+                for offset in range(1, 50):  # Increased range to capture all data
                     check_row = row_idx + offset
                     if check_row > self.ws.max_row:
                         break
@@ -366,9 +367,15 @@ class BuildEnvExtractor:
                     tf_var = self.ws.cell(check_row, 2).value
                     value = self.ws.cell(check_row, 3).value
 
-                    # Stop if we hit another section
-                    if label and tf_var == 'Terraform Variable' and 'Virtual Machine' not in str(label):
-                        break
+                    # Stop if we hit another section header (but not another VM)
+                    if label and tf_var == 'Terraform Variable':
+                        # Check if this is another VM section
+                        if 'Virtual Machine' in str(label):
+                            # Hit next VM section, stop here
+                            break
+                        else:
+                            # Hit a different section, stop here
+                            break
 
                     # Handle special case: Availability Zone (Column A label, Column C value, Column B might be None)
                     if label and str(label).strip() == 'Availability Zone' and value:
@@ -380,14 +387,17 @@ class BuildEnvExtractor:
                                 vm_data['zone'] = zone_num
                             else:
                                 vm_data['zone'] = value_str
+                            last_data_row = check_row
                         continue
 
                     if tf_var and value and str(value).strip() not in ['Value', 'None', '']:
                         vm_data[str(tf_var).strip()] = str(value).strip()
+                        last_data_row = check_row
 
                 if vm_data:
                     vms.append(vm_data)
-                    row_idx += 35  # Skip ahead to avoid re-reading same VM
+                    # Don't skip ahead, just continue from next row to find next VM section
+                    row_idx = last_data_row + 1
                     continue
 
             row_idx += 1

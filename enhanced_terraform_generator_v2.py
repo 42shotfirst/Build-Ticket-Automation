@@ -1339,19 +1339,14 @@ common_tags = {{
     def _generate_asg_for_tfvars(self) -> str:
         """Generate application security groups for tfvars from Excel data.
 
-        Reads ASG names from Excel Build_ENV sheet. Excel structure:
-        - Row 38-40: First ASG (key: asg_ad, name from row 40)
-        - Row 42-44: Second ASG (key: asg_kvlt, name from row 44)
+        Reads ASG keys AND names from Excel Build_ENV sheet. Excel structure:
+        - Row 39-41: First ASG (Key row 40, Name row 41)
+        - Row 43-45: Second ASG (Key row 44, Name row 45)
 
-        ALL values come from Excel except SPN (which is calculated from Subscription).
+        ALL values come from Excel - both keys AND names are extracted.
         """
 
-        # Read ASG names from Excel using section-aware lookup
-        # First ASG - typically for NIC
-        asg_nic_name = self._get_section_value('Application Security Group', 'Name', 'Build_ENV')
-
-        # Second ASG - typically for private endpoints
-        # We need to find the second ASG section - look for sections with different keys
+        # Extract all ASGs from Excel with their keys and names
         sheets = self.terraform_data.get('sheets', {})
         if not sheets:
             sheets = self.terraform_data.get('comprehensive_data', {})
@@ -1359,30 +1354,36 @@ common_tags = {{
         sheet = sheets.get('Build_ENV', {})
         raw_data = sheet.get('raw_data', [])
 
-        asg_pe_name = None
-        found_first_asg = False
+        asgs = []  # List of {key: ..., name: ...}
 
-        for i, row in enumerate(raw_data):
+        i = 0
+        while i < len(raw_data):
+            row = raw_data[i]
             if isinstance(row, dict):
                 label = str(row.get('0', '')).strip()
                 col1 = str(row.get('1', '')).strip()
-                col2 = str(row.get('2', '')).strip()
 
-                # Track if we've seen first ASG
+                # Look for ASG section headers
                 if label == 'Application Security Group' and col1 == 'Terraform Variable':
-                    if not found_first_asg:
-                        found_first_asg = True
-                    else:
-                        # This is the second ASG section - get its name
-                        for j in range(i, min(i + 5, len(raw_data))):
-                            next_row = raw_data[j]
-                            if isinstance(next_row, dict):
-                                next_label = str(next_row.get('0', '')).strip()
-                                next_col2 = str(next_row.get('2', '')).strip()
-                                if next_label == 'Name' and next_col2 and next_col2 != 'Value':
-                                    asg_pe_name = next_col2
-                                    break
-                        break
+                    # Found an ASG section - extract key and name from next rows
+                    asg_key = None
+                    asg_name = None
+
+                    for j in range(i + 1, min(i + 5, len(raw_data))):
+                        next_row = raw_data[j]
+                        if isinstance(next_row, dict):
+                            next_label = str(next_row.get('0', '')).strip()
+                            next_col2 = str(next_row.get('2', '')).strip()
+
+                            if next_label == 'Key' and next_col2 and next_col2 != 'Value':
+                                asg_key = next_col2
+                            elif next_label == 'Name' and next_col2 and next_col2 != 'Value':
+                                asg_name = next_col2
+
+                    if asg_key and asg_name:
+                        asgs.append({'key': asg_key, 'name': asg_name})
+
+            i += 1
 
         # Format with proper null handling
         def fmt_val(val):
@@ -1390,14 +1391,15 @@ common_tags = {{
                 return "null"
             return f'"{val}"'
 
-        return f'''{{
-  asg_nic = {{
-    name = {fmt_val(asg_nic_name)}
-  }},
-  asg_pe = {{
-    name = {fmt_val(asg_pe_name)}
-  }}
-}}'''
+        # Build the ASG map using actual keys from Excel
+        asg_entries = []
+        for asg in asgs:
+            asg_entries.append(f'''  {asg['key']} = {{
+    name = {fmt_val(asg['name'])}
+  }}''')
+
+        # Join without commas between entries (Terraform HCL2 style)
+        return '{\n' + '\n'.join(asg_entries) + '\n}'
     
     def _generate_private_endpoints_for_tfvars(self) -> str:
         """Generate private endpoints for tfvars from Excel data.
@@ -1435,7 +1437,6 @@ common_tags = {{
   pe1 = {{
     name                           = {fmt_val(pe_name)}
     subresource_names              = {subresource_array}
-    private_connection_resource_id = null
     is_manual_connection           = "false"
     private_dns_zone_group_name    = "default"
     snet_key                       = {fmt_val(snet_key)}
@@ -1445,16 +1446,34 @@ common_tags = {{
     
     def _generate_nsg_rules_for_tfvars(self) -> str:
         """Generate network security rules for tfvars from Excel NSG data."""
-        
+
         security_groups = self.terraform_data.get('security_groups', [])
-        project_info = self.terraform_data.get('project_info', {})
 
-        project_name = project_info.get('project_name')
-        environment = project_info.get('environment')
+        # Extract resource_group_name from Build_ENV raw_data
+        sheets = self.terraform_data.get('sheets', {})
+        if not sheets:
+            sheets = self.terraform_data.get('comprehensive_data', {})
 
-        # Use project-specific networking resource group - only if data exists
-        network_rg = f"rg-{project_name.lower()}-networking" if project_name else None
-        nsg_name = f"nsg-{project_name.lower()}-{environment.lower()}" if project_name and environment else None
+        build_env = sheets.get('Build_ENV', {})
+        raw_data = build_env.get('raw_data', [])
+
+        # Find resource_group_name and NSG name from raw_data
+        network_rg = None
+        nsg_name = None
+
+        for row in raw_data:
+            if isinstance(row, dict):
+                label = str(row.get('0', '')).strip()
+                col1 = str(row.get('1', '')).strip()
+                col2 = str(row.get('2', '')).strip()
+
+                # Look for Resource Group Name (row 34: label="Name", col1="resource_group_name")
+                if label == 'Name' and col1 == 'resource_group_name' and col2 and col2 != 'Value':
+                    network_rg = col2
+
+                # Look for NSG Name (row 51: label="NSG Name")
+                if label == 'NSG Name' and col2 and col2 != 'Value':
+                    nsg_name = col2
         
         if not security_groups:
             return f'''{{
@@ -1488,70 +1507,15 @@ common_tags = {{
             
             # Mapping: rules.source_port_range (Source) -> source_port_range (Target Excel)
             source_port = rule.get('source_port_range', '*')
-            
-            # Mapping: rules.destination_port_ranges (Source) -> destination_port_ranges (Target Excel)
-            dest_ports = rule.get('destination_port_ranges', ['443'])
-            # Handle port ranges - could be string, number, or list
-            if isinstance(dest_ports, str):
-                # Try to parse as comma-separated or single value
-                if ',' in dest_ports:
-                    dest_ports = [p.strip() for p in dest_ports.split(',')]
-                else:
-                    dest_ports = [dest_ports]
-            elif isinstance(dest_ports, (int, float)):
-                dest_ports = [str(dest_ports)]
-            elif not isinstance(dest_ports, list):
-                dest_ports = ['443']
-            
-            # Mapping: rules.source_asg_keys (Source) -> source_asg (Target Excel)
-            # Note: Excel uses 'source_asg' but Terraform expects 'source_asg_keys' (list)
-            source_asg = rule.get('source_asg', rule.get('source_asg_keys', []))
-            if isinstance(source_asg, str):
-                source_asg_keys = [source_asg] if source_asg else ["asg_nic"]
-            elif isinstance(source_asg, list):
-                source_asg_keys = source_asg if source_asg else ["asg_nic"]
-            else:
-                source_asg_keys = ["asg_nic"]
-            
-            # Mapping: rules.destination_asg_keys (Source) -> destination_asg (Target Excel)
-            # Note: Excel uses 'destination_asg' but Terraform expects 'destination_asg_keys' (list)
-            dest_asg = rule.get('destination_asg', rule.get('destination_asg_keys', []))
-            if isinstance(dest_asg, str):
-                destination_asg_keys = [dest_asg] if dest_asg else ["asg_pe"]
-            elif isinstance(dest_asg, list):
-                destination_asg_keys = dest_asg if dest_asg else ["asg_pe"]
-            else:
-                destination_asg_keys = ["asg_pe"]
-            
-            # Mapping: rules.description (Source) -> description (Target Excel)
-            description = rule.get('description', f'{direction} {access} {protocol} traffic on port {dest_ports[0] if dest_ports else "*"}')
 
-            # Generate intelligent source/destination names if not provided
-            # Use ASG names or create descriptive defaults
-            default_source_name = source_asg_keys[0] if source_asg_keys else f"{protocol}-source"
-            default_dest_name = destination_asg_keys[0] if destination_asg_keys else f"{protocol}-destination"
-
-            source_name = rule.get('source_name', default_source_name)
-            destination_name = rule.get('destination_name', default_dest_name)
-
-            # Convert list to Terraform format with double quotes
-            dest_ports_str = '[' + ', '.join([f'"{port}"' for port in dest_ports]) + ']'
-            source_asg_str = '[' + ', '.join([f'"{asg}"' for asg in source_asg_keys]) + ']'
-            dest_asg_str = '[' + ', '.join([f'"{asg}"' for asg in destination_asg_keys]) + ']'
-
+            # Simplified rule structure - only basic fields to match template
             rule_entry = f'''    {{
-      name                       = "{rule_name}"
-      source_name                = "{source_name}"
-      destination_name           = "{destination_name}"
-      priority                   = {priority}
-      direction                  = "{direction}"
-      access                     = "{access}"
-      protocol                   = "{protocol}"
-      source_port_range          = "{source_port}"
-      destination_port_ranges    = {dest_ports_str}
-      source_asg_keys            = {source_asg_str}
-      destination_asg_keys       = {dest_asg_str}
-      description                = "{description}"
+      name              = "{rule_name}"
+      priority          = {priority}
+      direction         = "{direction}"
+      access            = "{access}"
+      protocol          = "{protocol}"
+      source_port_range = "{source_port}"
     }}'''
             rules.append(rule_entry)
         

@@ -251,7 +251,7 @@ resource "azurerm_private_endpoint" "pe" {
                 pe_config = {
                     'name': pe.get('name', ''),
                     'subresource_names': subresource_names,
-                    'private_connection_resource_id': None,  # Explicitly set to null
+                    # private_connection_resource_id omitted - will use Key Vault ID via coalesce() in .tf
                     'is_manual_connection': pe.get('is_manual_connection', 'false'),
                     'private_dns_zone_group_name': pe.get('private_dns_zone_group_name', 'default'),
                     'snet_key': pe.get('snet_key', 'snet1'),

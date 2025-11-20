@@ -129,10 +129,11 @@ def test_accuracy():
     # Test 2: Location
     print("TEST 2: Location")
     print("-" * 80)
-    expected_location = excel['location']
+    expected_location = excel['location'].upper()  # Should be uppercased for Azure
     actual_location = extract_tfvars_value(tfvars, r'location = "([^"]+)"')
 
-    print(f"  Excel Location:     {expected_location}")
+    print(f"  Excel Location:     {excel['location']} (raw)")
+    print(f"  Expected Location:  {expected_location} (uppercased)")
     print(f"  Generated Location: {actual_location}")
 
     if actual_location == expected_location:

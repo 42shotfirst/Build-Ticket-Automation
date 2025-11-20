@@ -284,12 +284,14 @@ class TerraformOrchestrator:
             # Special formatting for common_tags: quoted keys with trailing commas
             if name == 'common_tags':
                 for key, val in value.items():
-                    val_str = f'"{val}"' if isinstance(val, str) else str(val).lower() if isinstance(val, bool) else str(val)
-                    lines.append(f'{indent_str}  "{key}" = {val_str},')
+                    if val is not None:  # Skip None values
+                        val_str = f'"{val}"' if isinstance(val, str) else str(val).lower() if isinstance(val, bool) else str(val)
+                        lines.append(f'{indent_str}  "{key}" = {val_str},')
             else:
                 for key, val in value.items():
-                    formatted = self._format_variable(key, val, indent + 1)
-                    lines.append(formatted)
+                    if val is not None:  # Skip None values - omit field entirely
+                        formatted = self._format_variable(key, val, indent + 1)
+                        lines.append(formatted)
             lines.append(f"{indent_str}}}")
             return "\n".join(lines)
 

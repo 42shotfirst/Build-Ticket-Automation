@@ -442,9 +442,12 @@ data "azurerm_application_security_group" "asg" {
         if spn:
             tfvars['spn'] = spn
 
-        # Location
+        # Location - uppercase for proper format
         location = self.build_env.get('location')
-        tfvars['location'] = location
+        if location:
+            tfvars['location'] = location.upper()
+        else:
+            tfvars['location'] = location
 
         # Resource Group Name
         rg = self.build_env.get('resource_group', {})

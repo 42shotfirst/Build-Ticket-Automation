@@ -240,12 +240,8 @@ resource "azurerm_private_endpoint" "pe" {
         if private_endpoints:
             pe_map = {}
             for idx, pe in enumerate(private_endpoints, 1):
-                # Use key like pe_kvlt, pe1, pe2, etc.
-                pe_name = pe.get('name', '')
-                if 'kvlt' in pe_name.lower():
-                    key = 'pe_kvlt'
-                else:
-                    key = f'pe{idx}'
+                # Use key like pe1, pe2, etc. based on index
+                key = f'pe{idx}'
 
                 # Get subresource_names and ensure it's a list
                 subresource_names = pe.get('subresource_names', [])
@@ -253,22 +249,21 @@ resource "azurerm_private_endpoint" "pe" {
                     subresource_names = [subresource_names] if subresource_names else []
 
                 pe_config = {
-                    'name': pe_name,
+                    'name': pe.get('name', ''),
                     'subresource_names': subresource_names,
+                    'private_connection_resource_id': None,  # Explicitly set to null
+                    'is_manual_connection': pe.get('is_manual_connection', 'false'),
+                    'private_dns_zone_group_name': pe.get('private_dns_zone_group_name', 'default'),
                     'snet_key': pe.get('snet_key', 'snet1'),
                     'asg_key': pe.get('asg_key', 'asg_kvlt'),
                 }
 
-                # Optional fields - do NOT include private_connection_resource_id
-                is_manual = pe.get('is_manual_connection')
-                dns_group = pe.get('private_dns_zone_group_name')
+                # Add private_dns_zone_ids if available
                 dns_zones = pe.get('private_dns_zone_ids')
-
-                if is_manual is not None:
-                    pe_config['is_manual_connection'] = is_manual
-                if dns_group:
-                    pe_config['private_dns_zone_group_name'] = dns_group
                 if dns_zones:
+                    if isinstance(dns_zones, str):
+                        # Try to parse as list if it's a string
+                        dns_zones = [dns_zones]
                     pe_config['private_dns_zone_ids'] = dns_zones
 
                 pe_map[key] = pe_config

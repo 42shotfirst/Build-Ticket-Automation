@@ -331,7 +331,8 @@ resource "azurerm_key_vault_key" "kvkey" {
 
             sku = kv.get('sku_name')
             if sku:
-                kv_config['sku_name'] = sku
+                # Convert to lowercase for proper format
+                kv_config['sku_name'] = sku.lower() if isinstance(sku, str) else sku
 
             retention = kv.get('soft_delete_retention_days')
             if retention:
@@ -423,6 +424,9 @@ resource "azurerm_key_vault_key" "kvkey" {
                 marketplace = vm_data.get('marketplace_image')
                 if marketplace is not None and marketplace != 'None':
                     vm_config['marketplace_image'] = bool(marketplace)
+                else:
+                    # Default to false if not specified
+                    vm_config['marketplace_image'] = False
 
                 ip_address = vm_data.get('ip_address')
                 if ip_address and ip_address != 'None':
@@ -449,10 +453,24 @@ resource "azurerm_key_vault_key" "kvkey" {
                     if not isinstance(data_disk_sizes, list):
                         data_disk_sizes = [data_disk_sizes]
                     vm_config['data_disk_sizes'] = [self._to_int(s) for s in data_disk_sizes if s and s != 'None']
+                else:
+                    # Default to [64] if not specified
+                    vm_config['data_disk_sizes'] = [64]
 
                 data_disk_type = vm_data.get('data_disk_type')
                 if data_disk_type and data_disk_type != 'None':
                     vm_config['data_disk_type'] = data_disk_type
+                else:
+                    # Default to Premium_LRS if not specified
+                    vm_config['data_disk_type'] = "Premium_LRS"
+
+                # Add vtpm_enabled field
+                vtpm = vm_data.get('vtpm_enabled')
+                if vtpm is not None and vtpm != 'None':
+                    vm_config['vtpm_enabled'] = bool(vtpm)
+                else:
+                    # Default to true if not specified
+                    vm_config['vtpm_enabled'] = True
 
                 snow_item = vm_data.get('snow-item') or vm_data.get('snow_item')
                 if snow_item and snow_item != 'None':

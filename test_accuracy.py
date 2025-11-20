@@ -119,10 +119,10 @@ def test_accuracy():
     print(f"  Generated SPN:      {actual_spn}")
 
     if actual_spn == expected_spn:
-        print("  ✅ PASS")
+        print("  PASS")
         passed += 1
     else:
-        print("  ❌ FAIL")
+        print("  FAIL")
         failed += 1
     print()
 
@@ -136,10 +136,10 @@ def test_accuracy():
     print(f"  Generated Location: {actual_location}")
 
     if actual_location == expected_location:
-        print("  ✅ PASS")
+        print("  + PASS")
         passed += 1
     else:
-        print("  ❌ FAIL")
+        print("  - FAIL")
         failed += 1
     print()
 
@@ -153,10 +153,10 @@ def test_accuracy():
     print(f"  Generated RG Name:  {actual_rg}")
 
     if actual_rg == expected_rg:
-        print("  ✅ PASS")
+        print("  + PASS")
         passed += 1
     else:
-        print("  ❌ FAIL")
+        print("  - FAIL")
         failed += 1
     print()
 
@@ -172,18 +172,18 @@ def test_accuracy():
         # Check if key exists in tfvars
         key_pattern = f"{asg['key']} = {{"
         if key_pattern in tfvars:
-            print(f"    ✅ Key '{asg['key']}' found in tfvars")
+            print(f"    + Key '{asg['key']}' found in tfvars")
             passed += 1
         else:
-            print(f"    ❌ Key '{asg['key']}' NOT found in tfvars")
+            print(f"    - Key '{asg['key']}' NOT found in tfvars")
             failed += 1
 
         # Check if name exists
         if asg['name'] in tfvars:
-            print(f"    ✅ Name '{asg['name']}' found in tfvars")
+            print(f"    + Name '{asg['name']}' found in tfvars")
             passed += 1
         else:
-            print(f"    ❌ Name '{asg['name']}' NOT found in tfvars")
+            print(f"    - Name '{asg['name']}' NOT found in tfvars")
             failed += 1
         print()
 
@@ -204,33 +204,33 @@ def test_accuracy():
 
     # Check for existing_subnets (not subnets)
     if 'existing_subnets =' in tfvars:
-        print("  ✅ Uses 'existing_subnets' (not 'subnets')")
+        print("  + Uses 'existing_subnets' (not 'subnets')")
         passed += 1
     else:
-        print("  ❌ Does not use 'existing_subnets'")
+        print("  - Does not use 'existing_subnets'")
         failed += 1
 
     for field, expected_value in subnet_tests:
         if expected_value in tfvars:
-            print(f"  ✅ {field}: {expected_value}")
+            print(f"  + {field}: {expected_value}")
             passed += 1
         else:
-            print(f"  ❌ {field}: {expected_value} NOT FOUND")
+            print(f"  - {field}: {expected_value} NOT FOUND")
             failed += 1
 
     # Check for both _name and _id fields
     if 'network_security_group_id' in tfvars:
-        print("  ✅ network_security_group_id present (equals _name)")
+        print("  + network_security_group_id present (equals _name)")
         passed += 1
     else:
-        print("  ❌ network_security_group_id missing")
+        print("  - network_security_group_id missing")
         failed += 1
 
     if 'route_table_id' in tfvars:
-        print("  ✅ route_table_id present (equals _name)")
+        print("  + route_table_id present (equals _name)")
         passed += 1
     else:
-        print("  ❌ route_table_id missing")
+        print("  - route_table_id missing")
         failed += 1
     print()
 
@@ -252,10 +252,10 @@ def test_accuracy():
 
     for field, expected_value in vm_tests:
         if expected_value and expected_value in tfvars:
-            print(f"  ✅ {field}: {expected_value}")
+            print(f"  + {field}: {expected_value}")
             passed += 1
         elif expected_value:
-            print(f"  ❌ {field}: {expected_value} NOT FOUND")
+            print(f"  - {field}: {expected_value} NOT FOUND")
             failed += 1
 
     # Check zone (should be integer, not "Zone1")
@@ -264,10 +264,10 @@ def test_accuracy():
         import re
         zone_pattern = rf"zone\s*=\s*{excel['vm']['zone']}"
         if re.search(zone_pattern, tfvars):
-            print(f"  ✅ zone: {excel['vm']['zone']} (converted from Zone{excel['vm']['zone']})")
+            print(f"  + zone: {excel['vm']['zone']} (converted from Zone{excel['vm']['zone']})")
             passed += 1
         else:
-            print(f"  ❌ zone: {excel['vm']['zone']} NOT FOUND")
+            print(f"  - zone: {excel['vm']['zone']} NOT FOUND")
             failed += 1
     print()
 
@@ -279,10 +279,10 @@ def test_accuracy():
     print(f"  Null value count: {null_count}")
 
     if null_count == 0:
-        print("  ✅ PASS - No null values found")
+        print("  + PASS - No null values found")
         passed += 1
     else:
-        print("  ❌ FAIL - Found null values in output")
+        print("  - FAIL - Found null values in output")
         failed += 1
     print()
 
@@ -292,18 +292,18 @@ def test_accuracy():
 
     # Should NOT have private_connection_resource_id
     if 'private_connection_resource_id' in tfvars:
-        print("  ❌ FAIL - private_connection_resource_id should be omitted")
+        print("  - FAIL - private_connection_resource_id should be omitted")
         failed += 1
     else:
-        print("  ✅ PASS - private_connection_resource_id correctly omitted")
+        print("  + PASS - private_connection_resource_id correctly omitted")
         passed += 1
 
     # Should have other PE fields
     if 'pe_kvlt' in tfvars:
-        print("  ✅ Private endpoint key 'pe_kvlt' found")
+        print("  + Private endpoint key 'pe_kvlt' found")
         passed += 1
     else:
-        print("  ❌ Private endpoint key 'pe_kvlt' NOT found")
+        print("  - Private endpoint key 'pe_kvlt' NOT found")
         failed += 1
     print()
 
@@ -321,9 +321,9 @@ def test_accuracy():
     print()
 
     if failed == 0:
-        print("  ✅ ALL TESTS PASSED - OUTPUT IS 100% ACCURATE")
+        print("  + ALL TESTS PASSED - OUTPUT IS 100% ACCURATE")
     else:
-        print(f"  ⚠️  {failed} TEST(S) FAILED - REVIEW OUTPUT")
+        print(f"  ! {failed} TEST(S) FAILED - REVIEW OUTPUT")
 
     print("=" * 80)
 

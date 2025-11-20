@@ -154,16 +154,16 @@ def run_pipeline(args, logger):
     print(f"Overall Status: {results['overall_status'].upper()}")
 
     if results['overall_status'] == 'success':
-        print(f"\n✓ Extraction: {results['extraction']['output']}")
-        print(f"✓ Generation: {results['generation']['output']}")
+        print(f"\n+ Extraction: {results['extraction']['output']}")
+        print(f"+ Generation: {results['generation']['output']}")
 
         if 'validation' in results:
             val_summary = results['validation']['summary']
-            print(f"✓ Validation: {val_summary['passed']}/{val_summary['total_checks']} checks passed")
+            print(f"+ Validation: {val_summary['passed']}/{val_summary['total_checks']} checks passed")
 
         print("\nTerraform files are ready for deployment!")
     else:
-        print(f"\n✗ Error: {results.get('error', 'Unknown error')}")
+        print(f"\n- Error: {results.get('error', 'Unknown error')}")
 
     print("=" * 80)
 

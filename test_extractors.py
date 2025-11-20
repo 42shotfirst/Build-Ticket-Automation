@@ -212,7 +212,7 @@ def main():
         acr_data = test_acr_extractor()
 
         print("\n" + "="*80)
-        print("ALL EXTRACTORS TESTED SUCCESSFULLY ✅")
+        print("ALL EXTRACTORS TESTED SUCCESSFULLY")
         print("="*80)
 
         print("\nSummary:")
@@ -232,10 +232,10 @@ def main():
                 'acr': acr_data,
             }, f, indent=2, default=str)
 
-        print("\n✅ Sample output saved to: extractor_test_output.json")
+        print("\nSample output saved to: extractor_test_output.json")
 
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\nERROR: {e}")
         import traceback
         traceback.print_exc()
         return 1

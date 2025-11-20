@@ -23,7 +23,7 @@ def main():
     excel_file = 'sourcefiles/test_data.xlsm'
 
     if not os.path.exists(excel_file):
-        print(f"❌ Error: Excel file not found: {excel_file}")
+        print(f"ERROR: Excel file not found: {excel_file}")
         return 1
 
     # Output directory
@@ -57,14 +57,14 @@ def main():
         # Summary
         print()
         print("="*80)
-        print("✅ GENERATION COMPLETE")
+        print("GENERATION COMPLETE")
         print("="*80)
         print()
         print(f"Generated {len(generated_files)} terraform files:")
         for filename in sorted(generated_files.keys()):
             filepath = os.path.join(output_dir, filename)
             size = len(generated_files[filename])
-            print(f"  ✓ {filename:<25} ({size:>6} bytes)")
+            print(f"  + {filename:<25} ({size:>6} bytes)")
 
         print()
         print(f"Output directory: {output_dir}")
@@ -81,7 +81,7 @@ def main():
     except Exception as e:
         print()
         print("="*80)
-        print("❌ ERROR")
+        print("ERROR")
         print("="*80)
         print()
         print(f"Error: {e}")

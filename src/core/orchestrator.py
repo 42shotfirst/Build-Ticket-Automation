@@ -59,23 +59,23 @@ class TerraformOrchestrator:
         print("Extracting data from Excel...")
 
         self.build_env_data = self.build_env_extractor.extract()
-        print(f"  ✓ Build_ENV: {len(self.build_env_data.get('virtual_machines', []))} VMs, "
+        print(f"  + Build_ENV: {len(self.build_env_data.get('virtual_machines', []))} VMs, "
               f"{len(self.build_env_data.get('subnets', []))} subnets, "
               f"{len(self.build_env_data.get('tags', {}))} tags")
 
         self.resources_data = self.resources_extractor.extract()
-        print(f"  ✓ Resources: {len(self.resources_data.get('terraform_variables', {}))} variables, "
+        print(f"  + Resources: {len(self.resources_data.get('terraform_variables', {}))} variables, "
               f"{len(self.resources_data.get('vm_configurations', []))} VM configs")
 
         self.nsg_data = self.nsg_extractor.extract()
-        print(f"  ✓ NSG: {len(self.nsg_data.get('rules', []))} rules")
+        print(f"  + NSG: {len(self.nsg_data.get('rules', []))} rules")
 
         self.apgw_data = self.apgw_extractor.extract()
-        print(f"  ✓ APGW: {len(self.apgw_data.get('backend_address_pools', []))} pools, "
+        print(f"  + APGW: {len(self.apgw_data.get('backend_address_pools', []))} pools, "
               f"{len(self.apgw_data.get('http_listeners', []))} listeners")
 
         self.acr_data = self.acr_extractor.extract()
-        print(f"  ✓ ACR: {len(self.acr_data.get('network_rules', []))} network rules")
+        print(f"  + ACR: {len(self.acr_data.get('network_rules', []))} network rules")
 
         return {
             'build_env': self.build_env_data,
@@ -108,21 +108,21 @@ class TerraformOrchestrator:
         core_gen = CoreInfrastructureGenerator(self.build_env_data, self.resources_data)
         core_files = core_gen.generate(output_dir)
         all_files.update(core_files)
-        print(f"   ✓ Generated: {', '.join(core_files.keys())}")
+        print(f"   + Generated: {', '.join(core_files.keys())}")
 
         # 2. Generate networking files
         print("\n2. Generating networking resources...")
         net_gen = NetworkingGenerator(self.build_env_data)
         net_files = net_gen.generate(output_dir)
         all_files.update(net_files)
-        print(f"   ✓ Generated: {', '.join(net_files.keys())}")
+        print(f"   + Generated: {', '.join(net_files.keys())}")
 
         # 3. Generate VM and security files
         print("\n3. Generating VM and security resources...")
         vm_gen = VMGenerator(self.build_env_data, self.resources_data)
         vm_files = vm_gen.generate(output_dir)
         all_files.update(vm_files)
-        print(f"   ✓ Generated: {', '.join(vm_files.keys())}")
+        print(f"   + Generated: {', '.join(vm_files.keys())}")
 
         # 4. Generate terraform.tfvars
         print("\n4. Generating terraform.tfvars...")
@@ -131,7 +131,7 @@ class TerraformOrchestrator:
         with open(tfvars_path, 'w') as f:
             f.write(tfvars_content)
         all_files['terraform.tfvars'] = tfvars_content
-        print(f"   ✓ Generated: terraform.tfvars")
+        print(f"   + Generated: terraform.tfvars")
 
         # 5. Generate outputs.tf
         print("\n5. Generating outputs.tf...")
@@ -140,9 +140,9 @@ class TerraformOrchestrator:
         with open(outputs_path, 'w') as f:
             f.write(outputs_content)
         all_files['outputs.tf'] = outputs_content
-        print(f"   ✓ Generated: outputs.tf")
+        print(f"   + Generated: outputs.tf")
 
-        print(f"\n✅ Successfully generated {len(all_files)} terraform files!")
+        print(f"\nSuccessfully generated {len(all_files)} terraform files!")
 
         # 6. Run terraform fmt to format all files
         print("\n6. Formatting with terraform fmt...")
@@ -385,7 +385,7 @@ output "asg_ids" {
         with open(output_path, 'w') as f:
             json.dump(data, f, indent=2, default=str)
 
-        print(f"✅ Saved extracted data to: {output_path}")
+        print(f"Saved extracted data to: {output_path}")
 
     def _run_terraform_fmt(self, directory: str) -> None:
         """
@@ -406,7 +406,7 @@ output "asg_ids" {
             )
 
             if result.returncode != 0:
-                print("   ⚠️  terraform command not found - skipping formatting")
+                print("   terraform command not found - skipping formatting")
                 print("   Install terraform from: https://www.terraform.io/downloads")
                 return
 
@@ -422,16 +422,16 @@ output "asg_ids" {
                 if result.stdout.strip():
                     formatted_files = result.stdout.strip().split('\n')
                     for file in formatted_files:
-                        print(f"   ✓ Formatted: {file}")
+                        print(f"   + Formatted: {file}")
                 else:
-                    print("   ✓ All files already properly formatted")
+                    print("   + All files already properly formatted")
             else:
-                print(f"   ⚠️  terraform fmt failed: {result.stderr}")
+                print(f"   terraform fmt failed: {result.stderr}")
 
         except FileNotFoundError:
-            print("   ⚠️  terraform command not found - skipping formatting")
+            print("   terraform command not found - skipping formatting")
             print("   Install terraform from: https://www.terraform.io/downloads")
         except subprocess.TimeoutExpired:
-            print("   ⚠️  terraform fmt timed out")
+            print("   terraform fmt timed out")
         except Exception as e:
-            print(f"   ⚠️  Error running terraform fmt: {e}")
+            print(f"   Error running terraform fmt: {e}")

@@ -195,12 +195,20 @@ class BuildEnvExtractor:
                 # Found an ASG section
                 asg_data = {}
 
-                # Read next few rows for ASG data
+                # Read next few rows for ASG data until we hit a blank row or another section
                 for offset in range(1, 6):
                     check_row = row_idx + offset
                     label = self.ws.cell(check_row, 1).value
                     tf_var = self.ws.cell(check_row, 2).value
                     value = self.ws.cell(check_row, 3).value
+
+                    # Stop if we hit a blank row (all None)
+                    if not label and not tf_var and not value:
+                        break
+
+                    # Stop if we hit another section header (Column A has content and Column B = "Terraform Variable")
+                    if label and tf_var == 'Terraform Variable':
+                        break
 
                     if tf_var and value and str(value).strip() not in ['Value', '']:
                         asg_data[str(tf_var).strip()] = str(value).strip()

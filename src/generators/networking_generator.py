@@ -53,7 +53,7 @@ class NetworkingGenerator:
     def _generate_r_snet_tf(self) -> str:
         """Generate r-snet.tf for subnet resources."""
         content = '''resource "azurerm_subnet" "snet" {
-  for_each = coalesce(var.subnets, {})
+  for_each = coalesce(var.existing_subnets, {})
 
   name                 = each.value.name
   address_prefixes     = each.value.prefixes
@@ -63,7 +63,7 @@ class NetworkingGenerator:
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg" {
-  for_each  = coalesce(var.subnets, {})
+  for_each  = coalesce(var.existing_subnets, {})
   subnet_id = azurerm_subnet.snet[each.key].id
   network_security_group_id = coalesce(
     try(each.value.network_security_group_id, null),
@@ -72,7 +72,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg" {
 }
 
 resource "azurerm_subnet_route_table_association" "rta" {
-  for_each  = coalesce(var.subnets, {})
+  for_each  = coalesce(var.existing_subnets, {})
   subnet_id = azurerm_subnet.snet[each.key].id
   route_table_id = coalesce(
     try(each.value.route_table_id, null),
@@ -167,28 +167,31 @@ resource "azurerm_private_endpoint" "pe" {
         if asgs:
             asg_map = {}
             for idx, asg in enumerate(asgs, 1):
-                # Use keys like asg_nic, asg_pe, asg1, asg2, etc.
-                asg_name = asg.get('name', '')
-                if 'nic' in asg_name.lower():
-                    key = 'asg_nic'
-                elif 'pe' in asg_name.lower() or 'kvlt' in asg_name.lower():
-                    key = 'asg_pe'
-                else:
-                    key = f'asg{idx}'
+                # Use the key field from Excel if available, otherwise generate
+                key = asg.get('key')
+                if not key or key == 'snet1':  # snet1 is incorrect, fallback to generated key
+                    asg_name = asg.get('name', '')
+                    if 'nic' in asg_name.lower():
+                        key = 'asg_nic'
+                    elif 'pe' in asg_name.lower() or 'kvlt' in asg_name.lower():
+                        key = 'asg_kvlt'
+                    else:
+                        key = f'asg{idx}'
 
                 asg_map[key] = {
-                    'name': asg_name
+                    'name': asg.get('name', '')
                 }
 
             if asg_map:
                 tfvars['application_security_groups'] = asg_map
 
-        # Subnets
+        # Subnets (renamed to existing_subnets)
         subnets = self.build_env.get('subnets', [])
         if subnets:
             subnet_map = {}
             for idx, subnet in enumerate(subnets, 1):
-                key = f'snet{idx}'
+                # Use the key field from Excel if available, otherwise generate
+                key = subnet.get('key', f'snet{idx}')
 
                 # Get prefixes and ensure it's a list
                 prefixes = subnet.get('prefixes', [])
@@ -230,7 +233,7 @@ resource "azurerm_private_endpoint" "pe" {
                 subnet_map[key] = subnet_config
 
             if subnet_map:
-                tfvars['subnets'] = subnet_map
+                tfvars['existing_subnets'] = subnet_map
 
         # Private Endpoints
         private_endpoints = self.build_env.get('private_endpoints', [])
@@ -253,18 +256,15 @@ resource "azurerm_private_endpoint" "pe" {
                     'name': pe_name,
                     'subresource_names': subresource_names,
                     'snet_key': pe.get('snet_key', 'snet1'),
-                    'asg_key': pe.get('asg_key', 'asg_pe'),
+                    'asg_key': pe.get('asg_key', 'asg_kvlt'),
                 }
 
-                # Optional fields
-                resource_id = pe.get('private_connection_resource_id')
+                # Optional fields - do NOT include private_connection_resource_id
                 is_manual = pe.get('is_manual_connection')
                 dns_group = pe.get('private_dns_zone_group_name')
                 dns_zones = pe.get('private_dns_zone_ids')
 
-                if resource_id:
-                    pe_config['private_connection_resource_id'] = resource_id
-                if is_manual:
+                if is_manual is not None:
                     pe_config['is_manual_connection'] = is_manual
                 if dns_group:
                     pe_config['private_dns_zone_group_name'] = dns_group

@@ -1044,7 +1044,7 @@ variable "resource_specific_tags" {{
         tfvars = f'''# Begin terraform.tfvars
 
 spn      = {fmt(spn_name)}
-location = {fmt(location)}
+location = {fmt(location.upper() if location else location)}
 resource_group_name = {fmt(rg_name)}
 
 application_security_groups = {application_security_groups}
@@ -1054,14 +1054,14 @@ user_assigned_identity_name = {fmt(umid_name)}
 
 key_vault = {{
   name                       = {fmt(kvlt_name)}
-  sku_name                   = {fmt(kvlt_sku)}
+  sku_name                   = {fmt(kvlt_sku.lower() if kvlt_sku else kvlt_sku)}
   soft_delete_retention_days = {fmt(kvlt_retention, quote=False)}
   public_network_access      = {fmt(kvlt_public_access, quote=False) if kvlt_public_access is not None else "null"}
   snet_key                   = "snet1"
   key_name                   = {fmt(key_name)}
 }}
 
-subnets = {subnets}
+existing_subnets = {subnets}
 
 private_endpoints = {private_endpoints}
 
@@ -1187,48 +1187,79 @@ common_tags = {{
                     else:
                         data_disk_sizes = data_disk_sizes_raw
                 except (ValueError, SyntaxError):
-                    data_disk_sizes = [50, 50]  # Fallback
+                    data_disk_sizes = None
             else:
-                data_disk_sizes = [50, 50]  # Fallback
+                data_disk_sizes = None
 
-            # Format data_disk_sizes as Terraform array
-            data_disk_sizes_str = '[' + ', '.join([str(s) for s in data_disk_sizes]) + ']'
+            # Format data_disk_sizes as Terraform array (only if exists in Excel)
+            if data_disk_sizes:
+                data_disk_sizes_str = '[' + ', '.join([str(s) for s in data_disk_sizes]) + ']'
+            else:
+                data_disk_sizes_str = None
 
-            # Use data_disk_type from Excel, fallback to Standard_LRS
-            if not data_disk_type:
-                data_disk_type = "Standard_LRS"
+            # Use data_disk_type from Excel only (no fallback)
+            # data_disk_type is already set or None
 
-            # Build VM entry with proper null handling for missing data
+            # Build VM entry - only include fields that exist in Excel
             # Helper function to format value - use null if None or empty string
             def fmt_val(val, is_string=True):
                 if val is None or val == "" or val == "None":
                     return "null"
                 return f'"{val}"' if is_string else str(val)
 
-            ip_address_line = f'\n    ip_address        = {fmt_val(ip_address)}' if ip_address else ""
+            # Build VM entry dynamically - only include non-null fields
+            vm_lines = []
+            vm_lines.append(f'  {vm_key} = {{')
 
-            vm_entry = f'''  {vm_key} = {{
-    name              = {fmt_val(vm_name)}
-    size              = {fmt_val(vm_size)}
-    zone              = null
-    image_os          = {fmt_val(os_type)}
-    marketplace_image = false
-    image_urn         = {fmt_val(image_urn)}
-    ip_allocation     = {fmt_val(ip_allocation)}{ip_address_line}
-    identity_type     = "SystemAssigned, UserAssigned"
-    os_disk_size      = {fmt_val(os_disk_size, is_string=False)}
-    os_disk_type      = {fmt_val(os_disk_type)}
-    os_disk_tier      = null
-    data_disk_sizes   = {data_disk_sizes_str}
-    data_disk_type    = {fmt_val(data_disk_type)}
-    snet_key          = {fmt_val(snet_key)}
-    asg_key           = {fmt_val(asg_key)}
-    tags = {{
-      "role"        = {fmt_val(role)},
-      "patch-optin" = {fmt_val(patch_optin)},
-      "snow-item"   = {fmt_val(snow_item)}
-    }}
-  }}'''
+            # Required fields (always present)
+            vm_lines.append(f'    name          = {fmt_val(vm_name)}')
+            vm_lines.append(f'    size          = {fmt_val(vm_size)}')
+            vm_lines.append(f'    image_os      = {fmt_val(os_type)}')
+            vm_lines.append(f'    ip_allocation = {fmt_val(ip_allocation)}')
+            vm_lines.append(f'    os_disk_size  = {fmt_val(os_disk_size, is_string=False)}')
+            vm_lines.append(f'    snet_key      = {fmt_val(snet_key)}')
+            vm_lines.append(f'    asg_key       = {fmt_val(asg_key)}')
+
+            # Optional fields (only if present in Excel)
+            # Tags (must come before other fields to match correct output)
+            if role or patch_optin or snow_item:
+                vm_lines.append('    tags = {')
+                if role:
+                    vm_lines.append(f'      role        = {fmt_val(role)}')
+                if patch_optin:
+                    vm_lines.append(f'      patch-optin = {fmt_val(patch_optin)}')
+                if snow_item:
+                    vm_lines.append(f'      snow-item   = {fmt_val(snow_item)}')
+                vm_lines.append('    }')
+
+            # Zone (if specified in Excel)
+            # Extract zone if available - not yet found in current Excel data
+
+            # source_image_id (if specified)
+            # Not yet found in current Excel data
+
+            # image_urn (if specified)
+            if image_urn:
+                vm_lines.append(f'    image_urn       = {fmt_val(image_urn)}')
+
+            # ip_address (if specified)
+            if ip_address:
+                vm_lines.append(f'    ip_address      = {fmt_val(ip_address)}')
+
+            # os_disk_type (if specified)
+            if os_disk_type:
+                vm_lines.append(f'    os_disk_type    = {fmt_val(os_disk_type)}')
+
+            # data_disk_sizes (if specified)
+            if data_disk_sizes_str:
+                vm_lines.append(f'    data_disk_sizes = {data_disk_sizes_str}')
+
+            # data_disk_type (if specified)
+            if data_disk_type:
+                vm_lines.append(f'    data_disk_type  = {fmt_val(data_disk_type)}')
+
+            vm_lines.append('  }')
+            vm_entry = '\n'.join(vm_lines)
             vm_entries.append(vm_entry)
         
         # Join with commas between map entries (Terraform requires commas between map objects)
@@ -1290,17 +1321,18 @@ common_tags = {{
         else:
             endpoints_array = '["Microsoft.KeyVault"]'  # Default fallback
 
-        # Note: We're not using resource IDs for NSG and route table
-        # The terraform.tfvars from the actual output shows null for these
+        # Use names for both _name and _id fields (they're equal in the correct output)
         return f'''{{
   snet1 = {{
-    resource_group_name  = {fmt_val(network_rg)}
-    virtual_network_name = {fmt_val(vnet_name)}
-    network_security_group_id   = null
-    route_table_id              = null
-    name              = {fmt_val(subnet_name)}
-    prefixes          = {prefix_array}
-    service_endpoints = {endpoints_array}
+    resource_group_name         = {fmt_val(network_rg)}
+    virtual_network_name        = {fmt_val(vnet_name)}
+    name                        = {fmt_val(subnet_name)}
+    prefixes                    = {prefix_array}
+    service_endpoints           = {endpoints_array}
+    network_security_group_name = {fmt_val(nsg_name)}
+    network_security_group_id   = {fmt_val(nsg_name)}
+    route_table_name            = {fmt_val(route_table_name)}
+    route_table_id              = {fmt_val(route_table_name)}
   }}
 }}'''
     
@@ -1400,9 +1432,12 @@ common_tags = {{
             subresource_array = '["vault"]'  # Default fallback
 
         return f'''{{
-  pe_kvlt = {{
+  pe1 = {{
     name                           = {fmt_val(pe_name)}
     subresource_names              = {subresource_array}
+    private_connection_resource_id = null
+    is_manual_connection           = "false"
+    private_dns_zone_group_name    = "default"
     snet_key                       = {fmt_val(snet_key)}
     asg_key                        = {fmt_val(asg_key)}
   }}

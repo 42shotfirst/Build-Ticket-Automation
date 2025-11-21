@@ -21,6 +21,10 @@ class NSGGenerator:
         self.nsg_data = nsg_data
         self.build_env = build_env_data
 
+        # Extract global snow-item from tags for use as default in rules
+        tags = self.build_env.get('tags', {})
+        self.global_snow_item = tags.get('wab:snow-item')
+
     def get_tfvars_content(self) -> Dict[str, Any]:
         """
         Get terraform.tfvars content for NSG rules.
@@ -96,23 +100,25 @@ class NSGGenerator:
             elif dst_addr:
                 formatted_rule['destination_address_prefix'] = str(dst_addr)
 
-            # Application Security Groups
-            src_asg = rule.get('source_asg_keys')
+            # Application Security Groups (check both '_keys' and plain names for compatibility)
+            src_asg = rule.get('source_asg_keys') or rule.get('source_asg')
             if src_asg:
                 if not isinstance(src_asg, list):
                     src_asg = [src_asg]
                 formatted_rule['source_asg_keys'] = src_asg
-                formatted_rule['source_name'] = src_asg[0] if src_asg else None
+                # Use explicit source_name if provided, otherwise derive from ASG
+                formatted_rule['source_name'] = rule.get('source_name') or (src_asg[0] if src_asg else None)
 
-            dst_asg = rule.get('destination_asg_keys')
+            dst_asg = rule.get('destination_asg_keys') or rule.get('destination_asg')
             if dst_asg:
                 if not isinstance(dst_asg, list):
                     dst_asg = [dst_asg]
                 formatted_rule['destination_asg_keys'] = dst_asg
-                formatted_rule['destination_name'] = dst_asg[0] if dst_asg else None
+                # Use explicit destination_name if provided, otherwise derive from ASG
+                formatted_rule['destination_name'] = rule.get('destination_name') or (dst_asg[0] if dst_asg else None)
 
-            # SNOW item
-            snow_item = rule.get('snow-item') or rule.get('snow_item')
+            # SNOW item - use rule-specific if available, otherwise use global from tags
+            snow_item = rule.get('snow-item') or rule.get('snow_item') or self.global_snow_item
             if snow_item:
                 formatted_rule['snow-item'] = snow_item
 

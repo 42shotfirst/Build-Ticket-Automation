@@ -259,10 +259,16 @@ class BuildEnvExtractor:
 
         pe_data = {}
 
-        # Read PE data (next ~10 rows)
-        for row_idx in range(section_start, section_start + 15):
+        # Start from row after the header (section_start + 1)
+        # Stop at next section header (like "Key Vault")
+        for row_idx in range(section_start + 1, section_start + 15):
+            col_a = self.ws.cell(row_idx, 1).value
             col_b = self.ws.cell(row_idx, 2).value
             col_c = self.ws.cell(row_idx, 3).value
+
+            # Stop if we hit a new section header (col_a has value AND col_c is "Value")
+            if col_a and str(col_c).strip() == 'Value':
+                break
 
             if col_b and col_c:
                 tf_var = str(col_b).strip()

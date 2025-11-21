@@ -240,31 +240,37 @@ resource "azurerm_private_endpoint" "pe" {
         if private_endpoints:
             pe_map = {}
             for idx, pe in enumerate(private_endpoints, 1):
-                # Use key like pe1, pe2, etc. based on index
-                key = f'pe{idx}'
+                # Use key from Excel if available, otherwise generate (pe1, pe2, etc.)
+                key = pe.get('key', f'pe{idx}')
 
                 # Get subresource_names and ensure it's a list
                 subresource_names = pe.get('subresource_names', [])
                 if isinstance(subresource_names, str):
                     subresource_names = [subresource_names] if subresource_names else []
 
+                # Build PE config - matching Spectrum example format
+                # OMIT: is_manual_connection (always false, not needed)
+                # OMIT: private_dns_zone_group_name (always default, not needed)
+                # OMIT: private_connection_resource_id (use coalesce in .tf)
                 pe_config = {
                     'name': pe.get('name', ''),
                     'subresource_names': subresource_names,
-                    # private_connection_resource_id omitted - will use Key Vault ID via coalesce() in .tf
-                    'is_manual_connection': pe.get('is_manual_connection', 'false'),
-                    'private_dns_zone_group_name': pe.get('private_dns_zone_group_name', 'default'),
                     'snet_key': pe.get('snet_key', 'snet1'),
                     'asg_key': pe.get('asg_key', 'asg_kvlt'),
                 }
 
-                # Add private_dns_zone_ids if available
+                # Add private_dns_zone_ids if available (from Excel)
                 dns_zones = pe.get('private_dns_zone_ids')
                 if dns_zones:
                     if isinstance(dns_zones, str):
-                        # Try to parse as list if it's a string
+                        # Single DNS zone - convert to array
                         dns_zones = [dns_zones]
                     pe_config['private_dns_zone_ids'] = dns_zones
+
+                # Add resource_key if available (links to parent resource like wapp1, svr1, etc.)
+                resource_key = pe.get('resource_key')
+                if resource_key:
+                    pe_config['resource_key'] = resource_key
 
                 pe_map[key] = pe_config
 

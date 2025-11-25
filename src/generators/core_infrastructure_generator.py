@@ -465,4 +465,33 @@ data "azurerm_application_security_group" "asg" {
         if common_tags:
             tfvars['common_tags'] = common_tags
 
+        # Diagnostic Setting - Configure Event Hub based on region
+        location_val = tfvars.get('location', 'WEST US 3')
+        eventhub_namespace = self._get_eventhub_namespace_for_region(location_val)
+
+        tfvars['diagnostic_setting'] = {
+            'name': 'diag-smc_cis',
+            'eventhub_authorization_rule_id': f'/subscriptions/5cb440c1-22d6-404e-a472-0fc1911fb361/resourceGroups/rg-sec-eventhub-prod/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/authorizationRules/RootManageSharedAccessKey',
+            'eventhub_name': 'evhub-keyvault-001'
+        }
+
         return tfvars
+
+    def _get_eventhub_namespace_for_region(self, region: str) -> str:
+        """
+        Get Event Hub namespace based on region.
+
+        Args:
+            region: Azure region (e.g., 'WEST US 3', 'EAST US')
+
+        Returns:
+            Event Hub namespace name
+        """
+        region_upper = region.upper() if region else 'WEST US 3'
+
+        # Map regions to Event Hub namespaces
+        if 'EAST' in region_upper:
+            return 'evh-sec-eus-prod'
+        else:
+            # All West regions use wus3
+            return 'evh-sec-wus3-prod'

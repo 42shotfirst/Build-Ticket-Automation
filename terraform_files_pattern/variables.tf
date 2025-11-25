@@ -234,6 +234,70 @@ variable "vm_process_data_collection_rules" {
   }
 }
 
+variable "eventhub_namespaces" {
+  type = map(object({
+    namespace = string
+  }))
+  default = {
+    "WEST US 3" = {
+      namespace = "evh-sec-wus3-prod"
+    },
+    "WEST US 2" = {
+      namespace = "evh-sec-wus3-prod"
+    },
+    "WEST US" = {
+      namespace = "evh-sec-wus3-prod"
+    },
+    "EAST US" = {
+      namespace = "evh-sec-eus-prod"
+    }
+  }
+  description = "Event Hub namespaces by region for diagnostic settings"
+}
+
+variable "diagnostic_setting" {
+  type = object({
+    name                           = string
+    eventhub_authorization_rule_id = string
+    eventhub_name                  = string
+  })
+  default     = null
+  description = "Diagnostic setting configuration for Key Vault"
+}
+
+variable "source_image_ids" {
+  type = map(object({
+    windows_2019 = string
+    windows_2022 = string
+    windows_2025 = string
+    rhel_8       = optional(string)
+    rhel_9       = optional(string)
+  }))
+  default = {
+    "WEST US 3" = {
+      windows_2019 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-prod-wus3/providers/Microsoft.Compute/galleries/PackerWUS3/images/windows-server-2019-cis-L1"
+      windows_2022 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-prod-wus3/providers/Microsoft.Compute/galleries/PackerWUS3/images/windows-server-2022-cis-L1"
+      windows_2025 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-prod-wus3/providers/Microsoft.Compute/galleries/PackerWUS3/images/windows-server-2025-cis-L1"
+    },
+    "WEST US 2" = {
+      windows_2019 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-prod-wus3/providers/Microsoft.Compute/galleries/PackerWUS3/images/windows-server-2019-cis-L1"
+      windows_2022 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-prod-wus3/providers/Microsoft.Compute/galleries/PackerWUS3/images/windows-server-2022-cis-L1"
+      windows_2025 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-prod-wus3/providers/Microsoft.Compute/galleries/PackerWUS3/images/windows-server-2025-cis-L1"
+    },
+    "WEST US" = {
+      windows_2019 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-prod-wus3/providers/Microsoft.Compute/galleries/PackerWUS3/images/windows-server-2019-cis-L1"
+      windows_2022 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-prod-wus3/providers/Microsoft.Compute/galleries/PackerWUS3/images/windows-server-2022-cis-L1"
+      windows_2025 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-prod-wus3/providers/Microsoft.Compute/galleries/PackerWUS3/images/windows-server-2025-cis-L1"
+    },
+    "EAST US" = {
+      windows_2019 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-dev/providers/Microsoft.Compute/galleries/PackerDev/images/windows-server-2019-cis-L1"
+      windows_2022 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-dev/providers/Microsoft.Compute/galleries/PackerDev/images/windows-server-2022-cis-L1"
+      windows_2025 = "/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-dev/providers/Microsoft.Compute/galleries/PackerDev/images/windows-server-2025-cis-L1"
+    }
+  }
+  description = "Source image IDs by region and OS version"
+}
+
 variable "admin_username" {
   type     = string
   default  = "cisadmin"

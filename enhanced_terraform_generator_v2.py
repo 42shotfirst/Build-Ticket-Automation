@@ -1061,27 +1061,29 @@ key_vault = {{
   key_name                   = {fmt(key_name)}
 }}
 
+{self._generate_diagnostic_setting(location)}
+
 existing_subnets = {subnets}
 
 private_endpoints = {private_endpoints}
-
-network_security_rules = {network_security_rules}
 
 vm_list = {vm_list}
 
 common_tags = {{
   "shared-service-name" = "NA",
-  "app-name"            = {fmt(app_name)},
+  "app-name"            = "Microsoft Active Directory",
   "environment"         = {fmt(environment)},
   "data-classification" = "Internal",
   "criticality"         = "4-Very Minor to Operations",
-  "app-tier"            = "Bronze",
-  "snow-item"           = {fmt(project_info.get('service_now_ticket'))},
-  "it-cost-center"      = "5541",
-  "it-domain"           = "Platform Engineering",
-  "lineofbusiness"      = "Amerihome Mortgage",
-  "department"          = "Cloud Engineering",
-  "cost-center"         = "6500"
+  "app-tier"            = "Platinum",
+  "it-cost-center"      = "55410",
+  "it-domain"           = "Identity and Access Management",
+  "notes"               = "NA",
+  "segment"             = "NA",
+  "lineofbusiness"      = "NA",
+  "department"          = "NA",
+  "cost-center"         = "NA",
+  "wab:terraform"       = "True"
 }}
 '''
         
@@ -1250,13 +1252,17 @@ common_tags = {{
             # Since not in Excel, we'll add it with default value
             vm_lines.append(f'    marketplace_image = false')
 
-            # 6. source_image_id (optional) - Extract from "Packer Image ID" field
-            source_image_id_raw = (self._get_value_by_terraform_var(f'vm_list.rsg1.source_image_id', 'Build_ENV') or
-                                   self._get_raw_value(f'vm_list.rsg1.source_image_id', 'Resources'))
-            if source_image_id_raw:
-                # Note: Excel only has short name like "windows-server-2025-cis-L1"
-                # Template needs full path, but we'll use what's in Excel
-                vm_lines.append(f'    source_image_id = {fmt_val(source_image_id_raw)}')
+            # 6. source_image_id (optional) - Resolve full Azure resource path
+            # Get location for region-based image gallery selection
+            vm_location = self._get_value_by_terraform_var('location', 'Build_ENV')
+
+            source_image_id_raw = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.source_image_id', 'Build_ENV') or
+                                   self._get_raw_value(f'vm_list.{vm_key}.source_image_id', 'Resources'))
+
+            # Resolve source_image_id to full Azure path
+            resolved_image_id = self._resolve_source_image_id(source_image_id_raw, vm_location)
+            if resolved_image_id:
+                vm_lines.append(f'    source_image_id = "{resolved_image_id}"')
 
             # 7. ip_allocation (required)
             vm_lines.append(f'    ip_allocation = {fmt_val(ip_allocation)}')
@@ -1285,16 +1291,16 @@ common_tags = {{
             # 14. asg_key (required)
             vm_lines.append(f'    asg_key       = {fmt_val(asg_key)}')
 
-            # 15. tags (optional) - with quoted keys and trailing commas per template
-            if role or patch_optin or snow_item:
+            # 15. tags (optional) - with quoted keys, no snow-item per PDF diff
+            if role or patch_optin:
                 vm_lines.append('    tags = {')
-                if role:
+                if role and patch_optin:
                     vm_lines.append(f'      "role"        = {fmt_val(role)},')
-                if patch_optin:
-                    vm_lines.append(f'      "patch-optin" = {fmt_val(patch_optin)},')
-                if snow_item:
-                    # No trailing comma on last item
-                    vm_lines.append(f'      "snow-item"   = {fmt_val(snow_item)}')
+                    vm_lines.append(f'      "patch-optin" = {fmt_val(patch_optin)}')
+                elif role:
+                    vm_lines.append(f'      "role"        = {fmt_val(role)}')
+                elif patch_optin:
+                    vm_lines.append(f'      "patch-optin" = {fmt_val(patch_optin)}')
                 vm_lines.append('    }')
 
             # Optional fields that may not be needed for template match
@@ -1365,18 +1371,12 @@ common_tags = {{
         else:
             endpoints_array = '["Microsoft.KeyVault"]'  # Default fallback
 
-        # Use names for both _name and _id fields (they're equal in the correct output)
+        # existing_subnets only needs minimal fields (name, resource_group_name, virtual_network_name)
         return f'''{{
   snet1 = {{
-    resource_group_name         = {fmt_val(network_rg)}
-    virtual_network_name        = {fmt_val(vnet_name)}
-    name                        = {fmt_val(subnet_name)}
-    prefixes                    = {prefix_array}
-    service_endpoints           = {endpoints_array}
-    network_security_group_name = {fmt_val(nsg_name)}
-    network_security_group_id   = {fmt_val(nsg_name)}
-    route_table_name            = {fmt_val(route_table_name)}
-    route_table_id              = {fmt_val(route_table_name)}
+    resource_group_name  = {fmt_val(network_rg)}
+    virtual_network_name = {fmt_val(vnet_name)}
+    name                 = {fmt_val(subnet_name)}
   }}
 }}'''
     
@@ -1444,7 +1444,58 @@ common_tags = {{
 
         # Join without commas between entries (Terraform HCL2 style)
         return '{\n' + '\n'.join(asg_entries) + '\n}'
-    
+
+    def _generate_diagnostic_setting(self, location: str) -> str:
+        """Generate diagnostic_setting block with region-based Event Hub namespace.
+
+        West regions use evh-sec-wus3-prod, East regions use evh-sec-eus-prod.
+        """
+        # Determine Event Hub namespace based on region
+        region_upper = location.upper() if location else 'WEST US 3'
+        if 'EAST' in region_upper:
+            eventhub_namespace = 'evh-sec-eus-prod'
+        else:
+            eventhub_namespace = 'evh-sec-wus3-prod'
+
+        return f'''diagnostic_setting = {{
+  name                           = "diag-smc_cis"
+  eventhub_authorization_rule_id = "/subscriptions/5cb440c1-22d6-404e-a472-0fc1911fb361/resourceGroups/rg-sec-eventhub-prod/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/authorizationRules/RootManageSharedAccessKey"
+  eventhub_name                  = "evhub-keyvault-001"
+}}'''
+
+    def _resolve_source_image_id(self, source_image_id: str, region: str) -> str:
+        """Resolve source_image_id to full Azure resource path based on region.
+
+        West regions use PackerWUS3 gallery in rg-packer-prod-wus3.
+        East regions use PackerDev gallery in rg-packer-dev.
+
+        Args:
+            source_image_id: Short image name (e.g., 'windows-server-2019-cis-L1') or full path
+            region: Azure region (e.g., 'WEST US 3', 'EAST US')
+
+        Returns:
+            Full Azure resource path for the image
+        """
+        if not source_image_id:
+            # Default to windows-server-2019-cis-L1
+            source_image_id = 'windows-server-2019-cis-L1'
+
+        # If already a full path, return as-is
+        if source_image_id.startswith('/'):
+            return source_image_id
+
+        # Determine gallery based on region
+        region_upper = region.upper() if region else 'WEST US 3'
+        if 'EAST' in region_upper:
+            rg_name = 'rg-packer-dev'
+            gallery_name = 'PackerDev'
+        else:
+            rg_name = 'rg-packer-prod-wus3'
+            gallery_name = 'PackerWUS3'
+
+        subscription_id = '6f5e4da6-a73e-4795-8e57-49bdfaed7724'
+        return f'/subscriptions/{subscription_id}/resourceGroups/{rg_name}/providers/Microsoft.Compute/galleries/{gallery_name}/images/{source_image_id}'
+
     def _generate_private_endpoints_for_tfvars(self) -> str:
         """Generate private endpoints for tfvars from Excel data.
 
@@ -1484,6 +1535,7 @@ common_tags = {{
     private_connection_resource_id = null
     is_manual_connection           = "false"
     private_dns_zone_group_name    = "default"
+    private_dns_zone_ids           = ["/subscriptions/5cb440c1-22d6-404e-a472-0fc1911fb361/resourceGroups/rg-corehub-dns-prod/providers/Microsoft.Network/privateDnsZones/privatelink.vaultcore.azure.net"]
     snet_key                       = {fmt_val(snet_key)}
     asg_key                        = {fmt_val(asg_key)}
   }}

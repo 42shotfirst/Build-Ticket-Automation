@@ -185,7 +185,7 @@ resource "azurerm_private_endpoint" "pe" {
             if asg_map:
                 tfvars['application_security_groups'] = asg_map
 
-        # Subnets (renamed to existing_subnets)
+        # Subnets - determine if creating new subnets or using existing ones
         subnets = self.build_env.get('subnets', [])
         if subnets:
             subnet_map = {}
@@ -193,47 +193,58 @@ resource "azurerm_private_endpoint" "pe" {
                 # Use the key field from Excel if available, otherwise generate
                 key = subnet.get('key', f'snet{idx}')
 
-                # Get prefixes and ensure it's a list
+                # Check if this is an existing subnet (minimal fields) or new subnet (full fields)
+                # If prefixes are provided, it's likely a new subnet creation
                 prefixes = subnet.get('prefixes', [])
                 if isinstance(prefixes, str):
                     prefixes = [prefixes] if prefixes else []
 
-                # Get service endpoints and ensure it's a list
-                service_endpoints = subnet.get('service_endpoints', [])
-                if isinstance(service_endpoints, str):
-                    service_endpoints = [service_endpoints] if service_endpoints else []
+                # Determine subnet type based on available data
+                is_new_subnet = bool(prefixes)
 
-                subnet_config = {
-                    'resource_group_name': subnet.get('resource_group_name'),
-                    'virtual_network_name': subnet.get('virtual_network_name'),
-                    'name': subnet.get('name'),
-                    'prefixes': prefixes,
-                    'service_endpoints': service_endpoints,
-                }
+                if is_new_subnet:
+                    # New subnet - include all fields for subnets variable
+                    service_endpoints = subnet.get('service_endpoints', [])
+                    if isinstance(service_endpoints, str):
+                        service_endpoints = [service_endpoints] if service_endpoints else []
 
-                # Optional fields
-                # Note: network_security_group_id is the same as network_security_group_name for this program
-                # Note: route_table_id is the same as route_table_name for this program
-                nsg_name = subnet.get('network_security_group_name')
-                nsg_id = subnet.get('network_security_group_id')
-                rt_name = subnet.get('route_table_name')
-                rt_id = subnet.get('route_table_id')
+                    subnet_config = {
+                        'resource_group_name': subnet.get('resource_group_name'),
+                        'virtual_network_name': subnet.get('virtual_network_name'),
+                        'name': subnet.get('name'),
+                        'prefixes': prefixes,
+                        'service_endpoints': service_endpoints,
+                    }
 
-                # Use the name value for both _name and _id fields
-                nsg_value = nsg_name or nsg_id
-                if nsg_value:
-                    subnet_config['network_security_group_name'] = nsg_value
-                    subnet_config['network_security_group_id'] = nsg_value
+                    # Add NSG/RT as IDs for new subnets
+                    nsg_id = subnet.get('network_security_group_id')
+                    if nsg_id:
+                        subnet_config['network_security_group_id'] = nsg_id
 
-                rt_value = rt_name or rt_id
-                if rt_value:
-                    subnet_config['route_table_name'] = rt_value
-                    subnet_config['route_table_id'] = rt_value
+                    rt_id = subnet.get('route_table_id')
+                    if rt_id:
+                        subnet_config['route_table_id'] = rt_id
 
-                subnet_map[key] = subnet_config
+                    subnet_map[key] = subnet_config
+                else:
+                    # Existing subnet - minimal fields for existing_subnets variable
+                    subnet_config = {
+                        'resource_group_name': subnet.get('resource_group_name'),
+                        'virtual_network_name': subnet.get('virtual_network_name'),
+                        'name': subnet.get('name'),
+                    }
+                    subnet_map[key] = subnet_config
 
             if subnet_map:
-                tfvars['existing_subnets'] = subnet_map
+                # Check if any subnet has prefixes to determine variable name
+                has_new_subnets = any(
+                    bool(subnet.get('prefixes', []) if isinstance(subnet.get('prefixes'), list) else subnet.get('prefixes'))
+                    for subnet in subnets
+                )
+                if has_new_subnets:
+                    tfvars['subnets'] = subnet_map
+                else:
+                    tfvars['existing_subnets'] = subnet_map
 
         # Private Endpoints
         private_endpoints = self.build_env.get('private_endpoints', [])

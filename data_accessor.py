@@ -1230,10 +1230,18 @@ class ExcelDataAccessor:
 
                 print(f"  Valid rules extracted from table {i+1}: {valid_rules_count}")
         
+        # If no NSG rules found from NSG sheet, try to extract from HCL literals in main sheet
+        if not security_rules:
+            print("  No NSG sheet found, trying to extract from HCL literals...")
+            hcl_rules = self._extract_nsg_from_hcl_literals(terraform_data)
+            if hcl_rules:
+                security_rules = hcl_rules
+                print(f"  Extracted {len(security_rules)} rules from HCL literals")
+
         terraform_data['security_groups'] = security_rules
         print(f"  Total security rules extracted: {len(security_rules)}")
         print()
-        
+
         # COMPREHENSIVE APPLICATION GATEWAY EXTRACTION
         print("COMPREHENSIVE APPLICATION GATEWAY EXTRACTION")
         print("=" * 45)
@@ -1791,6 +1799,177 @@ class ExcelDataAccessor:
         }
 
         return summary
+
+    def _extract_nsg_from_hcl_literals(self, terraform_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Extract NSG rules from HCL literal format in the main sheet.
+
+        Some Excel files contain NSG rules as HCL literals like:
+            network_security_rules = {
+              resource_group_name = "rg-xxx"
+              rules = [
+                {
+                  name = "rule_0"
+                  priority = 100
+                  ...
+                },
+              ]
+            }
+
+        Args:
+            terraform_data: The terraform data dictionary being built
+
+        Returns:
+            List of NSG rule dictionaries
+        """
+        rules = []
+
+        # Get raw data from sheets (try multiple possible locations)
+        all_raw_data = {}
+
+        # Try sheets structure first
+        sheets = terraform_data.get('sheets', {})
+        if not sheets:
+            sheets = self.sheets  # Fall back to instance sheets
+
+        for sheet_name, sheet_data in sheets.items():
+            if isinstance(sheet_data, dict):
+                raw_data = sheet_data.get('raw_data', [])
+                if raw_data:
+                    all_raw_data[sheet_name] = raw_data
+
+        nsg_metadata = {
+            'resource_group_name': None,
+            'network_security_group_name': None
+        }
+
+        for sheet_name, raw_rows in all_raw_data.items():
+            # Look for network_security_rules HCL block
+            in_nsg_block = False
+            in_rules_array = False
+            in_rule_block = False
+            current_rule = {}
+
+            for row in raw_rows:
+                if not isinstance(row, dict):
+                    continue
+
+                # Check each column in the row
+                for col_key, cell_value in row.items():
+                    if not cell_value:
+                        continue
+
+                    line = str(cell_value).strip()
+
+                    # Start of network_security_rules block
+                    if 'network_security_rules' in line and '=' in line and '{' in line:
+                        in_nsg_block = True
+                        continue
+
+                    if not in_nsg_block:
+                        continue
+
+                    # End of network_security_rules block
+                    if line == '}' and not in_rule_block and not in_rules_array:
+                        in_nsg_block = False
+                        break
+
+                    # Parse resource_group_name (before rules array)
+                    if 'resource_group_name' in line and '=' in line and not in_rules_array:
+                        key, value = self._parse_hcl_assignment(line)
+                        if value:
+                            nsg_metadata['resource_group_name'] = value
+                        continue
+
+                    # Parse network_security_group_name (before rules array)
+                    if 'network_security_group_name' in line and '=' in line and not in_rules_array:
+                        key, value = self._parse_hcl_assignment(line)
+                        if value:
+                            nsg_metadata['network_security_group_name'] = value
+                        continue
+
+                    # Start of rules array
+                    if 'rules' in line and '[' in line:
+                        in_rules_array = True
+                        continue
+
+                    # End of rules array
+                    if line == ']' and in_rules_array:
+                        in_rules_array = False
+                        continue
+
+                    # Start of a rule block
+                    if line == '{' and in_rules_array:
+                        in_rule_block = True
+                        current_rule = {}
+                        continue
+
+                    # End of a rule block
+                    if (line == '}' or line == '},') and in_rule_block:
+                        if current_rule:
+                            rules.append(current_rule)
+                        current_rule = {}
+                        in_rule_block = False
+                        continue
+
+                    # Parse rule fields
+                    if in_rule_block and '=' in line:
+                        key, value = self._parse_hcl_assignment(line)
+                        if key and value is not None:
+                            current_rule[key] = value
+
+        # Store NSG metadata in terraform_data for later use
+        if nsg_metadata['resource_group_name'] or nsg_metadata['network_security_group_name']:
+            terraform_data['nsg_metadata'] = nsg_metadata
+
+        return rules
+
+    def _parse_hcl_assignment(self, line: str) -> tuple:
+        """
+        Parse an HCL assignment line like 'key = "value"' or 'key = 100'.
+
+        Returns:
+            Tuple of (key, value) where value is properly typed
+        """
+        if '=' not in line:
+            return (None, None)
+
+        parts = line.split('=', 1)
+        if len(parts) != 2:
+            return (None, None)
+
+        key = parts[0].strip()
+        value_str = parts[1].strip()
+
+        # Remove trailing comma if present
+        if value_str.endswith(','):
+            value_str = value_str[:-1].strip()
+
+        # Parse value type
+        # String (quoted)
+        if value_str.startswith('"') and value_str.endswith('"'):
+            return (key, value_str[1:-1])
+
+        # Integer
+        try:
+            return (key, int(value_str))
+        except ValueError:
+            pass
+
+        # Boolean
+        if value_str.lower() == 'true':
+            return (key, True)
+        if value_str.lower() == 'false':
+            return (key, False)
+
+        # List (simple case like ["443", "80"])
+        if value_str.startswith('[') and value_str.endswith(']'):
+            inner = value_str[1:-1]
+            items = [item.strip().strip('"') for item in inner.split(',') if item.strip()]
+            return (key, items)
+
+        # Return as string if no other type matches
+        return (key, value_str)
 
     def validate_extraction_quality(self, terraform_data: Dict[str, Any]) -> Dict[str, Any]:
         """Validate that required data was extracted and report issues.

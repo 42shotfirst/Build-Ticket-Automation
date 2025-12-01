@@ -176,9 +176,15 @@ class TerraformOrchestrator:
         # Networking
         tfvars_data.update(net_gen.get_tfvars_content())
 
-        # NSG rules
-        nsg_gen = NSGGenerator(self.nsg_data, self.build_env_data)
-        tfvars_data.update(nsg_gen.get_tfvars_content())
+        # NSG rules - try from build_env first (HCL format), fall back to NSG sheet
+        nsg_from_build_env = self.build_env_data.get('network_security_rules', {})
+        if nsg_from_build_env and nsg_from_build_env.get('rules'):
+            # Use NSG rules parsed from HCL in Build_ENV sheet
+            tfvars_data['network_security_rules'] = nsg_from_build_env
+        else:
+            # Fall back to NSG sheet extractor
+            nsg_gen = NSGGenerator(self.nsg_data, self.build_env_data)
+            tfvars_data.update(nsg_gen.get_tfvars_content())
 
         # VMs and security
         tfvars_data.update(vm_gen.get_tfvars_content())
@@ -207,7 +213,9 @@ class TerraformOrchestrator:
             'disk_encryption_set_name',
             'user_assigned_identity_name',
             'key_vault',
-            'existing_subnets',  # Changed from 'subnets'
+            'diagnostic_setting',
+            'existing_subnets',
+            'subnets',
             'private_endpoints',
             'network_security_rules',
             'vm_list',

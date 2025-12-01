@@ -45,7 +45,14 @@ class BuildEnvExtractor:
             Dictionary with extracted data organized by section
         """
         self.wb = openpyxl.load_workbook(self.excel_path, data_only=True)
-        self.ws = self.wb['Build_ENV']
+        # Try Build_ENV first, then fall back to first sheet or BTA5
+        if 'Build_ENV' in self.wb.sheetnames:
+            self.ws = self.wb['Build_ENV']
+        elif 'BTA5' in self.wb.sheetnames:
+            self.ws = self.wb['BTA5']
+        else:
+            # Use the first sheet
+            self.ws = self.wb.active
 
         data = {
             'metadata': self._extract_metadata(),
@@ -60,6 +67,7 @@ class BuildEnvExtractor:
             'key_vault': self._extract_key_vault(),
             'disk_encryption_set': self._extract_disk_encryption(),
             'virtual_machines': self._extract_virtual_machines(),
+            'network_security_rules': self._extract_nsg_rules_from_hcl(),
         }
 
         self.wb.close()
@@ -409,3 +417,160 @@ class BuildEnvExtractor:
             row_idx += 1
 
         return vms
+
+    def _extract_nsg_rules_from_hcl(self) -> Dict[str, Any]:
+        """
+        Extract NSG rules from HCL literal format in the Excel sheet.
+
+        The Excel contains HCL-formatted NSG rules like:
+            network_security_rules = {
+              resource_group_name = "rg-xxx"
+              network_security_group_name = "nsg-xxx"
+              rules = [
+                {
+                  name = "rule_0"
+                  priority = 100
+                  ...
+                },
+              ]
+            }
+
+        Returns:
+            Dictionary with resource_group_name, network_security_group_name, and rules list
+        """
+        nsg_data = {
+            'resource_group_name': None,
+            'network_security_group_name': None,
+            'rules': []
+        }
+
+        # Find the start of network_security_rules section
+        nsg_start = None
+        for row_idx in range(1, self.ws.max_row + 1):
+            cell_value = self.ws.cell(row_idx, 2).value  # Column B
+            if cell_value and 'network_security_rules' in str(cell_value) and '=' in str(cell_value):
+                nsg_start = row_idx
+                break
+
+        if not nsg_start:
+            return nsg_data
+
+        # Parse the HCL content
+        current_rule = {}
+        in_rules_array = False
+        in_rule_block = False
+
+        for row_idx in range(nsg_start, min(nsg_start + 100, self.ws.max_row + 1)):
+            cell_value = self.ws.cell(row_idx, 2).value  # Column B
+            if not cell_value:
+                continue
+
+            line = str(cell_value).strip()
+
+            # End of network_security_rules block
+            if line == '}' and not in_rule_block and not in_rules_array:
+                break
+
+            # Parse resource_group_name
+            if 'resource_group_name' in line and '=' in line:
+                nsg_data['resource_group_name'] = self._extract_hcl_value(line)
+                continue
+
+            # Parse network_security_group_name
+            if 'network_security_group_name' in line and '=' in line:
+                nsg_data['network_security_group_name'] = self._extract_hcl_value(line)
+                continue
+
+            # Start of rules array
+            if 'rules' in line and '[' in line:
+                in_rules_array = True
+                continue
+
+            # End of rules array
+            if line == ']' and in_rules_array:
+                in_rules_array = False
+                continue
+
+            # Start of a rule block
+            if line == '{' and in_rules_array:
+                in_rule_block = True
+                current_rule = {}
+                continue
+
+            # End of a rule block
+            if (line == '}' or line == '},') and in_rule_block:
+                if current_rule:
+                    nsg_data['rules'].append(current_rule)
+                current_rule = {}
+                in_rule_block = False
+                continue
+
+            # Parse rule fields
+            if in_rule_block and '=' in line:
+                key, value = self._parse_hcl_assignment(line)
+                if key and value is not None:
+                    current_rule[key] = value
+
+        return nsg_data
+
+    def _extract_hcl_value(self, line: str) -> Optional[str]:
+        """Extract value from HCL assignment line like 'key = "value"'."""
+        if '=' not in line:
+            return None
+
+        parts = line.split('=', 1)
+        if len(parts) != 2:
+            return None
+
+        value = parts[1].strip()
+        # Remove quotes
+        if value.startswith('"') and value.endswith('"'):
+            return value[1:-1]
+        return value
+
+    def _parse_hcl_assignment(self, line: str) -> tuple:
+        """
+        Parse an HCL assignment line like 'key = "value"' or 'key = 100'.
+
+        Returns:
+            Tuple of (key, value) where value is properly typed
+        """
+        if '=' not in line:
+            return (None, None)
+
+        parts = line.split('=', 1)
+        if len(parts) != 2:
+            return (None, None)
+
+        key = parts[0].strip()
+        value_str = parts[1].strip()
+
+        # Remove trailing comma if present
+        if value_str.endswith(','):
+            value_str = value_str[:-1].strip()
+
+        # Parse value type
+        # String (quoted)
+        if value_str.startswith('"') and value_str.endswith('"'):
+            return (key, value_str[1:-1])
+
+        # Integer
+        try:
+            return (key, int(value_str))
+        except ValueError:
+            pass
+
+        # Boolean
+        if value_str.lower() == 'true':
+            return (key, True)
+        if value_str.lower() == 'false':
+            return (key, False)
+
+        # List (simple case like ["443", "80"])
+        if value_str.startswith('[') and value_str.endswith(']'):
+            inner = value_str[1:-1]
+            items = [item.strip().strip('"') for item in inner.split(',') if item.strip()]
+            return (key, items)
+
+        # Return as string if no other type matches
+        return (key, value_str)

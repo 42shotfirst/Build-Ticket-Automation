@@ -1494,31 +1494,33 @@ common_tags = {{
 
         security_groups = self.terraform_data.get('security_groups', [])
 
-        # Extract resource_group_name from Build_ENV raw_data
-        sheets = self.terraform_data.get('sheets', {})
-        if not sheets:
-            sheets = self.terraform_data.get('comprehensive_data', {})
+        # Try to get NSG metadata from HCL extraction first
+        nsg_metadata = self.terraform_data.get('nsg_metadata', {})
+        network_rg = nsg_metadata.get('resource_group_name')
+        nsg_name = nsg_metadata.get('network_security_group_name')
 
-        build_env = sheets.get('Build_ENV', {})
-        raw_data = build_env.get('raw_data', [])
+        # If not found, extract resource_group_name from Build_ENV raw_data
+        if not network_rg or not nsg_name:
+            sheets = self.terraform_data.get('sheets', {})
+            if not sheets:
+                sheets = self.terraform_data.get('comprehensive_data', {})
 
-        # Find resource_group_name and NSG name from raw_data
-        network_rg = None
-        nsg_name = None
+            build_env = sheets.get('Build_ENV', {})
+            raw_data = build_env.get('raw_data', [])
 
-        for row in raw_data:
-            if isinstance(row, dict):
-                label = str(row.get('0', '')).strip()
-                col1 = str(row.get('1', '')).strip()
-                col2 = str(row.get('2', '')).strip()
+            for row in raw_data:
+                if isinstance(row, dict):
+                    label = str(row.get('0', '')).strip()
+                    col1 = str(row.get('1', '')).strip()
+                    col2 = str(row.get('2', '')).strip()
 
-                # Look for Resource Group Name (row 34: label="Name", col1="resource_group_name")
-                if label == 'Name' and col1 == 'resource_group_name' and col2 and col2 != 'Value':
-                    network_rg = col2
+                    # Look for Resource Group Name (row 34: label="Name", col1="resource_group_name")
+                    if not network_rg and label == 'Name' and col1 == 'resource_group_name' and col2 and col2 != 'Value':
+                        network_rg = col2
 
-                # Look for NSG Name (row 51: label="NSG Name")
-                if label == 'NSG Name' and col2 and col2 != 'Value':
-                    nsg_name = col2
+                    # Look for NSG Name (row 51: label="NSG Name")
+                    if not nsg_name and label == 'NSG Name' and col2 and col2 != 'Value':
+                        nsg_name = col2
         
         if not security_groups:
             return f'''{{

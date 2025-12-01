@@ -4212,3 +4212,928 @@
 2025-11-20 10:41:12 - cli - ERROR - Error: Input file not found: sourcefiles/Build Ticket V2 - Active Directory DR.xlsm
 2025-11-20 10:41:20 - cli - INFO - Starting Build Ticket Automation Pipeline
 2025-11-20 10:41:20 - cli - ERROR - Error: 'file'
+2025-12-01 09:30:39,000 - automation_pipeline - INFO - ================================================================================
+2025-12-01 09:30:39,000 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-12-01 09:30:39,000 - automation_pipeline - INFO - ================================================================================
+2025-12-01 09:30:39,000 - automation_pipeline - INFO - Started at: 2025-12-01 09:30:39.000085
+2025-12-01 09:30:39,000 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-12-01 09:30:39,000 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-12-01 09:30:39,000 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-12-01 09:30:39,000 - automation_pipeline - INFO -   - test_data.xlsm
+2025-12-01 09:30:39,000 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-12-01 09:30:39,001 - automation_pipeline - INFO - Found 1 Excel files in sourcefiles
+2025-12-01 09:30:39,001 - automation_pipeline - INFO -   - test_data.xlsm
+2025-12-01 09:30:39,001 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-12-01 09:30:39,001 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-12-01 09:30:39,004 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251201_093039
+2025-12-01 09:30:39,004 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-12-01 09:30:39,004 - automation_pipeline - INFO - Processing file 1/1: test_data.xlsm
+2025-12-01 09:30:39,004 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-12-01 09:30:40,769 - automation_pipeline - INFO - JSON file created: test_data_comprehensive_extract.json (5,143,854 bytes)
+2025-12-01 09:30:40,770 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: test_data_comprehensive_extract.json
+2025-12-01 09:30:40,770 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-12-01 09:30:40,795 - automation_pipeline - INFO - ================================================================================
+2025-12-01 09:30:40,795 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-12-01 09:30:40,795 - automation_pipeline - INFO - ================================================================================
+2025-12-01 09:30:40,795 - automation_pipeline - INFO - Extraction Quality: GOOD
+2025-12-01 09:30:40,795 - automation_pipeline - INFO - Valid: True
+2025-12-01 09:30:40,795 - automation_pipeline - WARNING - WARNINGS (1):
+2025-12-01 09:30:40,795 - automation_pipeline - WARNING -   [WARN] Only 1 VM(s) extracted - may be using fallback defaults
+2025-12-01 09:30:40,796 - automation_pipeline - INFO - [PASS] Required data extracted with warnings
+2025-12-01 09:30:40,796 - automation_pipeline - INFO - ================================================================================
+2025-12-01 09:30:40,796 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-12-01 09:30:40,796 - automation_pipeline - INFO - Output directory: terraform_output/20251201_093040
+2025-12-01 09:30:40,799 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - terraform.tfvars (4,213 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - scripts/validate.sh (1,180 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - README.md (1,694 bytes)
+2025-12-01 09:30:40,799 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-12-01 09:30:40,801 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251201_093040
+2025-12-01 09:30:40,801 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-12-01 09:30:40,877 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-12-01 09:30:40,877 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-12-01 09:30:40,877 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251201_093040
+2025-12-01 09:30:41,699 - automation_pipeline - INFO - Found Terraform v1.5.7
+2025-12-01 09:30:41,699 - automation_pipeline - INFO - Running terraform fmt on terraform_output/20251201_093040
+2025-12-01 09:30:41,744 - automation_pipeline - WARNING - Terraform fmt: [FAIL] Formatting issues found
+2025-12-01 09:30:41,745 - automation_pipeline - INFO - Running terraform init
+2025-12-01 09:30:42,379 - automation_pipeline - WARNING - Terraform init failed: [31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mError accessing remote module registry[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on m-vm.tf line 38:
+[31m│[0m [0m  38: [4mmodule "vm"[0m {[0m
+[31m│[0m [0m
+[31m│[0m [0mFailed to retrieve available versions for module "vm" (m-vm.tf:38) from
+[31m│[0m [0mapp.terraform.io: error looking up module versions: 401 Unauthorized.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mDuplicate local value definition[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on main.tf line 22, in locals:
+[31m│[0m [0m  22:   [4mcommon_tags = {
+[31m│[0m [0m  23:     Environment = local.environment
+[31m│[0m [0m  24:     Project     = local.project_name
+[31m│[0m [0m  25:     ManagedBy   = "terraform"
+[31m│[0m [0m  26:   }[0m[0m
+[31m│[0m [0m
+[31m│[0m [0mA local value named "common_tags" was already defined at locals.tf:6,3-8,4.
+[31m│[0m [0mLocal value names must be unique within a module.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 27, in variable "location":
+[31m│[0m [0m  27:     error_message = format("A location value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.location,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "location" can only refer to the variable
+[31m│[0m [0mitself, using var.location.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 333, in variable "common_tags":
+[31m│[0m [0m 333:     error_message = format("An environment tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.environment,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 356, in variable "common_tags":
+[31m│[0m [0m 356:     error_message = format("A app-tier tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.app-tier,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 371, in variable "common_tags":
+[31m│[0m [0m 371:     error_message = format("An it-cost-center tag value of "%[4ms[0m" is not allowed. Please use NA or a whole number", var.common_tags.it-cost-center)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 388, in variable "resource_specific_tags":
+[31m│[0m [0m 388:     error_message = format("A patch-optin tag value of "%[4ms[0m" is not allowed. Please use one of the following: YES, NO, NA", var.resource_specific_tags.patch-optin)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "resource_specific_tags" can only refer to
+[31m│[0m [0mthe variable itself, using var.resource_specific_tags.
+[31m╵[0m[0m
+[0m[0m
+
+2025-12-01 09:30:42,379 - automation_pipeline - WARNING -   Terraform fmt: [FAIL]
+2025-12-01 09:30:42,379 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-12-01 09:30:42,379 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - ================================================================================
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - ================================================================================
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - Files processed: 1
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - Files generated: 23
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - Steps completed: 8
+2025-12-01 09:30:42,380 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-12-01 09:30:42,381 - automation_pipeline - INFO - Results saved to: terraform_output/20251201_093040/automation_results.json
+2025-12-01 09:30:42,381 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-12-01 10:20:56,896 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:20:56,896 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-12-01 10:20:56,897 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:20:56,897 - automation_pipeline - INFO - Started at: 2025-12-01 10:20:56.896622
+2025-12-01 10:20:56,897 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-12-01 10:20:56,897 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-12-01 10:20:56,897 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:20:56,897 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-12-01 10:20:56,897 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:20:56,897 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-12-01 10:20:56,897 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-12-01 10:20:56,901 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251201_102056
+2025-12-01 10:20:56,901 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-12-01 10:20:56,901 - automation_pipeline - INFO - Processing file 1/1: BTA5.xlsx
+2025-12-01 10:20:56,901 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-12-01 10:20:57,113 - automation_pipeline - INFO - JSON file created: BTA5_comprehensive_extract.json (468,251 bytes)
+2025-12-01 10:20:57,114 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: BTA5_comprehensive_extract.json
+2025-12-01 10:20:57,114 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-12-01 10:20:57,117 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:20:57,117 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-12-01 10:20:57,117 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:20:57,117 - automation_pipeline - INFO - Extraction Quality: PARTIAL
+2025-12-01 10:20:57,117 - automation_pipeline - INFO - Valid: False
+2025-12-01 10:20:57,117 - automation_pipeline - ERROR - ERRORS FOUND (1):
+2025-12-01 10:20:57,117 - automation_pipeline - ERROR -   [ERROR] Required field 'application_name' is missing or empty
+2025-12-01 10:20:57,117 - automation_pipeline - WARNING - WARNINGS (2):
+2025-12-01 10:20:57,117 - automation_pipeline - WARNING -   [WARN] Only 2 VM(s) extracted - may be using fallback defaults
+2025-12-01 10:20:57,117 - automation_pipeline - WARNING -   [WARN] No NSG security rules extracted
+2025-12-01 10:20:57,117 - automation_pipeline - ERROR - Missing Required Fields: application_name
+2025-12-01 10:20:57,117 - automation_pipeline - ERROR - [FAIL] Data extraction incomplete - missing required fields
+2025-12-01 10:20:57,117 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:20:57,118 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-12-01 10:20:57,118 - automation_pipeline - INFO - Output directory: terraform_output/20251201_102057
+2025-12-01 10:20:57,120 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - terraform.tfvars (1,815 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - README.md (1,673 bytes)
+2025-12-01 10:20:57,120 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-12-01 10:20:57,121 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251201_102057
+2025-12-01 10:20:57,121 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-12-01 10:20:57,122 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-12-01 10:20:57,122 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-12-01 10:20:57,122 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251201_102057
+2025-12-01 10:20:57,259 - automation_pipeline - INFO - Found Terraform v1.5.7
+2025-12-01 10:20:57,259 - automation_pipeline - INFO - Running terraform fmt on terraform_output/20251201_102057
+2025-12-01 10:20:57,282 - automation_pipeline - WARNING - Terraform fmt: [FAIL] Formatting issues found
+2025-12-01 10:20:57,282 - automation_pipeline - INFO - Running terraform init
+2025-12-01 10:20:58,007 - automation_pipeline - WARNING - Terraform init failed: [31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mError accessing remote module registry[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on m-vm.tf line 38:
+[31m│[0m [0m  38: [4mmodule "vm"[0m {[0m
+[31m│[0m [0m
+[31m│[0m [0mFailed to retrieve available versions for module "vm" (m-vm.tf:38) from
+[31m│[0m [0mapp.terraform.io: error looking up module versions: 401 Unauthorized.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mDuplicate local value definition[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on main.tf line 22, in locals:
+[31m│[0m [0m  22:   [4mcommon_tags = {
+[31m│[0m [0m  23:     Environment = local.environment
+[31m│[0m [0m  24:     Project     = local.project_name
+[31m│[0m [0m  25:     ManagedBy   = "terraform"
+[31m│[0m [0m  26:   }[0m[0m
+[31m│[0m [0m
+[31m│[0m [0mA local value named "common_tags" was already defined at locals.tf:6,3-8,4.
+[31m│[0m [0mLocal value names must be unique within a module.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 27, in variable "location":
+[31m│[0m [0m  27:     error_message = format("A location value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.location,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "location" can only refer to the variable
+[31m│[0m [0mitself, using var.location.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 333, in variable "common_tags":
+[31m│[0m [0m 333:     error_message = format("An environment tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.environment,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 356, in variable "common_tags":
+[31m│[0m [0m 356:     error_message = format("A app-tier tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.app-tier,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 371, in variable "common_tags":
+[31m│[0m [0m 371:     error_message = format("An it-cost-center tag value of "%[4ms[0m" is not allowed. Please use NA or a whole number", var.common_tags.it-cost-center)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 388, in variable "resource_specific_tags":
+[31m│[0m [0m 388:     error_message = format("A patch-optin tag value of "%[4ms[0m" is not allowed. Please use one of the following: YES, NO, NA", var.resource_specific_tags.patch-optin)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "resource_specific_tags" can only refer to
+[31m│[0m [0mthe variable itself, using var.resource_specific_tags.
+[31m╵[0m[0m
+[0m[0m
+
+2025-12-01 10:20:58,007 - automation_pipeline - WARNING -   Terraform fmt: [FAIL]
+2025-12-01 10:20:58,007 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-12-01 10:20:58,007 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - Files processed: 1
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - Files generated: 23
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - Steps completed: 8
+2025-12-01 10:20:58,008 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-12-01 10:20:58,009 - automation_pipeline - INFO - Results saved to: terraform_output/20251201_102057/automation_results.json
+2025-12-01 10:20:58,010 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-12-01 10:22:31,650 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:22:31,650 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-12-01 10:22:31,650 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:22:31,650 - automation_pipeline - INFO - Started at: 2025-12-01 10:22:31.650672
+2025-12-01 10:22:31,650 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-12-01 10:22:31,650 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-12-01 10:22:31,651 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:22:31,651 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-12-01 10:22:31,651 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:22:31,651 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-12-01 10:22:31,651 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-12-01 10:22:31,654 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251201_102231
+2025-12-01 10:22:31,654 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-12-01 10:22:31,654 - automation_pipeline - INFO - Processing file 1/1: BTA5.xlsx
+2025-12-01 10:22:31,654 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-12-01 10:22:31,853 - automation_pipeline - INFO - JSON file created: BTA5_comprehensive_extract.json (468,251 bytes)
+2025-12-01 10:22:31,854 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: BTA5_comprehensive_extract.json
+2025-12-01 10:22:31,854 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-12-01 10:22:31,856 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:22:31,856 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-12-01 10:22:31,856 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:22:31,856 - automation_pipeline - INFO - Extraction Quality: PARTIAL
+2025-12-01 10:22:31,856 - automation_pipeline - INFO - Valid: False
+2025-12-01 10:22:31,857 - automation_pipeline - ERROR - ERRORS FOUND (1):
+2025-12-01 10:22:31,857 - automation_pipeline - ERROR -   [ERROR] Required field 'application_name' is missing or empty
+2025-12-01 10:22:31,857 - automation_pipeline - WARNING - WARNINGS (2):
+2025-12-01 10:22:31,857 - automation_pipeline - WARNING -   [WARN] Only 2 VM(s) extracted - may be using fallback defaults
+2025-12-01 10:22:31,857 - automation_pipeline - WARNING -   [WARN] No NSG security rules extracted
+2025-12-01 10:22:31,857 - automation_pipeline - ERROR - Missing Required Fields: application_name
+2025-12-01 10:22:31,857 - automation_pipeline - ERROR - [FAIL] Data extraction incomplete - missing required fields
+2025-12-01 10:22:31,857 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:22:31,857 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-12-01 10:22:31,857 - automation_pipeline - INFO - Output directory: terraform_output/20251201_102231
+2025-12-01 10:22:31,859 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - terraform.tfvars (1,815 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-12-01 10:22:31,859 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-12-01 10:22:31,860 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-12-01 10:22:31,860 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-12-01 10:22:31,860 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-12-01 10:22:31,860 - automation_pipeline - INFO -   - README.md (1,673 bytes)
+2025-12-01 10:22:31,860 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-12-01 10:22:31,860 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251201_102231
+2025-12-01 10:22:31,860 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-12-01 10:22:31,861 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-12-01 10:22:31,861 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-12-01 10:22:31,861 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251201_102231
+2025-12-01 10:22:32,010 - automation_pipeline - INFO - Found Terraform v1.5.7
+2025-12-01 10:22:32,010 - automation_pipeline - INFO - Running terraform fmt on terraform_output/20251201_102231
+2025-12-01 10:22:32,032 - automation_pipeline - WARNING - Terraform fmt: [FAIL] Formatting issues found
+2025-12-01 10:22:32,032 - automation_pipeline - INFO - Running terraform init
+2025-12-01 10:22:32,439 - automation_pipeline - WARNING - Terraform init failed: [31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mError accessing remote module registry[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on m-vm.tf line 38:
+[31m│[0m [0m  38: [4mmodule "vm"[0m {[0m
+[31m│[0m [0m
+[31m│[0m [0mFailed to retrieve available versions for module "vm" (m-vm.tf:38) from
+[31m│[0m [0mapp.terraform.io: error looking up module versions: 401 Unauthorized.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mDuplicate local value definition[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on main.tf line 22, in locals:
+[31m│[0m [0m  22:   [4mcommon_tags = {
+[31m│[0m [0m  23:     Environment = local.environment
+[31m│[0m [0m  24:     Project     = local.project_name
+[31m│[0m [0m  25:     ManagedBy   = "terraform"
+[31m│[0m [0m  26:   }[0m[0m
+[31m│[0m [0m
+[31m│[0m [0mA local value named "common_tags" was already defined at locals.tf:6,3-8,4.
+[31m│[0m [0mLocal value names must be unique within a module.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 27, in variable "location":
+[31m│[0m [0m  27:     error_message = format("A location value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.location,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "location" can only refer to the variable
+[31m│[0m [0mitself, using var.location.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 333, in variable "common_tags":
+[31m│[0m [0m 333:     error_message = format("An environment tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.environment,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 356, in variable "common_tags":
+[31m│[0m [0m 356:     error_message = format("A app-tier tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.app-tier,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 371, in variable "common_tags":
+[31m│[0m [0m 371:     error_message = format("An it-cost-center tag value of "%[4ms[0m" is not allowed. Please use NA or a whole number", var.common_tags.it-cost-center)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 388, in variable "resource_specific_tags":
+[31m│[0m [0m 388:     error_message = format("A patch-optin tag value of "%[4ms[0m" is not allowed. Please use one of the following: YES, NO, NA", var.resource_specific_tags.patch-optin)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "resource_specific_tags" can only refer to
+[31m│[0m [0mthe variable itself, using var.resource_specific_tags.
+[31m╵[0m[0m
+[0m[0m
+
+2025-12-01 10:22:32,439 - automation_pipeline - WARNING -   Terraform fmt: [FAIL]
+2025-12-01 10:22:32,439 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - Files processed: 1
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - Files generated: 23
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - Steps completed: 8
+2025-12-01 10:22:32,440 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-12-01 10:22:32,441 - automation_pipeline - INFO - Results saved to: terraform_output/20251201_102231/automation_results.json
+2025-12-01 10:22:32,441 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-12-01 10:23:13,619 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - Started at: 2025-12-01 10:23:13.619964
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-12-01 10:23:13,620 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-12-01 10:23:13,621 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251201_102313
+2025-12-01 10:23:13,621 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-12-01 10:23:13,621 - automation_pipeline - INFO - Processing file 1/1: BTA5.xlsx
+2025-12-01 10:23:13,621 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-12-01 10:23:13,827 - automation_pipeline - INFO - JSON file created: BTA5_comprehensive_extract.json (468,251 bytes)
+2025-12-01 10:23:13,827 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: BTA5_comprehensive_extract.json
+2025-12-01 10:23:13,827 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-12-01 10:23:13,830 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:13,830 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-12-01 10:23:13,830 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:13,830 - automation_pipeline - INFO - Extraction Quality: PARTIAL
+2025-12-01 10:23:13,830 - automation_pipeline - INFO - Valid: False
+2025-12-01 10:23:13,830 - automation_pipeline - ERROR - ERRORS FOUND (1):
+2025-12-01 10:23:13,830 - automation_pipeline - ERROR -   [ERROR] Required field 'application_name' is missing or empty
+2025-12-01 10:23:13,830 - automation_pipeline - WARNING - WARNINGS (1):
+2025-12-01 10:23:13,830 - automation_pipeline - WARNING -   [WARN] Only 2 VM(s) extracted - may be using fallback defaults
+2025-12-01 10:23:13,830 - automation_pipeline - ERROR - Missing Required Fields: application_name
+2025-12-01 10:23:13,830 - automation_pipeline - ERROR - [FAIL] Data extraction incomplete - missing required fields
+2025-12-01 10:23:13,830 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:13,831 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-12-01 10:23:13,831 - automation_pipeline - INFO - Output directory: terraform_output/20251201_102313
+2025-12-01 10:23:13,833 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - terraform.tfvars (2,447 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - README.md (1,673 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-12-01 10:23:13,833 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251201_102313
+2025-12-01 10:23:13,833 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-12-01 10:23:13,835 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-12-01 10:23:13,835 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-12-01 10:23:13,835 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251201_102313
+2025-12-01 10:23:13,977 - automation_pipeline - INFO - Found Terraform v1.5.7
+2025-12-01 10:23:13,977 - automation_pipeline - INFO - Running terraform fmt on terraform_output/20251201_102313
+2025-12-01 10:23:13,998 - automation_pipeline - WARNING - Terraform fmt: [FAIL] Formatting issues found
+2025-12-01 10:23:13,998 - automation_pipeline - INFO - Running terraform init
+2025-12-01 10:23:14,414 - automation_pipeline - WARNING - Terraform init failed: [31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mError accessing remote module registry[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on m-vm.tf line 38:
+[31m│[0m [0m  38: [4mmodule "vm"[0m {[0m
+[31m│[0m [0m
+[31m│[0m [0mFailed to retrieve available versions for module "vm" (m-vm.tf:38) from
+[31m│[0m [0mapp.terraform.io: error looking up module versions: 401 Unauthorized.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mDuplicate local value definition[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on main.tf line 22, in locals:
+[31m│[0m [0m  22:   [4mcommon_tags = {
+[31m│[0m [0m  23:     Environment = local.environment
+[31m│[0m [0m  24:     Project     = local.project_name
+[31m│[0m [0m  25:     ManagedBy   = "terraform"
+[31m│[0m [0m  26:   }[0m[0m
+[31m│[0m [0m
+[31m│[0m [0mA local value named "common_tags" was already defined at locals.tf:6,3-8,4.
+[31m│[0m [0mLocal value names must be unique within a module.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 27, in variable "location":
+[31m│[0m [0m  27:     error_message = format("A location value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.location,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "location" can only refer to the variable
+[31m│[0m [0mitself, using var.location.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 333, in variable "common_tags":
+[31m│[0m [0m 333:     error_message = format("An environment tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.environment,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 356, in variable "common_tags":
+[31m│[0m [0m 356:     error_message = format("A app-tier tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.app-tier,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 371, in variable "common_tags":
+[31m│[0m [0m 371:     error_message = format("An it-cost-center tag value of "%[4ms[0m" is not allowed. Please use NA or a whole number", var.common_tags.it-cost-center)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 388, in variable "resource_specific_tags":
+[31m│[0m [0m 388:     error_message = format("A patch-optin tag value of "%[4ms[0m" is not allowed. Please use one of the following: YES, NO, NA", var.resource_specific_tags.patch-optin)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "resource_specific_tags" can only refer to
+[31m│[0m [0mthe variable itself, using var.resource_specific_tags.
+[31m╵[0m[0m
+[0m[0m
+
+2025-12-01 10:23:14,415 - automation_pipeline - WARNING -   Terraform fmt: [FAIL]
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - Files processed: 1
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - Files generated: 23
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - Steps completed: 8
+2025-12-01 10:23:14,415 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-12-01 10:23:14,416 - automation_pipeline - INFO - Results saved to: terraform_output/20251201_102313/automation_results.json
+2025-12-01 10:23:14,416 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-12-01 10:23:20,560 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - Started at: 2025-12-01 10:23:20.560921
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-12-01 10:23:20,561 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-12-01 10:23:20,562 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251201_102320
+2025-12-01 10:23:20,562 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-12-01 10:23:20,562 - automation_pipeline - INFO - Processing file 1/1: BTA5.xlsx
+2025-12-01 10:23:20,562 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-12-01 10:23:20,747 - automation_pipeline - INFO - JSON file created: BTA5_comprehensive_extract.json (468,251 bytes)
+2025-12-01 10:23:20,747 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: BTA5_comprehensive_extract.json
+2025-12-01 10:23:20,747 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-12-01 10:23:20,749 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:20,749 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-12-01 10:23:20,749 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:20,749 - automation_pipeline - INFO - Extraction Quality: PARTIAL
+2025-12-01 10:23:20,749 - automation_pipeline - INFO - Valid: False
+2025-12-01 10:23:20,749 - automation_pipeline - ERROR - ERRORS FOUND (1):
+2025-12-01 10:23:20,749 - automation_pipeline - ERROR -   [ERROR] Required field 'application_name' is missing or empty
+2025-12-01 10:23:20,749 - automation_pipeline - WARNING - WARNINGS (1):
+2025-12-01 10:23:20,749 - automation_pipeline - WARNING -   [WARN] Only 2 VM(s) extracted - may be using fallback defaults
+2025-12-01 10:23:20,749 - automation_pipeline - ERROR - Missing Required Fields: application_name
+2025-12-01 10:23:20,749 - automation_pipeline - ERROR - [FAIL] Data extraction incomplete - missing required fields
+2025-12-01 10:23:20,749 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:20,750 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-12-01 10:23:20,750 - automation_pipeline - INFO - Output directory: terraform_output/20251201_102320
+2025-12-01 10:23:20,752 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-12-01 10:23:20,752 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - terraform.tfvars (2,447 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - README.md (1,673 bytes)
+2025-12-01 10:23:20,753 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-12-01 10:23:20,754 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251201_102320
+2025-12-01 10:23:20,754 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-12-01 10:23:20,756 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-12-01 10:23:20,756 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-12-01 10:23:20,756 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251201_102320
+2025-12-01 10:23:20,779 - automation_pipeline - INFO - Found Terraform v1.5.7
+2025-12-01 10:23:20,779 - automation_pipeline - INFO - Running terraform fmt on terraform_output/20251201_102320
+2025-12-01 10:23:20,801 - automation_pipeline - WARNING - Terraform fmt: [FAIL] Formatting issues found
+2025-12-01 10:23:20,801 - automation_pipeline - INFO - Running terraform init
+2025-12-01 10:23:21,200 - automation_pipeline - WARNING - Terraform init failed: [31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mError accessing remote module registry[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on m-vm.tf line 38:
+[31m│[0m [0m  38: [4mmodule "vm"[0m {[0m
+[31m│[0m [0m
+[31m│[0m [0mFailed to retrieve available versions for module "vm" (m-vm.tf:38) from
+[31m│[0m [0mapp.terraform.io: error looking up module versions: 401 Unauthorized.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mDuplicate local value definition[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on main.tf line 22, in locals:
+[31m│[0m [0m  22:   [4mcommon_tags = {
+[31m│[0m [0m  23:     Environment = local.environment
+[31m│[0m [0m  24:     Project     = local.project_name
+[31m│[0m [0m  25:     ManagedBy   = "terraform"
+[31m│[0m [0m  26:   }[0m[0m
+[31m│[0m [0m
+[31m│[0m [0mA local value named "common_tags" was already defined at locals.tf:6,3-8,4.
+[31m│[0m [0mLocal value names must be unique within a module.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 27, in variable "location":
+[31m│[0m [0m  27:     error_message = format("A location value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.location,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "location" can only refer to the variable
+[31m│[0m [0mitself, using var.location.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 333, in variable "common_tags":
+[31m│[0m [0m 333:     error_message = format("An environment tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.environment,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 356, in variable "common_tags":
+[31m│[0m [0m 356:     error_message = format("A app-tier tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.app-tier,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 371, in variable "common_tags":
+[31m│[0m [0m 371:     error_message = format("An it-cost-center tag value of "%[4ms[0m" is not allowed. Please use NA or a whole number", var.common_tags.it-cost-center)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 388, in variable "resource_specific_tags":
+[31m│[0m [0m 388:     error_message = format("A patch-optin tag value of "%[4ms[0m" is not allowed. Please use one of the following: YES, NO, NA", var.resource_specific_tags.patch-optin)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "resource_specific_tags" can only refer to
+[31m│[0m [0mthe variable itself, using var.resource_specific_tags.
+[31m╵[0m[0m
+[0m[0m
+
+2025-12-01 10:23:21,201 - automation_pipeline - WARNING -   Terraform fmt: [FAIL]
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - Files processed: 1
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - Files generated: 23
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - Steps completed: 8
+2025-12-01 10:23:21,201 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-12-01 10:23:21,202 - automation_pipeline - INFO - Results saved to: terraform_output/20251201_102320/automation_results.json
+2025-12-01 10:23:21,202 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent
+2025-12-01 10:24:14,777 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:24:14,777 - automation_pipeline - INFO - EXCEL TO TERRAFORM AUTOMATION PIPELINE
+2025-12-01 10:24:14,777 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:24:14,777 - automation_pipeline - INFO - Started at: 2025-12-01 10:24:14.777500
+2025-12-01 10:24:14,777 - automation_pipeline - INFO - Configuration: automation_config.json
+2025-12-01 10:24:14,777 - automation_pipeline - INFO - Step 1: Validating inputs...
+2025-12-01 10:24:14,777 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:24:14,778 - automation_pipeline - INFO - SUCCESS: Input validation completed
+2025-12-01 10:24:14,778 - automation_pipeline - INFO - Processing single file: BTA5.xlsx
+2025-12-01 10:24:14,778 - automation_pipeline - INFO - Processing 1 Excel file(s)
+2025-12-01 10:24:14,778 - automation_pipeline - INFO - Step 2: Backing up previous outputs...
+2025-12-01 10:24:14,779 - automation_pipeline - INFO - Previous outputs backed up to: backup_20251201_102414
+2025-12-01 10:24:14,779 - automation_pipeline - INFO - SUCCESS: Previous outputs backed up
+2025-12-01 10:24:14,779 - automation_pipeline - INFO - Processing file 1/1: BTA5.xlsx
+2025-12-01 10:24:14,779 - automation_pipeline - INFO - Step 3.1: Extracting Excel data to JSON...
+2025-12-01 10:24:14,981 - automation_pipeline - INFO - JSON file created: BTA5_comprehensive_extract.json (468,251 bytes)
+2025-12-01 10:24:14,981 - automation_pipeline - INFO - SUCCESS: Excel data extracted to: BTA5_comprehensive_extract.json
+2025-12-01 10:24:14,981 - automation_pipeline - INFO - Step 4.1: Generating Terraform files...
+2025-12-01 10:24:14,991 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:24:14,991 - automation_pipeline - INFO - DATA EXTRACTION VALIDATION RESULTS
+2025-12-01 10:24:14,991 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:24:14,991 - automation_pipeline - INFO - Extraction Quality: PARTIAL
+2025-12-01 10:24:14,991 - automation_pipeline - INFO - Valid: False
+2025-12-01 10:24:14,991 - automation_pipeline - ERROR - ERRORS FOUND (1):
+2025-12-01 10:24:14,991 - automation_pipeline - ERROR -   [ERROR] Required field 'application_name' is missing or empty
+2025-12-01 10:24:14,991 - automation_pipeline - WARNING - WARNINGS (1):
+2025-12-01 10:24:14,991 - automation_pipeline - WARNING -   [WARN] Only 2 VM(s) extracted - may be using fallback defaults
+2025-12-01 10:24:14,991 - automation_pipeline - ERROR - Missing Required Fields: application_name
+2025-12-01 10:24:14,991 - automation_pipeline - ERROR - [FAIL] Data extraction incomplete - missing required fields
+2025-12-01 10:24:14,991 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:24:14,991 - automation_pipeline - INFO - Using EnhancedTerraformGeneratorV2 (full resource file generation)
+2025-12-01 10:24:14,991 - automation_pipeline - INFO - Output directory: terraform_output/20251201_102414
+2025-12-01 10:24:14,994 - automation_pipeline - INFO - Generated 22 Terraform files
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - m-vm.tf (4,484 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - main.tf (3,100 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - r-asg.tf (1,361 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - r-snet.tf (933 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - r-kvlt.tf (1,952 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - r-umid.tf (1,053 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - r-dsk.tf (1,069 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - r-rnd.tf (240 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - r-dcra.tf (463 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - networking.tf (1,029 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - s3.tf (928 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - packages/monitoring/alerts.tf (931 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - packages/storage/buckets.tf (659 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - variables.tf (15,596 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - terraform.tfvars (2,501 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - outputs.tf (72 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - data.tf (3,032 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - locals.tf (392 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - production.tfvars (409 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - scripts/validate.sh (1,158 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - README.md (1,673 bytes)
+2025-12-01 10:24:14,994 - automation_pipeline - INFO -   - .gitignore (776 bytes)
+2025-12-01 10:24:14,995 - automation_pipeline - INFO - SUCCESS: Terraform files generated in: terraform_output/20251201_102414
+2025-12-01 10:24:14,995 - automation_pipeline - INFO - Step 5: Validating generated files...
+2025-12-01 10:24:14,996 - automation_pipeline - INFO - SUCCESS: Output validation completed
+2025-12-01 10:24:14,996 - automation_pipeline - INFO - Step 5a: Running Terraform validation...
+2025-12-01 10:24:14,996 - automation_pipeline - INFO - Validating Terraform in: terraform_output/20251201_102414
+2025-12-01 10:24:15,138 - automation_pipeline - INFO - Found Terraform v1.5.7
+2025-12-01 10:24:15,139 - automation_pipeline - INFO - Running terraform fmt on terraform_output/20251201_102414
+2025-12-01 10:24:15,164 - automation_pipeline - WARNING - Terraform fmt: [FAIL] Formatting issues found
+2025-12-01 10:24:15,164 - automation_pipeline - INFO - Running terraform init
+2025-12-01 10:24:15,588 - automation_pipeline - WARNING - Terraform init failed: [31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mError accessing remote module registry[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on m-vm.tf line 38:
+[31m│[0m [0m  38: [4mmodule "vm"[0m {[0m
+[31m│[0m [0m
+[31m│[0m [0mFailed to retrieve available versions for module "vm" (m-vm.tf:38) from
+[31m│[0m [0mapp.terraform.io: error looking up module versions: 401 Unauthorized.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mDuplicate local value definition[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on main.tf line 22, in locals:
+[31m│[0m [0m  22:   [4mcommon_tags = {
+[31m│[0m [0m  23:     Environment = local.environment
+[31m│[0m [0m  24:     Project     = local.project_name
+[31m│[0m [0m  25:     ManagedBy   = "terraform"
+[31m│[0m [0m  26:   }[0m[0m
+[31m│[0m [0m
+[31m│[0m [0mA local value named "common_tags" was already defined at locals.tf:6,3-8,4.
+[31m│[0m [0mLocal value names must be unique within a module.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 27, in variable "location":
+[31m│[0m [0m  27:     error_message = format("A location value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.location,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "location" can only refer to the variable
+[31m│[0m [0mitself, using var.location.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 333, in variable "common_tags":
+[31m│[0m [0m 333:     error_message = format("An environment tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.environment,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 356, in variable "common_tags":
+[31m│[0m [0m 356:     error_message = format("A app-tier tag value of "%[4ms[0m" is not allowed. Please use one of the following: \n %s", var.common_tags.app-tier,[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 371, in variable "common_tags":
+[31m│[0m [0m 371:     error_message = format("An it-cost-center tag value of "%[4ms[0m" is not allowed. Please use NA or a whole number", var.common_tags.it-cost-center)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "common_tags" can only refer to the variable
+[31m│[0m [0mitself, using var.common_tags.
+[31m╵[0m[0m
+[0m[0m
+[31m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mInvalid reference in variable validation[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  on variables.tf line 388, in variable "resource_specific_tags":
+[31m│[0m [0m 388:     error_message = format("A patch-optin tag value of "%[4ms[0m" is not allowed. Please use one of the following: YES, NO, NA", var.resource_specific_tags.patch-optin)[0m
+[31m│[0m [0m
+[31m│[0m [0mThe error message for variable "resource_specific_tags" can only refer to
+[31m│[0m [0mthe variable itself, using var.resource_specific_tags.
+[31m╵[0m[0m
+[0m[0m
+
+2025-12-01 10:24:15,589 - automation_pipeline - WARNING -   Terraform fmt: [FAIL]
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - SUCCESS: Terraform validation completed
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - Step 6: Generating summary report...
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - SUCCESS: Summary report generated
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - Step 7: Cleaning up temporary files...
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - SUCCESS: Temporary files cleaned up
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - AUTOMATION PIPELINE COMPLETED SUCCESSFULLY!
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - ================================================================================
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - Files processed: 1
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - Files generated: 23
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - Steps completed: 8
+2025-12-01 10:24:15,589 - automation_pipeline - INFO - Duration: 0.00 seconds
+2025-12-01 10:24:15,590 - automation_pipeline - INFO - Results saved to: terraform_output/20251201_102414/automation_results.json
+2025-12-01 10:24:15,590 - automation_pipeline - INFO - SUCCESS: Automation completed successfully - notification sent

@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "start_time": "2025-12-01T10:24:14.777500",
+  "end_time": "2025-12-01T10:24:15.589908",
+  "duration_seconds": 0.812408,
+  "steps_completed": [
+    "validation",
+    "backup",
+    "excel_extraction_1",
+    "terraform_generation_1",
+    "output_validation",
+    "terraform_validation",
+    "summary_report",
+    "cleanup"
+  ],
+  "files_generated": [
+    "BTA5_comprehensive_extract.json",
+    "m-vm.tf",
+    "main.tf",
+    "r-asg.tf",
+    "r-snet.tf",
+    "r-kvlt.tf",
+    "r-umid.tf",
+    "r-dsk.tf",
+    "r-rnd.tf",
+    "r-dcra.tf",
+    "networking.tf",
+    "s3.tf",
+    "packages/monitoring/alerts.tf",
+    "packages/storage/buckets.tf",
+    "variables.tf",
+    "terraform.tfvars",
+    "outputs.tf",
+    "data.tf",
+    "locals.tf",
+    "production.tfvars",
+    "scripts/validate.sh",
+    "README.md",
+    ".gitignore"
+  ],
+  "errors": [],
+  "warnings": [
+    "Terraform fmt: FAIL",
+    "Terraform fmt found formatting issues",
+    "Terraform init failed - skipping validate"
+  ],
+  "summary": {
+    "total_files_generated": 23,
+    "files_processed": 1,
+    "steps_completed": 6,
+    "duration_seconds": 0,
+    "success": false,
+    "error_count": 0,
+    "warning_count": 3,
+    "processed_files": [
+      {
+        "excel_file": "BTA5.xlsx",
+        "json_file": "BTA5_comprehensive_extract.json",
+        "terraform_dir": "20251201_102414",
+        "terraform_dir_full_path": "terraform_output/20251201_102414",
+        "terraform_file_count": 17,
+        "json_file_size_bytes": 468251,
+        "json_file_size_mb": 0.45
+      }
+    ],
+    "total_terraform_files": 17,
+    "total_json_size_bytes": 468251,
+    "total_json_size_mb": 0.45
+  }
+}

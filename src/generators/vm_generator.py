@@ -358,6 +358,8 @@ resource "azurerm_key_vault_key" "kvkey" {
 
         # Virtual Machines
         vms = self.build_env.get('virtual_machines', [])
+        # Get location for source_image_id resolution
+        location = self.build_env.get('location', 'WEST US 3')
         if vms:
             vm_map = {}
             for idx, vm_raw in enumerate(vms, 1):
@@ -419,6 +421,8 @@ resource "azurerm_key_vault_key" "kvkey" {
 
                 source_image_id = vm_data.get('source_image_id')
                 if source_image_id and source_image_id != 'None':
+                    # Convert short name to full path based on region
+                    source_image_id = self._resolve_source_image_id(source_image_id, location)
                     vm_config['source_image_id'] = source_image_id
 
                 marketplace = vm_data.get('marketplace_image')
@@ -548,3 +552,38 @@ resource "azurerm_key_vault_key" "kvkey" {
             except ValueError:
                 return None
         return None
+
+    def _resolve_source_image_id(self, source_image_id: str, region: str) -> str:
+        """
+        Resolve source_image_id to full path based on region.
+
+        If the source_image_id is already a full path (starts with /), return as-is.
+        Otherwise, convert the short name to the full path based on region.
+
+        Args:
+            source_image_id: Short name like "windows-server-2025-cis-L1" or full path
+            region: Azure region (e.g., 'WEST US 3', 'EAST US')
+
+        Returns:
+            Full source_image_id path
+        """
+        # If already a full path, return as-is
+        if source_image_id.startswith('/'):
+            return source_image_id
+
+        # Determine resource group and gallery based on region
+        region_upper = region.upper() if region else 'WEST US 3'
+
+        if 'EAST' in region_upper:
+            # East regions use PackerDev gallery
+            rg_name = 'rg-packer-dev'
+            gallery_name = 'PackerDev'
+        else:
+            # West regions use PackerWUS3 gallery
+            rg_name = 'rg-packer-prod-wus3'
+            gallery_name = 'PackerWUS3'
+
+        # Build the full path
+        subscription_id = '6f5e4da6-a73e-4795-8e57-49bdfaed7724'
+
+        return f'/subscriptions/{subscription_id}/resourceGroups/{rg_name}/providers/Microsoft.Compute/galleries/{gallery_name}/images/{source_image_id}'

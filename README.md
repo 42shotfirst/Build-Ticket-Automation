@@ -1,362 +1,573 @@
-# Excel to JSON Converter
+# Build Ticket Automation (BTA)
 
-A comprehensive Python tool that extracts **ALL** data from Excel files and converts it to JSON format, including:
+A comprehensive automation pipeline that extracts infrastructure configuration from Excel build tickets and generates production-ready Terraform configurations for Azure deployments.
 
-- ✅ All sheet data (tables, key-value pairs, raw data)
-- ✅ VBA macros and code
-- ✅ Formulas and calculated values
-- ✅ Workbook properties and metadata
-- ✅ Named ranges and data validation
-- ✅ Comments and formatting information
-- ✅ Charts and images (metadata)
+## Overview
 
-## Features
+The Build Ticket Automation (BTA) system converts standardized Excel build tickets into complete Terraform configurations. It supports:
 
-### Complete Data Extraction
-- **All Sheets**: Extracts data from every sheet in the Excel file
-- **Multiple Data Types**: Handles tables, key-value pairs, and raw cell data
-- **Smart Detection**: Automatically detects data structures and patterns
-- **Formula Support**: Extracts formulas and their calculated values
-- **VBA Macros**: Detects and extracts VBA project information and code patterns
+- Virtual Machine deployments with custom images
+- Key Vault with diagnostic settings
+- Network Security Groups (NSG)
+- Application Security Groups (ASG)
+- Private Endpoints with DNS zone integration
+- Disk Encryption Sets
+- User Assigned Identities
 
-### Column Referencing & Data Access
-- **Keyword-based Search**: Find columns and data using keywords
-- **Easy Data Access**: Simple API for accessing specific data points
-- **Cross-sheet Search**: Search for data across all sheets
-- **Table Filtering**: Find tables by header keywords
-- **DataFrame Support**: Convert tables to pandas DataFrames for analysis
+## Architecture
 
-### Terraform Generation
-- **Complete Terraform Files**: Generates main.tf, variables.tf, outputs.tf, etc.
-- **Proper Structure**: Well-formatted, production-ready Terraform code
-- **Resource Mapping**: Automatically maps Excel data to Terraform resources
-- **VM Generation**: Creates virtual machines from Excel VM data
-- **Security Groups**: Generates NSG rules from Excel security data
-- **Networking**: Creates VNets, subnets, and network interfaces
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        AUTOMATION PIPELINE                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────────────────┐  │
+│  │ Excel File   │───▶│ Extractors   │───▶│ EnhancedTerraformGen V2  │  │
+│  │ (Build_ENV)  │    │              │    │                          │  │
+│  └──────────────┘    └──────────────┘    └──────────────────────────┘  │
+│         │                   │                        │                  │
+│         ▼                   ▼                        ▼                  │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────────────────┐  │
+│  │ sourcefiles/ │    │ JSON Data    │    │ terraform_output/        │  │
+│  │ *.xlsm       │    │ Extract      │    │ ├── terraform.tfvars     │  │
+│  └──────────────┘    └──────────────┘    │ ├── variables.tf         │  │
+│                                          │ ├── main.tf              │  │
+│                                          │ ├── m-vm.tf              │  │
+│                                          │ └── ...                  │  │
+│                                          └──────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────┘
+```
 
-### Flexible Output
-- **Comprehensive JSON**: Complete data extraction in structured JSON format
-- **Terraform Files**: Ready-to-deploy Terraform configuration
-- **Configurable**: Customizable extraction and output options
-- **Multiple Formats**: Supports .xlsx, .xlsm, .xls files
+## Quick Start
 
-## Installation
+### 1. Prerequisites
 
-### Prerequisites
-- Python 3.7 or higher
-- Required packages: `pandas`, `openpyxl`
-
-### Install Dependencies
 ```bash
+# Python 3.7+
 pip install pandas openpyxl
+
+# Terraform (optional, for validation)
+# https://www.terraform.io/downloads
 ```
 
-## Usage
+### 2. Place Excel File
 
-### Quick Start
-```bash
-# Convert Excel to comprehensive JSON (default)
-python main.py
+Place your Excel build ticket (`.xlsm` or `.xlsx`) in the `sourcefiles/` directory.
 
-# Convert Excel to complete Terraform files
-python main.py --terraform-complete
-
-# Run column referencing demo
-python main.py --demo
-
-# Show help
-python main.py --help
-```
-
-### Command Line Options
+### 3. Run the Pipeline
 
 ```bash
-# Comprehensive JSON conversion (default)
-python main.py
-python main.py --comprehensive
-
-# Complete Terraform conversion with column referencing
-python main.py --terraform-complete
-
-# Legacy Terraform JSON conversion
-python main.py --terraform
-
-# Run column referencing and Terraform demo
-python main.py --demo
-
-# Show help
-python main.py --help
-
-# Show configuration
-python main.py --config
-
-# Test with sample data
-python main.py --test
+python3 automation_pipeline.py
 ```
 
-### Direct Usage
-```bash
-# Using the standalone converter
-python excel_to_json_converter.py LLDtest.xlsm
+### 4. Output
 
-# Using the simple converter
-python convert_excel.py LLDtest.xlsm output.json
+Generated Terraform files are placed in `terraform_output/{timestamp}/`:
+- `terraform.tfvars` - Variable values from Excel
+- `variables.tf` - Variable definitions
+- `main.tf` - Provider configuration
+- `m-vm.tf` - VM module configuration
+- `r-*.tf` - Resource files (ASG, Key Vault, etc.)
 
-# Using the complete Excel to Terraform converter
-python excel_to_terraform.py LLDtest.xlsm
+---
 
-# Using the data accessor for column referencing
-python data_accessor.py comprehensive_excel_data.json
-```
+## Excel File Structure
 
-## Column Referencing & Data Access
+### Required Sheet: Build_ENV
 
-The tool provides powerful column referencing capabilities for easy data access:
+The `Build_ENV` sheet contains the core infrastructure configuration in a key-value format:
 
-### Basic Data Access
-```python
-from data_accessor import ExcelDataAccessor
+| Column A (Label) | Column B (Terraform Variable) | Column C (Value) |
+|-----------------|------------------------------|------------------|
+| Resource Group | resource_group_name | rg-myapp-prod |
+| Location | location | EAST US |
+| Key Vault | key_vault_name | kvlt-myapp-prod |
+| ... | ... | ... |
 
-# Load data
-accessor = ExcelDataAccessor("comprehensive_excel_data.json")
+### Sections in Build_ENV
 
-# Get project information using keywords
-project_name = accessor.get_value_by_keywords("Resources", ["project", "name"])
-app_owner = accessor.get_value_by_keywords("Resources", ["app", "owner"])
+1. **Project Information** - ServiceNow ticket, application name, environment
+2. **Resource Group** - Name and location
+3. **Key Vault** - Name, SKU, retention days, public access
+4. **Disk Encryption Set** - Name and key reference
+5. **User Assigned Identity** - Managed identity name
+6. **Subnet** - VNET details, NSG, Route Table
+7. **Application Security Groups** - ASG keys and names
+8. **Private Endpoints** - PE configuration for Key Vault
+9. **Virtual Machines** - VM specifications (vm1, vm2, etc.)
+10. **Network Security Rules** - HCL-formatted NSG rules (optional)
 
-# Get column data using keywords
-vm_sizes = accessor.get_column_data("Resources", "Recommended SKU", 0)
-hostnames = accessor.get_column_data("Resources", "Hostname", 0)
-
-# Find tables by header keywords
-vm_table = accessor.get_table_by_headers("Resources", ["hostname", "vm", "server"])
-nsg_table = accessor.get_table_by_headers("NSG", ["name", "direction", "access"])
-```
-
-### Advanced Data Access
-```python
-# Search across all sheets
-search_results = accessor.search_across_sheets("Morgan")
-
-# Get table as pandas DataFrame
-df = accessor.get_table_as_dataframe("Resources", 0)
-
-# Export Terraform-ready data
-accessor.export_terraform_data("terraform_data.json")
-```
-
-### Terraform Generation with Column Referencing
-```python
-from enhanced_terraform_generator import EnhancedTerraformGenerator
-
-# Generate complete Terraform files
-generator = EnhancedTerraformGenerator("comprehensive_excel_data.json")
-terraform_files = generator.generate_terraform_files("terraform_output")
-
-# Get generation summary
-summary = generator.generate_summary()
-print(f"VMs: {summary['resources']['virtual_machines']}")
-print(f"Security Rules: {summary['resources']['network_security_rules']}")
-```
-
-## File Structure
+### Example VM Configuration in Excel
 
 ```
-Build Ticket Automation/
-├── main.py                          # Main entry point
-├── excel_to_json_converter.py       # Comprehensive converter
-├── comprehensive_excel_extractor.py # Excel data extractor
-├── vba_macro_extractor.py          # VBA macro extractor
-├── convert_excel.py                # Simple usage script
-├── config.py                       # Configuration settings
-├── read_build_data.py              # Legacy data reader
-├── terraform_json_generator.py     # Legacy Terraform generator
-├── LLDtest.xlsm                    # Example Excel file
-└── README.md                       # This file
+vm_list.vm1.name          = aze-myapp01
+vm_list.vm1.size          = Standard_D8as_v5
+vm_list.vm1.image_os      = windows
+vm_list.vm1.os_disk_size  = 128
+vm_list.vm1.snet_key      = snet1
+vm_list.vm1.asg_key       = asg_app
 ```
 
-## Output Format
+---
 
-The comprehensive JSON output includes:
+## Generated Output
+
+### terraform.tfvars
+
+The generated `terraform.tfvars` includes all infrastructure configuration:
+
+```hcl
+# Begin terraform.tfvars
+
+spn      = "spn-terraform-mysubscription"
+location = "EAST US"
+resource_group_name = "rg-myapp-prod"
+
+application_security_groups = {
+  asg_app = {
+    name = "asg-myapp-prod"
+  }
+}
+
+disk_encryption_set_name    = "dsk-myapp-prod"
+user_assigned_identity_name = "umid-myapp-prod"
+
+key_vault = {
+  name                       = "kvlt-myapp-prod"
+  sku_name                   = "standard"
+  soft_delete_retention_days = 90
+  public_network_access      = true
+  snet_key                   = "snet1"
+  key_name                   = "key-myapp-prod"
+}
+
+diagnostic_setting = {
+  name                           = "diag-smc_cis"
+  eventhub_authorization_rule_id = "/subscriptions/.../evh-sec-eus-prod/..."
+  eventhub_name                  = "evhub-keyvault-001"
+}
+
+existing_subnets = {
+  snet1 = {
+    resource_group_name  = "rg-networking-prod"
+    virtual_network_name = "vnet-core-prod"
+    name                 = "snet-myapp-prod"
+  }
+}
+
+private_endpoints = {
+  pe1 = {
+    name                           = "pvep-myapp-kvlt-prod"
+    subresource_names              = ["vault"]
+    private_connection_resource_id = null
+    is_manual_connection           = "false"
+    private_dns_zone_group_name    = "default"
+    private_dns_zone_ids           = ["/subscriptions/.../privatelink.vaultcore.azure.net"]
+    snet_key                       = "snet1"
+    asg_key                        = "asg_kvlt"
+  }
+}
+
+vm_list = {
+  vm1 = {
+    name              = "aze-myapp01"
+    size              = "Standard_D8as_v5"
+    zone              = 1
+    image_os          = "windows"
+    marketplace_image = false
+    source_image_id   = "/subscriptions/.../galleries/PackerDev/images/windows-server-2019-cis-L1"
+    ip_allocation     = "Static"
+    os_disk_size      = 128
+    os_disk_type      = "Premium_LRS"
+    data_disk_sizes   = [64]
+    data_disk_type    = "Premium_LRS"
+    snet_key          = "snet1"
+    vtpm_enabled      = true
+    asg_key           = "asg_app"
+    tags = {
+      "role"        = "App",
+      "patch-optin" = "YES"
+    }
+  }
+}
+
+common_tags = {
+  "shared-service-name" = "NA",
+  "app-name"            = "Microsoft Active Directory",
+  "environment"         = "prod",
+  "data-classification" = "Internal",
+  "criticality"         = "4-Very Minor to Operations",
+  "app-tier"            = "Platinum",
+  "it-cost-center"      = "55410",
+  "it-domain"           = "Identity and Access Management",
+  "notes"               = "NA",
+  "segment"             = "NA",
+  "lineofbusiness"      = "NA",
+  "department"          = "NA",
+  "cost-center"         = "NA",
+  "wab:terraform"       = "True"
+}
+```
+
+---
+
+## Region-Based Configuration
+
+### Event Hub Namespaces
+
+The `diagnostic_setting` block automatically selects the Event Hub namespace based on region:
+
+| Region | Event Hub Namespace |
+|--------|-------------------|
+| East US, East US 2 | `evh-sec-eus-prod` |
+| West US, West US 2, West US 3 | `evh-sec-wus3-prod` |
+
+### Source Image IDs
+
+VM images are resolved to full Azure resource paths based on region:
+
+| Region | Resource Group | Gallery |
+|--------|---------------|---------|
+| East regions | `rg-packer-dev` | `PackerDev` |
+| West regions | `rg-packer-prod-wus3` | `PackerWUS3` |
+
+Example resolved path:
+```
+/subscriptions/6f5e4da6-a73e-4795-8e57-49bdfaed7724/resourceGroups/rg-packer-dev/providers/Microsoft.Compute/galleries/PackerDev/images/windows-server-2019-cis-L1
+```
+
+---
+
+## Configuration
+
+### automation_config.json
 
 ```json
 {
-  "conversion_metadata": {
-    "source_file": "LLDtest.xlsm",
-    "conversion_timestamp": "2025-09-18T19:10:31.122053",
-    "converter_version": "1.0.0",
-    "extraction_methods": ["comprehensive_excel_extractor", "vba_macro_extractor"]
+  "input": {
+    "excel_file": null,
+    "input_directory": "sourcefiles",
+    "file_pattern": "*.xls*",
+    "required_sheets": ["Resources", "NSG", "Build_ENV"],
+    "process_multiple_files": true
   },
-  "file_info": {
-    "filename": "LLDtest.xlsm",
-    "extraction_timestamp": "2025-09-18T19:10:31.122053"
+  "terraform": {
+    "provider_version": "~> 4.14",
+    "default_location": "WEST US 3",
+    "use_enhanced_generator_v2": true,
+    "module_source": "app.terraform.io/wab-cloudengineering-org/base-vm/iac"
   },
-  "workbook_properties": {
-    "creator": "Travis Paskey",
-    "created": "2024-03-05T17:47:47",
-    "modified": "2025-09-19T01:14:40",
-    "sheet_count": 7,
-    "sheet_names": ["Build_ENV", "Resources", "NSG", "APGW", "ACR NRS", "Resource Options", "Issue and blockers "]
-  },
-  "sheets": {
-    "Build_ENV": {
-      "name": "Build_ENV",
-      "raw_data": [...],
-      "structured_data": {...},
-      "tables": [...],
-      "key_value_pairs": {...},
-      "dimensions": {"rows": 6, "columns": 10}
-    }
-  },
-  "vba_macros": {
-    "project_info": {
-      "filename": "xl/vbaProject.bin",
-      "size_bytes": 24576,
-      "detected_keywords": {"Sub ": 1, "Dim ": 1, "For ": 1},
-      "detected_module_types": ["Module", "Sheet", "Workbook", "Form"]
-    }
-  },
-  "formulas": {
-    "Resources": [
-      {
-        "cell": "B100",
-        "formula": "=\"vm_list.\" & C98 & \".name\"",
-        "calculated_value": "f",
-        "row": 100,
-        "column": 2
-      }
-    ]
-  },
-  "processing_summary": {
-    "sheets_processed": 7,
-    "total_tables_extracted": 30,
-    "total_key_value_pairs": 296,
-    "total_formulas_found": 16,
-    "has_vba_macros": true,
-    "vba_project_size_bytes": 24576
+  "output": {
+    "terraform_dir": "terraform_output",
+    "backup_previous": true
   }
 }
 ```
 
-## Configuration
+---
 
-Edit `config.py` to customize:
+## Project Structure
+
+```
+Build Ticket Automation/
+├── automation_pipeline.py          # Main entry point
+├── automation_config.json          # Pipeline configuration
+├── enhanced_terraform_generator_v2.py  # Core Terraform generator
+├── comprehensive_excel_extractor.py    # Excel data extraction
+├── data_accessor.py                    # Data access utilities
+│
+├── src/
+│   ├── extractors/
+│   │   ├── build_env_extractor.py  # Build_ENV sheet extraction
+│   │   ├── resources_extractor.py  # Resources sheet extraction
+│   │   ├── nsg_extractor.py        # NSG sheet extraction
+│   │   ├── apgw_extractor.py       # Application Gateway extraction
+│   │   └── acr_extractor.py        # Container Registry extraction
+│   │
+│   ├── generators/
+│   │   ├── core_infrastructure_generator.py  # Key Vault, Identity, etc.
+│   │   ├── networking_generator.py           # Subnets, ASG, PE
+│   │   ├── vm_generator.py                   # Virtual Machine config
+│   │   └── nsg_generator.py                  # NSG rules
+│   │
+│   └── core/
+│       ├── orchestrator.py         # Pipeline orchestration
+│       ├── hcl_formatter.py        # HCL formatting utilities
+│       └── validator.py            # Data validation
+│
+├── sourcefiles/                    # Input Excel files
+│   └── *.xlsm
+│
+├── terraform_output/               # Generated Terraform files
+│   └── {timestamp}/
+│       ├── terraform.tfvars
+│       ├── variables.tf
+│       ├── main.tf
+│       └── ...
+│
+└── terraform_files_pattern/        # Template files
+    └── *.tf
+```
+
+---
+
+## Key Components
+
+### 1. EnhancedTerraformGeneratorV2
+
+The main generator class (`enhanced_terraform_generator_v2.py`) handles:
+
+- Reading extracted Excel data
+- Generating all Terraform resource files
+- Creating `terraform.tfvars` with proper HCL formatting
+- Region-based configuration (Event Hub, Image galleries)
+- VM tag management
+
+**Key methods:**
+| Method | Purpose |
+|--------|---------|
+| `_generate_tfvars()` | Main terraform.tfvars generation |
+| `_generate_vm_list_for_tfvars()` | VM configuration with all attributes |
+| `_generate_subnets_for_tfvars()` | Subnet configuration (existing vs new) |
+| `_generate_diagnostic_setting()` | Event Hub diagnostics with region logic |
+| `_resolve_source_image_id()` | Region-based image gallery resolution |
+| `_generate_private_endpoints_for_tfvars()` | Private endpoint with DNS zones |
+| `_generate_asg_for_tfvars()` | Application Security Groups |
+
+### 2. Build_ENV Extractor
+
+The `build_env_extractor.py` extracts data from the Build_ENV sheet including:
+
+- Key-value pairs (terraform variable -> value)
+- VM configurations (vm_list.vm1.*, vm_list.vm2.*, etc.)
+- NSG rules from HCL literals
+- ASG definitions
+- Private endpoint configurations
+
+**Sheet fallback logic:** Build_ENV -> BTA5 -> Active sheet
+
+### 3. Data Accessor
+
+The `data_accessor.py` provides utilities for:
+
+- Searching data across sheets
+- Getting values by terraform variable name
+- Extracting section-specific data
+- NSG metadata extraction from HCL
+
+---
+
+## NSG Rules from HCL
+
+The system can parse NSG rules directly from HCL format in the Excel sheet:
+
+```hcl
+network_security_rules = {
+  resource_group_name         = "rg-networking-prod"
+  network_security_group_name = "nsg-myapp-prod"
+  rules = [
+    {
+      name                       = "Allow_HTTPS"
+      priority                   = 100
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_ranges    = ["443"]
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    },
+  ]
+}
+```
+
+---
+
+## Usage Examples
+
+### Basic Pipeline Execution
+
+```bash
+# Run the full pipeline
+python3 automation_pipeline.py
+
+# Output will be in terraform_output/{timestamp}/
+```
+
+### Using the Orchestrator (Alternative)
 
 ```python
-# File paths
-EXCEL_FILE_PATH = "LLDtest.xlsm"
-TERRAFORM_JSON_PATH = "terraform_variables.json"
+from src.core.orchestrator import TerraformOrchestrator
 
-# Processing options
-DEBUG_MODE = True
-INCLUDE_METADATA = True
-JSON_INDENT = 2
+# Initialize with Excel file
+orchestrator = TerraformOrchestrator("sourcefiles/build_ticket.xlsm")
 
-# Default values
-DEFAULT_AZURE_REGION = "East US"
-DEFAULT_VM_SIZE = "Standard_D2s_v3"
+# Extract all data
+data = orchestrator.extract_all()
+
+# Generate Terraform files
+files = orchestrator.generate_terraform("output_dir")
 ```
 
-## Examples
+### Data Accessor Usage
 
-### Basic Conversion
+```python
+from data_accessor import ExcelDataAccessor
+
+# Load extracted JSON data
+accessor = ExcelDataAccessor("comprehensive_excel_data.json")
+
+# Get specific values
+rg_name = accessor.get_value_by_keywords("Build_ENV", ["resource_group", "name"])
+location = accessor.get_value_by_keywords("Build_ENV", ["location"])
+
+# Search across all sheets
+results = accessor.search_across_sheets("production")
+```
+
+---
+
+## Validation
+
+### Built-in Validation
+
+The pipeline includes validation for:
+
+- Excel file format and required sheets
+- Data extraction completeness
+- VM configuration requirements
+- Terraform syntax (via `terraform fmt`)
+
+### Manual Validation
+
 ```bash
-# Convert the example file
-python main.py
-
-# Output: comprehensive_excel_data.json (4.8MB)
+cd terraform_output/{timestamp}
+terraform init
+terraform validate
+terraform plan
 ```
 
-### Specific File Conversion
-```bash
-# Convert your own Excel file
-python convert_excel.py my_data.xlsx my_output.json
-```
-
-### Legacy Terraform Conversion
-```bash
-# Generate Terraform variables (legacy mode)
-python main.py --terraform
-```
-
-## Supported Excel Features
-
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Multiple Sheets | ✅ | All sheets extracted |
-| Tables | ✅ | Auto-detected and structured |
-| Key-Value Pairs | ✅ | Extracted from any sheet |
-| Formulas | ✅ | Formula text and calculated values |
-| VBA Macros | ✅ | Project info and code patterns |
-| Named Ranges | ✅ | Range definitions |
-| Comments | ✅ | Cell comments (where supported) |
-| Data Validation | ✅ | Validation rules |
-| Charts | ✅ | Metadata extraction |
-| Images | ✅ | Metadata extraction |
-| Formatting | ✅ | Style information |
+---
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Missing Dependencies**
-   ```bash
-   pip install pandas openpyxl
-   ```
+1. **Sheet not found error**
+   - Ensure the Excel file has a `Build_ENV` or `BTA5` sheet
+   - The system falls back to: Build_ENV -> BTA5 -> Active sheet
 
-2. **File Not Found**
-   - Ensure the Excel file exists in the specified path
-   - Check file permissions
+2. **Missing VM data**
+   - Check that VM entries use the format: `vm_list.vm1.name`, `vm_list.vm1.size`, etc.
+   - Verify Column B contains the terraform variable name
 
-3. **Large File Processing**
-   - Large Excel files may take time to process
-   - Monitor memory usage for very large files
+3. **Region detection issues**
+   - Ensure the `location` field is properly set in Excel
+   - Valid values: "EAST US", "WEST US 3", etc.
 
-4. **VBA Macro Extraction**
-   - VBA code is in binary format and cannot be directly read
-   - The tool extracts project info and detects code patterns
+4. **Image resolution problems**
+   - The system defaults to `windows-server-2019-cis-L1` if no image is specified
+   - Check that region mapping is correct for your subscription
 
 ### Debug Mode
-Enable debug mode in `config.py` for detailed output:
-```python
-DEBUG_MODE = True
+
+Enable detailed logging in `automation_config.json`:
+
+```json
+{
+  "logging": {
+    "level": "DEBUG"
+  }
+}
 ```
+
+---
+
+## Extending the System
+
+### Adding New Resource Types
+
+1. Create an extractor in `src/extractors/`
+2. Create a generator in `src/generators/`
+3. Update `enhanced_terraform_generator_v2.py` to include the new resource
+4. Add variable definitions to `variables.tf` template
+
+### Custom Tag Configuration
+
+Modify the `common_tags` block in `_generate_tfvars()` method of `enhanced_terraform_generator_v2.py`:
+
+```python
+common_tags = {{
+  "app-name"    = "Your App Name",
+  "environment" = {fmt(environment)},
+  "custom-tag"  = "custom-value",
+}}
+```
+
+### Adding New Region Mappings
+
+Update `_generate_diagnostic_setting()` and `_resolve_source_image_id()` methods:
+
+```python
+def _resolve_source_image_id(self, source_image_id: str, region: str) -> str:
+    region_upper = region.upper() if region else 'WEST US 3'
+    if 'EAST' in region_upper:
+        rg_name = 'rg-packer-dev'
+        gallery_name = 'PackerDev'
+    elif 'CENTRAL' in region_upper:  # Add new region
+        rg_name = 'rg-packer-central'
+        gallery_name = 'PackerCentral'
+    else:
+        rg_name = 'rg-packer-prod-wus3'
+        gallery_name = 'PackerWUS3'
+    # ...
+```
+
+---
 
 ## Performance
 
-- **Small files** (< 1MB): < 5 seconds
-- **Medium files** (1-10MB): 5-30 seconds  
-- **Large files** (10-50MB): 30 seconds - 2 minutes
-- **Very large files** (> 50MB): 2+ minutes
+| File Size | Processing Time |
+|-----------|----------------|
+| < 1MB | < 5 seconds |
+| 1-10MB | 5-30 seconds |
+| > 10MB | 30+ seconds |
 
-## Limitations
+---
 
-- VBA source code cannot be directly extracted (binary format)
-- Some Excel features may not be fully preserved
-- Very large files may require significant memory
-- Comments extraction is limited by openpyxl capabilities
+## File Output Reference
 
-## Contributing
+### Generated Files
 
-This tool is designed to be comprehensive and extensible. To add new features:
+| File | Description |
+|------|-------------|
+| `terraform.tfvars` | All variable values from Excel |
+| `variables.tf` | Variable definitions with types and validation |
+| `main.tf` | Provider configuration and backend |
+| `m-vm.tf` | VM module instantiation |
+| `r-asg.tf` | Application Security Group resources |
+| `r-kvlt.tf` | Key Vault resource |
+| `r-umid.tf` | User Assigned Identity |
+| `r-dsk.tf` | Disk Encryption Set |
+| `r-snet.tf` | Subnet data sources |
+| `data.tf` | Data source lookups |
+| `locals.tf` | Local values |
+| `outputs.tf` | Output definitions |
 
-1. Extend the `ComprehensiveExcelExtractor` class
-2. Add new extraction methods
-3. Update the JSON output structure
-4. Test with various Excel file formats
+---
 
 ## License
 
-This project is provided as-is for educational and development purposes.
+Internal use only. Contact the Cloud Engineering team for support.
 
 ## Support
 
 For issues or questions:
-1. Check the troubleshooting section
-2. Enable debug mode for detailed output
-3. Review the generated JSON structure
-4. Check file permissions and dependencies
+1. Check the troubleshooting section above
+2. Review generated `automation_results.json` for errors
+3. Enable debug logging for detailed output
+4. Contact the Platform Engineering team
 
 ---
 
-**Note**: This tool extracts ALL data from Excel files, including sensitive information. Ensure you handle the output JSON files securely and in accordance with your organization's data policies.
+**Note**: This tool extracts infrastructure configuration from Excel files. Ensure you handle the generated Terraform files securely and in accordance with your organization's security policies.

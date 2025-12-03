@@ -1256,8 +1256,15 @@ common_tags = {{
             # Get location for region-based image gallery selection
             vm_location = self._get_value_by_terraform_var('location', 'Build_ENV')
 
-            source_image_id_raw = (self._get_value_by_terraform_var(f'vm_list.{vm_key}.source_image_id', 'Build_ENV') or
-                                   self._get_raw_value(f'vm_list.{vm_key}.source_image_id', 'Resources'))
+            # Try multiple patterns for source_image_id:
+            # - vm_list.vm1.source_image_id (standard pattern)
+            # - vm_list.rsg1.source_image_id (resource group key pattern found in some sheets)
+            source_image_id_raw = (
+                self._get_value_by_terraform_var(f'vm_list.{vm_key}.source_image_id', 'Build_ENV') or
+                self._get_value_by_terraform_var('vm_list.rsg1.source_image_id', 'Build_ENV') or
+                self._get_raw_value(f'vm_list.{vm_key}.source_image_id', 'Resources') or
+                self._get_raw_value('Packer Image ID', 'Build_ENV')
+            )
 
             # Resolve source_image_id to full Azure path
             resolved_image_id = self._resolve_source_image_id(source_image_id_raw, vm_location)

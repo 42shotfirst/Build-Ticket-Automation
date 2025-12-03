@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "start_time": "2025-12-03T15:25:29.263486",
+  "end_time": "2025-12-03T15:25:32.004349",
+  "duration_seconds": 2.740863,
+  "steps_completed": [
+    "validation",
+    "backup",
+    "excel_extraction_1",
+    "terraform_generation_1",
+    "output_validation",
+    "terraform_validation",
+    "summary_report",
+    "cleanup"
+  ],
+  "files_generated": [
+    "test_data_comprehensive_extract.json",
+    "m-vm.tf",
+    "main.tf",
+    "r-asg.tf",
+    "r-snet.tf",
+    "r-kvlt.tf",
+    "r-umid.tf",
+    "r-dsk.tf",
+    "r-rnd.tf",
+    "r-dcra.tf",
+    "networking.tf",
+    "s3.tf",
+    "packages/monitoring/alerts.tf",
+    "packages/storage/buckets.tf",
+    "variables.tf",
+    "terraform.tfvars",
+    "outputs.tf",
+    "data.tf",
+    "locals.tf",
+    "production.tfvars",
+    "scripts/validate.sh",
+    "README.md",
+    ".gitignore"
+  ],
+  "errors": [],
+  "warnings": [
+    "Terraform fmt: FAIL",
+    "Terraform fmt found formatting issues",
+    "Terraform init failed - skipping validate"
+  ],
+  "summary": {
+    "total_files_generated": 23,
+    "files_processed": 1,
+    "steps_completed": 6,
+    "duration_seconds": 0,
+    "success": false,
+    "error_count": 0,
+    "warning_count": 3,
+    "processed_files": [
+      {
+        "excel_file": "test_data.xlsm",
+        "json_file": "test_data_comprehensive_extract.json",
+        "terraform_dir": "20251203_152531",
+        "terraform_dir_full_path": "terraform_output/20251203_152531",
+        "terraform_file_count": 17,
+        "json_file_size_bytes": 5143854,
+        "json_file_size_mb": 4.91
+      }
+    ],
+    "total_terraform_files": 17,
+    "total_json_size_bytes": 5143854,
+    "total_json_size_mb": 4.91
+  }
+}
